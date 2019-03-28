@@ -1,7 +1,7 @@
-# ProjectName
+# Faithlife.Data
 
-[![NuGet](https://img.shields.io/nuget/v/ProjectName.svg)](https://www.nuget.org/packages/ProjectName)
+[![NuGet](https://img.shields.io/nuget/v/Faithlife.Data.svg)](https://www.nuget.org/packages/Faithlife.Data)
 
 ## Usage
 
-See the [reference documentation](ProjectName.md).
+See the [reference documentation](Faithlife.Data.md).
