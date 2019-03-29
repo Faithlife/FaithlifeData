@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using FluentAssertions;
 using NUnit.Framework;
+using static Faithlife.Data.Tests.FluentAction;
 
 namespace Faithlife.Data.Tests
 {
@@ -389,8 +390,6 @@ namespace Faithlife.Data.Tests
 		{
 			FortyTwo = 42,
 		}
-
-		private static Action Invoking(Action action) => action;
 
 		private static readonly ItemRecord s_record = new ItemRecord
 		{
