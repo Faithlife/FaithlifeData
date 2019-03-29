@@ -7,4 +7,8 @@
     <PackageTags></PackageTags>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Faithlife.Reflection" Version="0.2.0" />
+  </ItemGroup>
+
 </Project>
