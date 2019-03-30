@@ -27,18 +27,18 @@ namespace Faithlife.Data.Tests
 			{
 				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute().Should().Be(0);
 				connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").Execute().Should().Be(2);
-				connector.Command("select Name from Items;").Query<string>().Should().Equal("item1", "item2");
-				connector.Command("select Name from Items;").Query(ToUpper).Should().Equal("ITEM1", "ITEM2");
-				connector.Command("select Name from Items;").Enumerate<string>().Should().Equal("item1", "item2");
-				connector.Command("select Name from Items;").Enumerate(ToUpper).Should().Equal("ITEM1", "ITEM2");
-				connector.Command("select Name from Items;").QueryFirst<string>().Should().Be("item1");
-				connector.Command("select Name from Items;").QueryFirst(ToUpper).Should().Be("ITEM1");
-				connector.Command("select Name from Items;").QueryFirstOrDefault<string>().Should().Be("item1");
-				connector.Command("select Name from Items;").QueryFirstOrDefault(ToUpper).Should().Be("ITEM1");
-				connector.Command("select Name from Items limit 1;").QuerySingle<string>().Should().Be("item1");
-				connector.Command("select Name from Items limit 1;").QuerySingle(ToUpper).Should().Be("ITEM1");
-				connector.Command("select Name from Items limit 1;").QuerySingleOrDefault<string>().Should().Be("item1");
-				connector.Command("select Name from Items limit 1;").QuerySingleOrDefault(ToUpper).Should().Be("ITEM1");
+				connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("item1", "item2");
+				connector.Command("select Name from Items order by ItemId;").Query(ToUpper).Should().Equal("ITEM1", "ITEM2");
+				connector.Command("select Name from Items order by ItemId;").Enumerate<string>().Should().Equal("item1", "item2");
+				connector.Command("select Name from Items order by ItemId;").Enumerate(ToUpper).Should().Equal("ITEM1", "ITEM2");
+				connector.Command("select Name from Items order by ItemId;").QueryFirst<string>().Should().Be("item1");
+				connector.Command("select Name from Items order by ItemId;").QueryFirst(ToUpper).Should().Be("ITEM1");
+				connector.Command("select Name from Items order by ItemId;").QueryFirstOrDefault<string>().Should().Be("item1");
+				connector.Command("select Name from Items order by ItemId;").QueryFirstOrDefault(ToUpper).Should().Be("ITEM1");
+				connector.Command("select Name from Items order by ItemId limit 1;").QuerySingle<string>().Should().Be("item1");
+				connector.Command("select Name from Items order by ItemId limit 1;").QuerySingle(ToUpper).Should().Be("ITEM1");
+				connector.Command("select Name from Items order by ItemId limit 1;").QuerySingleOrDefault<string>().Should().Be("item1");
+				connector.Command("select Name from Items order by ItemId limit 1;").QuerySingleOrDefault(ToUpper).Should().Be("ITEM1");
 				Invoking(() => connector.Command("select Name from Items where Name = 'nope';").QueryFirst<string>()).Should().Throw<InvalidOperationException>();
 				connector.Command("select Name from Items where Name = 'nope';").QueryFirstOrDefault<string>().Should().BeNull();
 			}
@@ -52,16 +52,16 @@ namespace Faithlife.Data.Tests
 			{
 				(await connector.Command("create table Items (ItemId bigint primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
 				(await connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").ExecuteAsync()).Should().Be(2);
-				(await connector.Command("select Name from Items;").QueryAsync<string>()).Should().Equal("item1", "item2");
-				(await connector.Command("select Name from Items;").QueryAsync(ToUpper)).Should().Equal("ITEM1", "ITEM2");
-				(await connector.Command("select Name from Items;").QueryFirstAsync<string>()).Should().Be("item1");
-				(await connector.Command("select Name from Items;").QueryFirstAsync(ToUpper)).Should().Be("ITEM1");
-				(await connector.Command("select Name from Items;").QueryFirstOrDefaultAsync<string>()).Should().Be("item1");
-				(await connector.Command("select Name from Items;").QueryFirstOrDefaultAsync(ToUpper)).Should().Be("ITEM1");
-				(await connector.Command("select Name from Items limit 1;").QuerySingleAsync<string>()).Should().Be("item1");
-				(await connector.Command("select Name from Items limit 1;").QuerySingleAsync(ToUpper)).Should().Be("ITEM1");
-				(await connector.Command("select Name from Items limit 1;").QuerySingleOrDefaultAsync<string>()).Should().Be("item1");
-				(await connector.Command("select Name from Items limit 1;").QuerySingleOrDefaultAsync(ToUpper)).Should().Be("ITEM1");
+				(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("item1", "item2");
+				(await connector.Command("select Name from Items order by ItemId;").QueryAsync(ToUpper)).Should().Equal("ITEM1", "ITEM2");
+				(await connector.Command("select Name from Items order by ItemId;").QueryFirstAsync<string>()).Should().Be("item1");
+				(await connector.Command("select Name from Items order by ItemId;").QueryFirstAsync(ToUpper)).Should().Be("ITEM1");
+				(await connector.Command("select Name from Items order by ItemId;").QueryFirstOrDefaultAsync<string>()).Should().Be("item1");
+				(await connector.Command("select Name from Items order by ItemId;").QueryFirstOrDefaultAsync(ToUpper)).Should().Be("ITEM1");
+				(await connector.Command("select Name from Items order by ItemId limit 1;").QuerySingleAsync<string>()).Should().Be("item1");
+				(await connector.Command("select Name from Items order by ItemId limit 1;").QuerySingleAsync(ToUpper)).Should().Be("ITEM1");
+				(await connector.Command("select Name from Items order by ItemId limit 1;").QuerySingleOrDefaultAsync<string>()).Should().Be("item1");
+				(await connector.Command("select Name from Items order by ItemId limit 1;").QuerySingleOrDefaultAsync(ToUpper)).Should().Be("ITEM1");
 				await Invoking(async () => await connector.Command("select Name from Items where Name = 'nope';").QueryFirstAsync<string>()).Should().ThrowAsync<InvalidOperationException>();
 				(await connector.Command("select Name from Items where Name = 'nope';").QueryFirstOrDefaultAsync<string>()).Should().BeNull();
 			}
@@ -78,6 +78,21 @@ namespace Faithlife.Data.Tests
 					("item1", "one"), ("item2", "two")).Execute().Should().Be(2);
 				connector.Command("select Name from Items where Name like @like;",
 					new DbParameters().Add("like", "t%")).QueryFirst<string>().Should().Be("two");
+			}
+		}
+
+		[Test]
+		public void ParametersFromDtoTests()
+		{
+			using (var connector = CreateConnector())
+			using (connector.OpenConnection())
+			{
+				const string item1 = "one";
+				const string item2 = "two";
+				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute().Should().Be(0);
+				connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
+					DbParameters.FromDto(new { item1, item2 })).Execute().Should().Be(2);
+				connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal(item1, item2);
 			}
 		}
 

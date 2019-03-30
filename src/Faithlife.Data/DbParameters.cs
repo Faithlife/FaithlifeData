@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Faithlife.Reflection;
 
 namespace Faithlife.Data
 {
@@ -24,6 +25,12 @@ namespace Faithlife.Data
 		/// </summary>
 		public static DbParameters Create(params (string Name, object Value)[] parameters) =>
 			new DbParameters(parameters);
+
+		/// <summary>
+		/// Creates a list of parameters from the properties of a DTO.
+		/// </summary>
+		public static DbParameters FromDto(object dto) =>
+			new DbParameters().AddDto(dto);
 
 		/// <summary>
 		/// The number of parameters.
@@ -50,6 +57,19 @@ namespace Faithlife.Data
 		public DbParameters Add(params (string Name, object Value)[] parameters)
 		{
 			m_parameters.AddRange(parameters ?? throw new ArgumentNullException(nameof(parameters)));
+			return this;
+		}
+
+		/// <summary>
+		/// Adds the properties of a DTO as parameters.
+		/// </summary>
+		public DbParameters AddDto(object dto)
+		{
+			if (dto != null)
+			{
+				foreach (var property in DtoInfo.GetInfo(dto.GetType()).Properties)
+					Add(property.Name, property.GetValue(dto));
+			}
 			return this;
 		}
 
