@@ -109,7 +109,24 @@ namespace Faithlife.Data
 		/// Starts a new command.
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
-		public DbConnectorCommand Command(string text) => new DbConnectorCommand(this, text);
+		public DbConnectorCommand Command(string text) =>
+			new DbConnectorCommand(this, text, null);
+
+		/// <summary>
+		/// Starts a new command.
+		/// </summary>
+		/// <param name="text">The text of the command.</param>
+		/// <param name="parameters">The command parameters.</param>
+		public DbConnectorCommand Command(string text, DbParameters parameters) =>
+			new DbConnectorCommand(this, text, parameters);
+
+		/// <summary>
+		/// Starts a new command.
+		/// </summary>
+		/// <param name="text">The text of the command.</param>
+		/// <param name="parameters">The command parameters.</param>
+		public DbConnectorCommand Command(string text, params (string Name, object Value)[] parameters) =>
+			new DbConnectorCommand(this, text, DbParameters.Create(parameters));
 
 		/// <summary>
 		/// Disposes the connector.

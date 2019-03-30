@@ -67,6 +67,23 @@ namespace Faithlife.Data
 			if (transaction != null)
 				command.Transaction = transaction;
 
+			if (m_parameters != null)
+			{
+				foreach (var (name, value) in m_parameters)
+				{
+					if (!(value is IDbDataParameter dbParameter))
+					{
+						dbParameter = command.CreateParameter();
+						dbParameter.Value = value ?? DBNull.Value;
+					}
+
+					if (name != null)
+						dbParameter.ParameterName = name;
+
+					command.Parameters.Add(dbParameter);
+				}
+			}
+
 			return command;
 		}
 
@@ -83,10 +100,11 @@ namespace Faithlife.Data
 			return command;
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters)
 		{
 			m_connector = connector;
 			m_text = text;
+			m_parameters = parameters;
 		}
 
 		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read, CommandBehavior? commandBehavior)
@@ -121,5 +139,6 @@ namespace Faithlife.Data
 
 		private readonly DbConnector m_connector;
 		private readonly string m_text;
+		private readonly DbParameters m_parameters;
 	}
 }

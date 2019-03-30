@@ -58,6 +58,20 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void ParametersTests()
+		{
+			using (var connector = CreateConnector())
+			using (connector.OpenConnection())
+			{
+				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute().Should().Be(0);
+				connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
+					("item1", "one"), ("item2", "two")).Execute().Should().Be(2);
+				connector.Command("select Name from Items where Name like @like;",
+					new DbParameters().Add("like", "t%")).QueryFirst<string>().Should().Be("two");
+			}
+		}
+
+		[Test]
 		public void TransactionTests([Values] bool? commit)
 		{
 			using (var connector = CreateConnector())
@@ -96,6 +110,30 @@ namespace Faithlife.Data.Tests
 				}
 
 				(await connector.Command("select count(*) from Items;").QueryFirstAsync<long>()).Should().Be(commit == true ? 1 : 0);
+			}
+		}
+
+		[Test]
+		public async Task IsolationLevelTests()
+		{
+			using (var connector = CreateConnector())
+			using (connector.OpenConnection())
+			{
+				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute();
+
+				using (connector.BeginTransaction(IsolationLevel.ReadCommitted))
+				{
+					connector.Command("insert into Items (Name) values ('item1');").Execute();
+					connector.CommitTransaction();
+				}
+
+				using (await connector.BeginTransactionAsync(IsolationLevel.ReadCommitted))
+				{
+					await connector.Command("insert into Items (Name) values ('item2');").ExecuteAsync();
+					await connector.CommitTransactionAsync();
+				}
+
+				connector.Command("select count(*) from Items;").QueryFirst<long>().Should().Be(2);
 			}
 		}
 
