@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -25,7 +26,7 @@ namespace Faithlife.Data.Tests
 			using (var connector = CreateConnector())
 			using (connector.OpenConnection())
 			{
-				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute().Should().Be(0);
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 				connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").Execute().Should().Be(2);
 				connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("item1", "item2");
 				connector.Command("select Name from Items order by ItemId;").Query(ToUpper).Should().Equal("ITEM1", "ITEM2");
@@ -73,7 +74,7 @@ namespace Faithlife.Data.Tests
 			using (var connector = CreateConnector())
 			using (connector.OpenConnection())
 			{
-				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute().Should().Be(0);
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 				connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 					("item1", "one"), ("item2", "two")).Execute().Should().Be(2);
 				connector.Command("select Name from Items where Name like @like;",
@@ -89,7 +90,7 @@ namespace Faithlife.Data.Tests
 			{
 				const string item1 = "one";
 				const string item2 = "two";
-				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute().Should().Be(0);
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 				connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 					DbParameters.FromDto(new { item1, item2 })).Execute().Should().Be(2);
 				connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal(item1, item2);
@@ -102,7 +103,7 @@ namespace Faithlife.Data.Tests
 			using (var connector = CreateConnector())
 			using (connector.OpenConnection())
 			{
-				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute();
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 
 				using (connector.BeginTransaction())
 				{
@@ -123,7 +124,7 @@ namespace Faithlife.Data.Tests
 			using (var connector = CreateConnector())
 			using (await connector.OpenConnectionAsync())
 			{
-				await connector.Command("create table Items (ItemId bigint primary key, Name text not null);").ExecuteAsync();
+				await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 
 				using (await connector.BeginTransactionAsync())
 				{
@@ -144,7 +145,7 @@ namespace Faithlife.Data.Tests
 			using (var connector = CreateConnector())
 			using (connector.OpenConnection())
 			{
-				connector.Command("create table Items (ItemId bigint primary key, Name text not null);").Execute();
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 
 				using (connector.BeginTransaction(IsolationLevel.ReadCommitted))
 				{
@@ -159,6 +160,28 @@ namespace Faithlife.Data.Tests
 				}
 
 				connector.Command("select count(*) from Items;").QueryFirst<long>().Should().Be(2);
+			}
+		}
+
+		[Test]
+		public void QueryMultipleTests()
+		{
+			using (var connector = CreateConnector())
+			using (connector.OpenConnection())
+			{
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+				connector.Command("insert into Items (Name) values ('item1'), ('item2');").Execute();
+
+				using (var resultSet = connector.Command(@"
+					select ItemId from Items where Name = 'item1';
+					select ItemId from Items where Name = 'item2';
+					").QueryMultiple())
+				{
+					long id1 = resultSet.Read<long>().Single();
+					long id2 = resultSet.Read<long>().Single();
+					id1.Should().BeLessThan(id2);
+					Invoking(() => resultSet.Read(x => 0)).Should().Throw<InvalidOperationException>();
+				}
 			}
 		}
 

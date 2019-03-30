@@ -87,6 +87,13 @@ namespace Faithlife.Data
 		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
 			DoEnumerate(read, null);
 
+		public DbConnectorResultSet QueryMultiple()
+		{
+			var command = Create();
+			var reader = command.ExecuteReader(c_queryBehavior);
+			return new DbConnectorResultSet(command, reader);
+		}
+
 		public IDbCommand Create()
 		{
 			var connection = m_connector.Connection;
