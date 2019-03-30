@@ -29,6 +29,8 @@ namespace Faithlife.Data.Tests
 				connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").Execute().Should().Be(2);
 				connector.Command("select Name from Items;").Query<string>().Should().Equal("item1", "item2");
 				connector.Command("select Name from Items;").Query(ToUpper).Should().Equal("ITEM1", "ITEM2");
+				connector.Command("select Name from Items;").Enumerate<string>().Should().Equal("item1", "item2");
+				connector.Command("select Name from Items;").Enumerate(ToUpper).Should().Equal("ITEM1", "ITEM2");
 				connector.Command("select Name from Items;").QueryFirst<string>().Should().Be("item1");
 				connector.Command("select Name from Items;").QueryFirst(ToUpper).Should().Be("ITEM1");
 				connector.Command("select Name from Items;").QueryFirstOrDefault<string>().Should().Be("item1");

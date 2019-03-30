@@ -57,6 +57,12 @@ namespace Faithlife.Data
 		public async Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			(await DoQueryAsync(read, CommandBehavior.SingleResult | CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
 
+		public IEnumerable<T> Enumerate<T>() =>
+			DoEnumerate<T>(null, null);
+
+		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
+			DoEnumerate(read, null);
+
 		public IDbCommand Create()
 		{
 			var connection = m_connector.Connection;
@@ -135,6 +141,19 @@ namespace Faithlife.Data
 				} while (reader.NextResult());
 			}
 			return list;
+		}
+
+		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T> read, CommandBehavior? commandBehavior)
+		{
+			using (var command = Create())
+			using (var reader = commandBehavior == null ? command.ExecuteReader() : command.ExecuteReader(commandBehavior.Value))
+			{
+				do
+				{
+					while (reader.Read())
+						yield return read != null ? read(reader) : reader.Get<T>();
+				} while (reader.NextResult());
+			}
 		}
 
 		private readonly DbConnector m_connector;
