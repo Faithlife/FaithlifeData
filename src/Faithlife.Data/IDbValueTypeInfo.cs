@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Faithlife.Data
 {
-	public interface IDbValueTypeInfo
+	internal interface IDbValueTypeInfo
 	{
 		Type Type { get; }
 

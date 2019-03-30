@@ -6,11 +6,9 @@ using System.Linq;
 using System.Reflection;
 using Faithlife.Reflection;
 
-#pragma warning disable 1591
-
 namespace Faithlife.Data
 {
-	public static class DbValueTypeInfo
+	internal static class DbValueTypeInfo
 	{
 		public static DbValueTypeInfo<T> GetInfo<T>() => DbValueTypeInfo<T>.Instance;
 
@@ -58,7 +56,7 @@ namespace Faithlife.Data
 		};
 	}
 
-	public sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
+	internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 	{
 		public Type Type => m_nullableType ?? m_coreType;
 
@@ -66,15 +64,6 @@ namespace Faithlife.Data
 
 		public T GetValue(IDataRecord record, int index, int count)
 		{
-			if (record == null)
-				throw new ArgumentNullException(nameof(record));
-			if (index < 0)
-				throw new ArgumentOutOfRangeException(nameof(index));
-			if (count < 0)
-				throw new ArgumentOutOfRangeException(nameof(count));
-			if (index > record.FieldCount - count)
-				throw new ArgumentOutOfRangeException(nameof(count));
-
 			if (FieldCount != null && FieldCount.Value != count)
 				throw new InvalidOperationException($"Type must be read from {FieldCount.Value} fields but is being read from {count} fields: {Type.FullName}");
 
@@ -158,15 +147,9 @@ namespace Faithlife.Data
 						fieldCount = info.FieldCount.Value;
 					}
 
-					if (fieldCount <= 0 || recordIndex + fieldCount > count)
-						throw new InvalidOperationException($"Not enough fields for type: {Type.FullName}");
-
 					values[valueIndex] = info.GetValue(record, recordIndex, fieldCount);
 					recordIndex = nullIndex + 1 ?? recordIndex + fieldCount;
 				}
-
-				if (recordIndex != count)
-					throw new InvalidOperationException($"Too many fields for type: {Type.FullName}");
 
 				return m_tupleInfo.CreateNew(values);
 			}
