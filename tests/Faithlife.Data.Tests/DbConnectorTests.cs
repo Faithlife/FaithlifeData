@@ -35,6 +35,10 @@ namespace Faithlife.Data.Tests
 				connector.Command("select Name from Items;").QueryFirst(ToUpper).Should().Be("ITEM1");
 				connector.Command("select Name from Items;").QueryFirstOrDefault<string>().Should().Be("item1");
 				connector.Command("select Name from Items;").QueryFirstOrDefault(ToUpper).Should().Be("ITEM1");
+				connector.Command("select Name from Items limit 1;").QuerySingle<string>().Should().Be("item1");
+				connector.Command("select Name from Items limit 1;").QuerySingle(ToUpper).Should().Be("ITEM1");
+				connector.Command("select Name from Items limit 1;").QuerySingleOrDefault<string>().Should().Be("item1");
+				connector.Command("select Name from Items limit 1;").QuerySingleOrDefault(ToUpper).Should().Be("ITEM1");
 				Invoking(() => connector.Command("select Name from Items where Name = 'nope';").QueryFirst<string>()).Should().Throw<InvalidOperationException>();
 				connector.Command("select Name from Items where Name = 'nope';").QueryFirstOrDefault<string>().Should().BeNull();
 			}
@@ -54,6 +58,10 @@ namespace Faithlife.Data.Tests
 				(await connector.Command("select Name from Items;").QueryFirstAsync(ToUpper)).Should().Be("ITEM1");
 				(await connector.Command("select Name from Items;").QueryFirstOrDefaultAsync<string>()).Should().Be("item1");
 				(await connector.Command("select Name from Items;").QueryFirstOrDefaultAsync(ToUpper)).Should().Be("ITEM1");
+				(await connector.Command("select Name from Items limit 1;").QuerySingleAsync<string>()).Should().Be("item1");
+				(await connector.Command("select Name from Items limit 1;").QuerySingleAsync(ToUpper)).Should().Be("ITEM1");
+				(await connector.Command("select Name from Items limit 1;").QuerySingleOrDefaultAsync<string>()).Should().Be("item1");
+				(await connector.Command("select Name from Items limit 1;").QuerySingleOrDefaultAsync(ToUpper)).Should().Be("ITEM1");
 				await Invoking(async () => await connector.Command("select Name from Items where Name = 'nope';").QueryFirstAsync<string>()).Should().ThrowAsync<InvalidOperationException>();
 				(await connector.Command("select Name from Items where Name = 'nope';").QueryFirstOrDefaultAsync<string>()).Should().BeNull();
 			}

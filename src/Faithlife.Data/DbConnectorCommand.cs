@@ -22,40 +22,64 @@ namespace Faithlife.Data
 		}
 
 		public IReadOnlyList<T> Query<T>() =>
-			DoQuery<T>(null, null);
+			DoQuery<T>(null, c_queryBehavior);
 
 		public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, null);
+			DoQuery(read, c_queryBehavior);
 
 		public async Task<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
-			await DoQueryAsync<T>(null, null, cancellationToken).ConfigureAwait(false);
+			await DoQueryAsync<T>(null, c_queryBehavior, cancellationToken).ConfigureAwait(false);
 
 		public async Task<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			await DoQueryAsync(read, null, cancellationToken).ConfigureAwait(false);
+			await DoQueryAsync(read, c_queryBehavior, cancellationToken).ConfigureAwait(false);
 
 		public T QueryFirst<T>() =>
-			DoQuery<T>(null, CommandBehavior.SingleResult | CommandBehavior.SingleRow).First();
+			DoQuery<T>(null, c_firstBehavior).First();
 
 		public T QueryFirst<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, CommandBehavior.SingleResult | CommandBehavior.SingleRow).First();
+			DoQuery(read, c_firstBehavior).First();
 
 		public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync<T>(null, CommandBehavior.SingleResult | CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false)).First();
+			(await DoQueryAsync<T>(null, c_firstBehavior, cancellationToken).ConfigureAwait(false)).First();
 
 		public async Task<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync(read, CommandBehavior.SingleResult | CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false)).First();
+			(await DoQueryAsync(read, c_firstBehavior, cancellationToken).ConfigureAwait(false)).First();
 
 		public T QueryFirstOrDefault<T>() =>
-			DoQuery<T>(null, CommandBehavior.SingleResult | CommandBehavior.SingleRow).FirstOrDefault();
+			DoQuery<T>(null, c_firstBehavior).FirstOrDefault();
 
 		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, CommandBehavior.SingleResult | CommandBehavior.SingleRow).FirstOrDefault();
+			DoQuery(read, c_firstBehavior).FirstOrDefault();
 
 		public async Task<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync<T>(null, CommandBehavior.SingleResult | CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
+			(await DoQueryAsync<T>(null, c_firstBehavior, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
 
 		public async Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync(read, CommandBehavior.SingleResult | CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
+			(await DoQueryAsync(read, c_firstBehavior, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
+
+		public T QuerySingle<T>() =>
+			DoQuery<T>(null, c_singleBehavior).Single();
+
+		public T QuerySingle<T>(Func<IDataRecord, T> read) =>
+			DoQuery(read, c_singleBehavior).Single();
+
+		public async Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
+			(await DoQueryAsync<T>(null, c_singleBehavior, cancellationToken).ConfigureAwait(false)).Single();
+
+		public async Task<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			(await DoQueryAsync(read, c_singleBehavior, cancellationToken).ConfigureAwait(false)).Single();
+
+		public T QuerySingleOrDefault<T>() =>
+			DoQuery<T>(null, c_singleBehavior).SingleOrDefault();
+
+		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> read) =>
+			DoQuery(read, c_singleBehavior).SingleOrDefault();
+
+		public async Task<T> QuerySingleOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
+			(await DoQueryAsync<T>(null, c_singleBehavior, cancellationToken).ConfigureAwait(false)).SingleOrDefault();
+
+		public async Task<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			(await DoQueryAsync(read, c_singleBehavior, cancellationToken).ConfigureAwait(false)).SingleOrDefault();
 
 		public IEnumerable<T> Enumerate<T>() =>
 			DoEnumerate<T>(null, null);
@@ -113,11 +137,11 @@ namespace Faithlife.Data
 			m_parameters = parameters;
 		}
 
-		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read, CommandBehavior? commandBehavior)
+		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read, CommandBehavior commandBehavior)
 		{
 			var list = new List<T>();
 			using (var command = Create())
-			using (var reader = commandBehavior == null ? command.ExecuteReader() : command.ExecuteReader(commandBehavior.Value))
+			using (var reader = command.ExecuteReader(commandBehavior))
 			{
 				do
 				{
@@ -128,11 +152,11 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CommandBehavior? commandBehavior, CancellationToken cancellationToken)
+		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CommandBehavior commandBehavior, CancellationToken cancellationToken)
 		{
 			var list = new List<T>();
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = commandBehavior == null ? await m_connector.ProviderMethods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false) : await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior.Value, cancellationToken).ConfigureAwait(false))
+			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
 			{
 				do
 				{
@@ -155,6 +179,10 @@ namespace Faithlife.Data
 				} while (reader.NextResult());
 			}
 		}
+
+		private const CommandBehavior c_queryBehavior = CommandBehavior.SequentialAccess;
+		private const CommandBehavior c_singleBehavior = CommandBehavior.SequentialAccess | CommandBehavior.SingleResult;
+		private const CommandBehavior c_firstBehavior = CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow;
 
 		private readonly DbConnector m_connector;
 		private readonly string m_text;
