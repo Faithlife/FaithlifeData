@@ -28,26 +28,5 @@ namespace Faithlife.Data
 			int toIndex = record.GetOrdinal(toName);
 			return DataRecordUtility.GetValue<T>(record, fromIndex, toIndex - fromIndex + 1);
 		}
-
-		public static T Slice<T>(this IDataRecord record, int start)
-		{
-			int fieldCount = (record ?? throw new ArgumentNullException(nameof(record))).FieldCount;
-			int actualStart = start >= 0 ? start : fieldCount + start;
-			if (actualStart < 0 || actualStart > fieldCount)
-				throw new ArgumentException($"Slice start {start} is out of range for {fieldCount} fields.");
-
-			return DataRecordUtility.GetValue<T>(record, actualStart, fieldCount - actualStart);
-		}
-
-		public static T Slice<T>(this IDataRecord record, int start, int end)
-		{
-			int fieldCount = (record ?? throw new ArgumentNullException(nameof(record))).FieldCount;
-			int actualStart = start >= 0 ? start : fieldCount + start;
-			int actualEnd = end >= 0 ? end : fieldCount + end;
-			if (actualStart < 0 || actualEnd < 0 || actualStart > actualEnd || actualEnd > fieldCount)
-				throw new ArgumentException($"Slice start {start} and end {end} are out of range for {fieldCount} fields.");
-
-			return DataRecordUtility.GetValue<T>(record, actualStart, actualEnd - actualStart);
-		}
 	}
 }

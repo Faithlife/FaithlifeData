@@ -363,44 +363,6 @@ namespace Faithlife.Data.Tests
 			}
 		}
 
-		[Test]
-		public void SliceFromExtension()
-		{
-			using (var connection = GetOpenConnection())
-			using (var command = connection.CreateCommand())
-			{
-				command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
-				using (var reader = command.ExecuteReader())
-				{
-					reader.Read().Should().BeTrue();
-					reader.Slice<ItemRecord>(0).Should().BeEquivalentTo(s_record);
-					reader.Slice<ItemRecord>(-7).Should().BeEquivalentTo(s_record);
-					reader.Slice<byte[]>(6).Should().Equal(s_record.TheBlob);
-					reader.Slice<byte[]>(-1).Should().Equal(s_record.TheBlob);
-					Invoking(() => reader.Slice<ItemRecord>(8)).Should().Throw<ArgumentException>();
-				}
-			}
-		}
-
-		[Test]
-		public void SliceExtension()
-		{
-			using (var connection = GetOpenConnection())
-			using (var command = connection.CreateCommand())
-			{
-				command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
-				using (var reader = command.ExecuteReader())
-				{
-					reader.Read().Should().BeTrue();
-					reader.Slice<(long, bool)>(2, 4).Should().Be((42L, true));
-					reader.Slice<(long, bool)>(2, -3).Should().Be((42L, true));
-					reader.Slice<(long, bool)>(-5, 4).Should().Be((42L, true));
-					reader.Slice<(long, bool)>(-5, -3).Should().Be((42L, true));
-					Invoking(() => reader.Slice<(long, bool)>(4, 2)).Should().Throw<ArgumentException>();
-				}
-			}
-		}
-
 		private IDbConnection GetOpenConnection()
 		{
 			var connection = new SQLiteConnection("Data Source=:memory:");
