@@ -7,6 +7,8 @@ namespace Faithlife.Data
 {
 	public class DbProviderMethods
 	{
+		public static readonly DbProviderMethods Default = new DbProviderMethods();
+
 		public virtual async Task OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken)
 		{
 			if (connection is DbConnection dbConnection)
@@ -33,6 +35,34 @@ namespace Faithlife.Data
 		public virtual async Task RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
 		{
 			transaction.Rollback();
+		}
+
+		public virtual async Task<int> ExecuteNonQueryAsync(IDbCommand command, CancellationToken cancellationToken)
+		{
+			if (command is DbCommand dbCommand)
+				return await dbCommand.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+			else
+				return command.ExecuteNonQuery();
+		}
+
+		public virtual async Task<IDataReader> ExecuteReaderAsync(IDbCommand command, CancellationToken cancellationToken)
+		{
+			if (command is DbCommand dbCommand)
+				return await dbCommand.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+			else
+				return command.ExecuteReader();
+		}
+
+		public virtual async Task<IDataReader> ExecuteReaderAsync(IDbCommand command, CommandBehavior commandBehavior, CancellationToken cancellationToken)
+		{
+			if (command is DbCommand dbCommand)
+				return await dbCommand.ExecuteReaderAsync(commandBehavior, cancellationToken).ConfigureAwait(false);
+			else
+				return command.ExecuteReader(commandBehavior);
+		}
+
+		protected DbProviderMethods()
+		{
 		}
 	}
 }

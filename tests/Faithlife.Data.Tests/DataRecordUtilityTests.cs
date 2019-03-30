@@ -1,7 +1,6 @@
 using System;
 using System.Data;
 using System.Data.SQLite;
-using Faithlife.Data.Extensions;
 using FluentAssertions;
 using NUnit.Framework;
 using static Faithlife.Data.Tests.FluentAction;

@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 
-namespace Faithlife.Data.Extensions
+namespace Faithlife.Data
 {
 	public static class DataRecordExtensions
 	{
