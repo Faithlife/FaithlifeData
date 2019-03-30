@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,64 +21,64 @@ namespace Faithlife.Data
 		}
 
 		public IReadOnlyList<T> Query<T>() =>
-			DoQuery<T>(null, c_queryBehavior);
+			DoQuery<T>(null);
 
 		public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, c_queryBehavior);
-
-		public async Task<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
-			await DoQueryAsync<T>(null, c_queryBehavior, cancellationToken).ConfigureAwait(false);
-
-		public async Task<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			await DoQueryAsync(read, c_queryBehavior, cancellationToken).ConfigureAwait(false);
+			DoQuery(read);
 
 		public T QueryFirst<T>() =>
-			DoQuery<T>(null, c_firstBehavior).First();
+			DoQueryFirst<T>(null, single: false, orDefault: false);
 
 		public T QueryFirst<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, c_firstBehavior).First();
-
-		public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync<T>(null, c_firstBehavior, cancellationToken).ConfigureAwait(false)).First();
-
-		public async Task<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync(read, c_firstBehavior, cancellationToken).ConfigureAwait(false)).First();
+			DoQueryFirst(read, single: false, orDefault: false);
 
 		public T QueryFirstOrDefault<T>() =>
-			DoQuery<T>(null, c_firstBehavior).FirstOrDefault();
+			DoQueryFirst<T>(null, single: false, orDefault: true);
 
 		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, c_firstBehavior).FirstOrDefault();
-
-		public async Task<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync<T>(null, c_firstBehavior, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
-
-		public async Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync(read, c_firstBehavior, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
+			DoQueryFirst(read, single: false, orDefault: true);
 
 		public T QuerySingle<T>() =>
-			DoQuery<T>(null, c_singleBehavior).Single();
+			DoQueryFirst<T>(null, single: true, orDefault: false);
 
 		public T QuerySingle<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, c_singleBehavior).Single();
-
-		public async Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync<T>(null, c_singleBehavior, cancellationToken).ConfigureAwait(false)).Single();
-
-		public async Task<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync(read, c_singleBehavior, cancellationToken).ConfigureAwait(false)).Single();
+			DoQueryFirst(read, single: true, orDefault: false);
 
 		public T QuerySingleOrDefault<T>() =>
-			DoQuery<T>(null, c_singleBehavior).SingleOrDefault();
+			DoQueryFirst<T>(null, single: true, orDefault: true);
 
 		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read, c_singleBehavior).SingleOrDefault();
+			DoQueryFirst(read, single: true, orDefault: true);
+
+		public async Task<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
+			await DoQueryAsync<T>(null, cancellationToken).ConfigureAwait(false);
+
+		public async Task<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			await DoQueryAsync(read, cancellationToken).ConfigureAwait(false);
+
+		public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
+			(await DoQueryFirstAsync<T>(null, single: false, orDefault: false, cancellationToken).ConfigureAwait(false));
+
+		public async Task<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			(await DoQueryFirstAsync(read, single: false, orDefault: false, cancellationToken).ConfigureAwait(false));
+
+		public async Task<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
+			(await DoQueryFirstAsync<T>(null, single: false, orDefault: true, cancellationToken).ConfigureAwait(false));
+
+		public async Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			(await DoQueryFirstAsync(read, single: false, orDefault: true, cancellationToken).ConfigureAwait(false));
+
+		public async Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
+			(await DoQueryFirstAsync<T>(null, single: true, orDefault: false, cancellationToken).ConfigureAwait(false));
+
+		public async Task<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			(await DoQueryFirstAsync(read, single: true, orDefault: false, cancellationToken).ConfigureAwait(false));
 
 		public async Task<T> QuerySingleOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync<T>(null, c_singleBehavior, cancellationToken).ConfigureAwait(false)).SingleOrDefault();
+			(await DoQueryFirstAsync<T>(null, single: true, orDefault: true, cancellationToken).ConfigureAwait(false));
 
 		public async Task<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryAsync(read, c_singleBehavior, cancellationToken).ConfigureAwait(false)).SingleOrDefault();
+			(await DoQueryFirstAsync(read, single: true, orDefault: true, cancellationToken).ConfigureAwait(false));
 
 		public IEnumerable<T> Enumerate<T>() =>
 			DoEnumerate<T>(null, null);
@@ -90,7 +89,7 @@ namespace Faithlife.Data
 		public DbConnectorResultSet QueryMultiple()
 		{
 			var command = Create();
-			var reader = command.ExecuteReader(c_queryBehavior);
+			var reader = command.ExecuteReader(CommandBehavior.SequentialAccess);
 			return new DbConnectorResultSet(command, reader);
 		}
 
@@ -144,11 +143,11 @@ namespace Faithlife.Data
 			m_parameters = parameters;
 		}
 
-		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read, CommandBehavior commandBehavior)
+		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read)
 		{
 			var list = new List<T>();
 			using (var command = Create())
-			using (var reader = command.ExecuteReader(commandBehavior))
+			using (var reader = command.ExecuteReader(CommandBehavior.SequentialAccess))
 			{
 				do
 				{
@@ -159,19 +158,63 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CommandBehavior commandBehavior, CancellationToken cancellationToken)
+		private T DoQueryFirst<T>(Func<IDataRecord, T> read, bool single, bool orDefault)
+		{
+			var commandBehavior = single ? CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SequentialAccess | CommandBehavior.SingleResult;
+
+			using (var command = Create())
+			using (var reader = command.ExecuteReader(commandBehavior))
+			{
+				if (!reader.Read())
+					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+
+				var value = read != null ? read(reader) : reader.Get<T>();
+
+				if (single && reader.Read())
+					throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
+
+				if (single && reader.NextResult())
+					throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
+
+				return value;
+			}
+		}
+
+		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken)
 		{
 			var list = new List<T>();
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
+			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
 			{
 				do
 				{
-					while (reader.Read())
+					while (await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 						list.Add(read != null ? read(reader) : reader.Get<T>());
-				} while (reader.NextResult());
+				} while (await m_connector.ProviderMethods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 			}
 			return list;
+		}
+
+		private async Task<T> DoQueryFirstAsync<T>(Func<IDataRecord, T> read, bool single, bool orDefault, CancellationToken cancellationToken)
+		{
+			var commandBehavior = single ? CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SequentialAccess | CommandBehavior.SingleResult;
+
+			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
+			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
+			{
+				if (!(await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false)))
+					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+
+				var value = read != null ? read(reader) : reader.Get<T>();
+
+				if (single && await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+					throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
+
+				if (single && await m_connector.ProviderMethods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
+					throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
+
+				return value;
+			}
 		}
 
 		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T> read, CommandBehavior? commandBehavior)
@@ -186,10 +229,6 @@ namespace Faithlife.Data
 				} while (reader.NextResult());
 			}
 		}
-
-		private const CommandBehavior c_queryBehavior = CommandBehavior.SequentialAccess;
-		private const CommandBehavior c_singleBehavior = CommandBehavior.SequentialAccess | CommandBehavior.SingleResult;
-		private const CommandBehavior c_firstBehavior = CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow;
 
 		private readonly DbConnector m_connector;
 		private readonly string m_text;

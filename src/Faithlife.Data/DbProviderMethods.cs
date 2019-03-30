@@ -61,6 +61,22 @@ namespace Faithlife.Data
 				return command.ExecuteReader(commandBehavior);
 		}
 
+		public virtual async Task<bool> ReadAsync(IDataReader reader, CancellationToken cancellationToken)
+		{
+			if (reader is DbDataReader dbReader)
+				return await dbReader.ReadAsync(cancellationToken).ConfigureAwait(false);
+			else
+				return reader.Read();
+		}
+
+		public virtual async Task<bool> NextResultAsync(IDataReader reader, CancellationToken cancellationToken)
+		{
+			if (reader is DbDataReader dbReader)
+				return await dbReader.NextResultAsync(cancellationToken).ConfigureAwait(false);
+			else
+				return reader.NextResult();
+		}
+
 		protected DbProviderMethods()
 		{
 		}
