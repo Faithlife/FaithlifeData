@@ -316,6 +316,41 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void DynamicTests()
+		{
+			using (var connection = GetOpenConnection())
+			using (var command = connection.CreateCommand())
+			{
+				command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
+				using (var reader = command.ExecuteReader())
+				{
+					// get non-nulls
+					reader.Read().Should().BeTrue();
+
+					// dynamic
+					((string) DataRecordUtility.GetValue<dynamic>(reader, 0, 7).TheString).Should().Be(s_record.TheString);
+					((bool) ((dynamic) DataRecordUtility.GetValue<object>(reader, 0, 7)).TheBool).Should().Be(s_record.TheBool);
+
+					// tuple with dynamic
+					var tuple = DataRecordUtility.GetValue<(string, dynamic, bool)>(reader, 0, 4);
+					tuple.Item1.Should().Be(s_record.TheString);
+					((long) tuple.Item2.TheInt64).Should().Be(s_record.TheInt64);
+					tuple.Item3.Should().BeTrue();
+
+					// tuple with two dynamics (needs NULL terminator)
+					Invoking(() => DataRecordUtility.GetValue<(dynamic, dynamic)>(reader, 0, 3)).Should().Throw<InvalidOperationException>();
+
+					// get nulls
+					reader.Read().Should().BeTrue();
+
+					// all nulls returns null dynamic
+					((object) DataRecordUtility.GetValue<dynamic>(reader, 0, 7)).Should().BeNull();
+					DataRecordUtility.GetValue<object>(reader, 0, 7).Should().BeNull();
+				}
+			}
+		}
+
+		[Test]
 		public void GetExtension()
 		{
 			using (var connection = GetOpenConnection())

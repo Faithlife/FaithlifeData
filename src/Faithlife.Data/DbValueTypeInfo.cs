@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using Faithlife.Reflection;
@@ -53,6 +54,7 @@ namespace Faithlife.Data
 			[typeof(DateTimeOffset)] = DbValueTypeStrategy.CastValue,
 			[typeof(TimeSpan)] = DbValueTypeStrategy.CastValue,
 			[typeof(byte[])] = DbValueTypeStrategy.ByteArray,
+			[typeof(object)] = DbValueTypeStrategy.Dynamic,
 		};
 	}
 
@@ -83,6 +85,21 @@ namespace Faithlife.Data
 					}
 				}
 				return notNull ? dto : default;
+			}
+			else if (m_strategy == DbValueTypeStrategy.Dynamic)
+			{
+				IDictionary<string, object> obj = new ExpandoObject();
+				bool notNull = false;
+				for (int i = index; i < index + count; i++)
+				{
+					string name = record.GetName(i);
+					if (!record.IsDBNull(i))
+					{
+						obj[name] = record.GetValue(i);
+						notNull = true;
+					}
+				}
+				return notNull ? (T) obj : default;
 			}
 			else if (m_strategy == DbValueTypeStrategy.ByteArray)
 			{
@@ -209,7 +226,7 @@ namespace Faithlife.Data
 				m_tupleTypeInfos = m_tupleInfo.ItemTypes.Select(DbValueTypeInfo.GetInfo).ToList();
 				FieldCount = m_tupleTypeInfos.Aggregate((int?) 0, (x, y) => x + y.FieldCount);
 			}
-			else
+			else if (m_strategy != DbValueTypeStrategy.Dynamic)
 			{
 				FieldCount = 1;
 			}

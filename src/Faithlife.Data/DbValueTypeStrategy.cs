@@ -7,5 +7,6 @@ namespace Faithlife.Data
 		ByteArray,
 		Tuple,
 		Enum,
+		Dynamic,
 	}
 }
