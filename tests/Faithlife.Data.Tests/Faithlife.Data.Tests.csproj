@@ -10,6 +10,11 @@
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MONO_ROOT)' != ''">
+    <FrameworkPathOverride>$(MONO_ROOT)/lib/mono/4.7.2-api/</FrameworkPathOverride>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Faithlife.System.Data.SQLite" Version="2.13.1" />
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
