@@ -89,7 +89,7 @@ namespace Faithlife.Data
 		public DbConnectorResultSet QueryMultiple()
 		{
 			var command = Create();
-			var reader = command.ExecuteReader(CommandBehavior.SequentialAccess);
+			var reader = command.ExecuteReader();
 			return new DbConnectorResultSet(command, reader);
 		}
 
@@ -147,7 +147,7 @@ namespace Faithlife.Data
 		{
 			var list = new List<T>();
 			using (var command = Create())
-			using (var reader = command.ExecuteReader(CommandBehavior.SequentialAccess))
+			using (var reader = command.ExecuteReader())
 			{
 				do
 				{
@@ -160,7 +160,7 @@ namespace Faithlife.Data
 
 		private T DoQueryFirst<T>(Func<IDataRecord, T> read, bool single, bool orDefault)
 		{
-			var commandBehavior = single ? CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SequentialAccess | CommandBehavior.SingleResult;
+			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
 
 			using (var command = Create())
 			using (var reader = command.ExecuteReader(commandBehavior))
@@ -184,7 +184,7 @@ namespace Faithlife.Data
 		{
 			var list = new List<T>();
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false))
 			{
 				do
 				{
@@ -197,7 +197,7 @@ namespace Faithlife.Data
 
 		private async Task<T> DoQueryFirstAsync<T>(Func<IDataRecord, T> read, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
-			var commandBehavior = single ? CommandBehavior.SequentialAccess | CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SequentialAccess | CommandBehavior.SingleResult;
+			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
 
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
 			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
