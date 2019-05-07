@@ -8,6 +8,11 @@ Prefix the description of the change with `[major]`, `[minor]`, or `[patch]` in 
 
 ## Released
 
+### 0.10.0
+
+* Stop using CommandBehavior.SequentialAccess.
+* Advance version past internal version.
+
 ### 0.1.0
 
 * Initial release.
