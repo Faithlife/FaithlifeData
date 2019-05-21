@@ -3,7 +3,7 @@
 Adds parameters.
 
 ```csharp
-public DbParameters Add(ValueTuple<string, object>[] parameters)
+public DbParameters Add(params ValueTuple<string, object>[] parameters)
 ```
 
 ## See Also

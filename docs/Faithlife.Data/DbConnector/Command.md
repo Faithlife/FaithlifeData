@@ -45,7 +45,7 @@ public DbConnectorCommand Command(string text, DbParameters parameters)
 Starts a new command.
 
 ```csharp
-public DbConnectorCommand Command(string text, ValueTuple<string, object>[] parameters)
+public DbConnectorCommand Command(string text, params ValueTuple<string, object>[] parameters)
 ```
 
 | parameter | description |
