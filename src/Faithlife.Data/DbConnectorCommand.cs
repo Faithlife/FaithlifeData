@@ -165,8 +165,11 @@ namespace Faithlife.Data
 			using (var command = Create())
 			using (var reader = command.ExecuteReader(commandBehavior))
 			{
-				if (!reader.Read())
-					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+				while (!reader.Read())
+				{
+					if (!reader.NextResult())
+						return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+				}
 
 				var value = read != null ? read(reader) : reader.Get<T>();
 
@@ -202,8 +205,11 @@ namespace Faithlife.Data
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
 			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
 			{
-				if (!(await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false)))
-					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+				while (!(await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false)))
+				{
+					if (!(await m_connector.ProviderMethods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false)))
+						return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+				}
 
 				var value = read != null ? read(reader) : reader.Get<T>();
 

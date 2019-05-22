@@ -43,6 +43,10 @@ namespace Faithlife.Data.Tests
 				Invoking(() => connector.Command("select Name from Items where Name = 'nope';").QueryFirst<string>()).Should().Throw<InvalidOperationException>();
 				Invoking(() => connector.Command("select Name from Items;").QuerySingle<string>()).Should().Throw<InvalidOperationException>();
 				connector.Command("select Name from Items where Name = 'nope';").QueryFirstOrDefault<string>().Should().BeNull();
+				connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QueryFirstOrDefault<long>().Should().NotBe(0);
+				connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QueryFirst<long>().Should().NotBe(0);
+				connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QuerySingleOrDefault<long>().Should().NotBe(0);
+				connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QuerySingle<long>().Should().NotBe(0);
 			}
 		}
 
@@ -67,6 +71,10 @@ namespace Faithlife.Data.Tests
 				await Invoking(async () => await connector.Command("select Name from Items where Name = 'nope';").QueryFirstAsync<string>()).Should().ThrowAsync<InvalidOperationException>();
 				await Invoking(async () => await connector.Command("select Name from Items;").QuerySingleAsync<string>()).Should().ThrowAsync<InvalidOperationException>();
 				(await connector.Command("select Name from Items where Name = 'nope';").QueryFirstOrDefaultAsync<string>()).Should().BeNull();
+				(await connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QueryFirstOrDefaultAsync<long>()).Should().NotBe(0);
+				(await connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QueryFirstAsync<long>()).Should().NotBe(0);
+				(await connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QuerySingleOrDefaultAsync<long>()).Should().NotBe(0);
+				(await connector.Command("insert into Items (Name) values ('item1'); select last_insert_rowid();").QuerySingleAsync<long>()).Should().NotBe(0);
 			}
 		}
 
