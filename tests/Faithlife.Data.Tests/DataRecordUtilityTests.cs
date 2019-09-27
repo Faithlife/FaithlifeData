@@ -33,6 +33,28 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void StringsByType()
+		{
+			using (var connection = GetOpenConnection())
+			using (var command = connection.CreateCommand())
+			{
+				command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
+				using (var reader = command.ExecuteReader())
+				{
+					// get non-nulls
+					reader.Read().Should().BeTrue();
+
+					DataRecordUtility.GetValue(typeof(string), reader, 0, 1).Should().Be(s_record.TheString);
+
+					// get nulls
+					reader.Read().Should().BeTrue();
+
+					DataRecordUtility.GetValue(typeof(string), reader, 0, 1).Should().BeNull();
+				}
+			}
+		}
+
+		[Test]
 		public void NonNullableScalars()
 		{
 			using (var connection = GetOpenConnection())
