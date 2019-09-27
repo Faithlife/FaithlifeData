@@ -88,7 +88,21 @@ namespace Faithlife.Data.Tests
 				connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 					("item1", "one"), ("item2", "two")).Execute().Should().Be(2);
 				connector.Command("select Name from Items where Name like @like;",
-					new DbParameters().Add("like", "t%")).QueryFirst<string>().Should().Be("two");
+					DbParameters.Empty.Add("like", "t%")).QueryFirst<string>().Should().Be("two");
+			}
+		}
+
+		[Test]
+		public async Task ParametersAsyncTests()
+		{
+			using (var connector = CreateConnector())
+			using (await connector.OpenConnectionAsync())
+			{
+				(await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
+				(await connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
+					("item1", "one"), ("item2", "two")).ExecuteAsync()).Should().Be(2);
+				(await connector.Command("select Name from Items where Name like @like;",
+					DbParameters.Empty.Add("like", "t%")).QueryFirstAsync<string>()).Should().Be("two");
 			}
 		}
 
