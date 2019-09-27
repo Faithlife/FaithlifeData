@@ -103,21 +103,18 @@ namespace Faithlife.Data
 			if (transaction != null)
 				command.Transaction = transaction;
 
-			if (m_parameters != null)
+			foreach (var (name, value) in m_parameters)
 			{
-				foreach (var (name, value) in m_parameters)
+				if (!(value is IDbDataParameter dbParameter))
 				{
-					if (!(value is IDbDataParameter dbParameter))
-					{
-						dbParameter = command.CreateParameter();
-						dbParameter.Value = value ?? DBNull.Value;
-					}
-
-					if (name != null)
-						dbParameter.ParameterName = name;
-
-					command.Parameters.Add(dbParameter);
+					dbParameter = command.CreateParameter();
+					dbParameter.Value = value ?? DBNull.Value;
 				}
+
+				if (name != null)
+					dbParameter.ParameterName = name;
+
+				command.Parameters.Add(dbParameter);
 			}
 
 			return command;

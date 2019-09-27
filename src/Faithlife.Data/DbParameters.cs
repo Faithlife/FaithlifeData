@@ -6,83 +6,77 @@ using Faithlife.Reflection;
 
 namespace Faithlife.Data
 {
-	public sealed class DbParameters : IReadOnlyList<(string Name, object Value)>
+	/// <summary>
+	/// An immutable list of parameters.
+	/// </summary>
+	public struct DbParameters : IReadOnlyList<(string Name, object Value)>
 	{
 		/// <summary>
-		/// Creates an empty list of parameters.
+		/// An empty list of parameters.
 		/// </summary>
-		public DbParameters() =>
-			m_parameters = new List<(string Name, object Value)>();
+		public static readonly DbParameters Empty = new DbParameters();
 
 		/// <summary>
 		/// Creates a list of parameters.
 		/// </summary>
-		public DbParameters(IEnumerable<(string Name, object Value)> parameters) =>
-			m_parameters = (parameters ?? throw new ArgumentNullException(nameof(parameters))).ToList();
+		public static DbParameters Create(params (string Name, object Value)[] parameters) => new DbParameters(parameters);
 
 		/// <summary>
 		/// Creates a list of parameters.
 		/// </summary>
-		public static DbParameters Create(params (string Name, object Value)[] parameters) =>
-			new DbParameters(parameters);
+		public static DbParameters Create(IEnumerable<(string Name, object Value)> parameters) => new DbParameters(parameters);
 
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
 		/// </summary>
-		public static DbParameters FromDto(object dto) =>
-			new DbParameters().AddDto(dto);
+		public static DbParameters FromDto(object dto) => new DbParameters(DtoInfo.GetInfo(dto.GetType()).Properties.Select(x => (x.Name, x.GetValue(dto))));
 
 		/// <summary>
 		/// The number of parameters.
 		/// </summary>
-		public int Count => m_parameters.Count;
+		public int Count => Parameters.Count;
 
 		/// <summary>
 		/// The parameter at the specified index.
 		/// </summary>
-		public (string Name, object Value) this[int index] => m_parameters[index];
+		public (string Name, object Value) this[int index] => Parameters[index];
 
 		/// <summary>
 		/// Adds a parameter.
 		/// </summary>
-		public DbParameters Add(string name, object value)
-		{
-			m_parameters.Add((name, value));
-			return this;
-		}
+		public DbParameters Add(string name, object value) => new DbParameters(Parameters.Append((name, value)));
 
 		/// <summary>
 		/// Adds parameters.
 		/// </summary>
-		public DbParameters Add(params (string Name, object Value)[] parameters)
-		{
-			m_parameters.AddRange(parameters ?? throw new ArgumentNullException(nameof(parameters)));
-			return this;
-		}
+		public DbParameters Add(params (string Name, object Value)[] parameters) => new DbParameters(Parameters.Concat(parameters));
+
+		/// <summary>
+		/// Adds parameters.
+		/// </summary>
+		public DbParameters Add(IEnumerable<(string Name, object Value)> parameters) => new DbParameters(Parameters.Concat(parameters));
 
 		/// <summary>
 		/// Adds the properties of a DTO as parameters.
 		/// </summary>
-		public DbParameters AddDto(object dto)
-		{
-			if (dto != null)
-			{
-				foreach (var property in DtoInfo.GetInfo(dto.GetType()).Properties)
-					Add(property.Name, property.GetValue(dto));
-			}
-			return this;
-		}
+		/// <remarks>Adds no parameters if <paramref name="dto"/> is <c>null</c>.</remarks>
+		public DbParameters AddDto(object dto) => Add(FromDto(dto).Parameters);
 
 		/// <summary>
 		/// Used to enumerate the parameters.
 		/// </summary>
-		public IEnumerator<(string Name, object Value)> GetEnumerator() => m_parameters.GetEnumerator();
+		public IEnumerator<(string Name, object Value)> GetEnumerator() => Parameters.GetEnumerator();
 
 		/// <summary>
 		/// Used to enumerate the parameters.
 		/// </summary>
-		IEnumerator IEnumerable.GetEnumerator() => m_parameters.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => Parameters.GetEnumerator();
 
-		private readonly List<(string Name, object Value)> m_parameters;
+		private DbParameters(IEnumerable<(string Name, object Value)> parameters) =>
+			m_parameters = (parameters ?? throw new ArgumentNullException(nameof(parameters))).ToList();
+
+		private IReadOnlyList<(string Name, object Value)> Parameters => m_parameters ?? Array.Empty<(string Name, object Value)>();
+
+		private readonly IReadOnlyList<(string Name, object Value)> m_parameters;
 	}
 }

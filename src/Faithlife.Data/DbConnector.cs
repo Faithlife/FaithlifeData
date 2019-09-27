@@ -110,7 +110,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		public DbConnectorCommand Command(string text) =>
-			new DbConnectorCommand(this, text, null);
+			new DbConnectorCommand(this, text, default);
 
 		/// <summary>
 		/// Creates a new command.

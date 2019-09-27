@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using static Faithlife.Data.Tests.FluentAction;
@@ -9,18 +10,11 @@ namespace Faithlife.Data.Tests
 	public class DbParametersTests
 	{
 		[Test]
-		public void DefaultConstructor()
+		public void Empty()
 		{
 			new DbParameters().Should().BeEmpty();
-		}
-
-		[Test]
-		public void ConstructFromPairs()
-		{
-			var parameters = new DbParameters(new (string, object)[] { ("one", 1), ("two", 2L) });
-			parameters.Count.Should().Be(2);
-			parameters[0].Should().Be(("one", 1));
-			parameters[1].Should().Be(("two", 2L));
+			default(DbParameters).Should().BeEmpty();
+			DbParameters.Empty.Should().BeEmpty();
 		}
 
 		[Test]
@@ -29,27 +23,44 @@ namespace Faithlife.Data.Tests
 			DbParameters.Create().Should().BeEmpty();
 			DbParameters.Create(("one", 1)).Should().Equal(("one", 1));
 			DbParameters.Create(("one", 1), ("two", 2L)).Should().Equal(("one", 1), ("two", 2L));
+			DbParameters.Create(new List<(string, object)> { ("one", 1), ("two", 2L) }).Should().Equal(("one", 1), ("two", 2L));
+		}
+
+		[Test]
+		public void CreateFromDto()
+		{
+			DbParameters.FromDto(new { one = 1 }).AddDto(new HasTwo()).Should().Equal(("one", 1), ("Two", 2));
 		}
 
 		[Test]
 		public void Add()
 		{
-			new DbParameters().Add("one", 1).Add(("two", 2L)).Add().Add(("three", 3.0f), ("four", 4.0)).Should().HaveCount(4);
+			new DbParameters().Add("one", 1).Add(("two", 2L)).Add().Add(("three", 3.0f), ("four", 4.0)).Add(new List<(string, object)> { ("five", 5) }).Should().HaveCount(5);
 		}
 
 		[Test]
-		public void InitializationSyntax()
+		public void Count()
 		{
-			new DbParameters { ("one", 1), ("two", 2L) }.Should().HaveCount(2);
-			new DbParameters { { "one", 1 }, { "two", 2L } }.Should().HaveCount(2);
+			DbParameters.Empty.Count.Should().Be(0);
+			DbParameters.Create(("one", 1)).Count.Should().Be(1);
+		}
+
+		[Test]
+		public void Index()
+		{
+			DbParameters.Create(("one", 1))[0].Name.Should().Be("one");
 		}
 
 		[Test]
 		public void Nulls()
 		{
-			Invoking(() => new DbParameters(null)).Should().Throw<ArgumentNullException>();
 			Invoking(() => DbParameters.Create(null)).Should().Throw<ArgumentNullException>();
 			Invoking(() => new DbParameters().Add(null)).Should().Throw<ArgumentNullException>();
+		}
+
+		private sealed class HasTwo
+		{
+			public int Two { get; } = 2;
 		}
 	}
 }
