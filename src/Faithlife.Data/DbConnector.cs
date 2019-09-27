@@ -45,34 +45,34 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Opens the connection.
 		/// </summary>
-		/// <returns>An <see cref="!:IDisposable" /> that should be disposed when the connection should be closed.</returns>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
 		public abstract IDisposable OpenConnection();
 
 		/// <summary>
 		/// Opens the connection.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An <see cref="!:IDisposable" /> that should be disposed when the connection should be closed.</returns>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
 		public abstract Task<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
-		/// <returns>An <see cref="!:IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
 		public abstract IDisposable BeginTransaction();
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
 		/// <param name="isolationLevel">The isolation level.</param>
-		/// <returns>An <see cref="!:IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
 		public abstract IDisposable BeginTransaction(IsolationLevel isolationLevel);
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An <see cref="!:IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
 		public abstract Task<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An <see cref="!:IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
 		public abstract Task<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -106,14 +106,14 @@ namespace Faithlife.Data
 		public abstract Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
-		/// Starts a new command.
+		/// Creates a new command.
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		public DbConnectorCommand Command(string text) =>
 			new DbConnectorCommand(this, text, null);
 
 		/// <summary>
-		/// Starts a new command.
+		/// Creates a new command.
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		/// <param name="parameters">The command parameters.</param>
@@ -121,7 +121,7 @@ namespace Faithlife.Data
 			new DbConnectorCommand(this, text, parameters);
 
 		/// <summary>
-		/// Starts a new command.
+		/// Creates a new command.
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		/// <param name="parameters">The command parameters.</param>
