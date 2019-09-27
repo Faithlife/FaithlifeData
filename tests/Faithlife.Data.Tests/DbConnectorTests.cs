@@ -195,6 +195,12 @@ namespace Faithlife.Data.Tests
 			}
 		}
 
+		[Test]
+		public async Task BadCommandTest()
+		{
+			Invoking(() => default(DbConnectorCommand).Create()).Should().Throw<InvalidOperationException>();
+		}
+
 		private DbConnector CreateConnector() => DbConnector.Create(
 			new SQLiteConnection("Data Source=:memory:"),
 			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });

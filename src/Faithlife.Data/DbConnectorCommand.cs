@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Faithlife.Data
 {
-	public class DbConnectorCommand
+	public struct DbConnectorCommand
 	{
 		public int Execute()
 		{
@@ -95,6 +95,8 @@ namespace Faithlife.Data
 
 		public IDbCommand Create()
 		{
+			Validate();
+
 			var connection = m_connector.Connection;
 			var command = connection.CreateCommand();
 			command.CommandText = m_text;
@@ -122,6 +124,8 @@ namespace Faithlife.Data
 
 		public async Task<IDbCommand> CreateAsync(CancellationToken cancellationToken = default)
 		{
+			Validate();
+
 			var connection = await m_connector.GetConnectionAsync(cancellationToken).ConfigureAwait(false);
 			var command = connection.CreateCommand();
 			command.CommandText = m_text;
@@ -231,6 +235,12 @@ namespace Faithlife.Data
 						yield return read != null ? read(reader) : reader.Get<T>();
 				} while (reader.NextResult());
 			}
+		}
+
+		private void Validate()
+		{
+			if (m_connector == null)
+				throw new InvalidOperationException("Use DbConnector.Command() to create commands.");
 		}
 
 		private readonly DbConnector m_connector;
