@@ -3,14 +3,23 @@ using System.Data;
 
 namespace Faithlife.Data
 {
+	/// <summary>
+	/// Utility methods for <see cref="IDataRecord" />.
+	/// </summary>
 	public static class DataRecordUtility
 	{
+		/// <summary>
+		/// Converts the specified record fields to the specified type.
+		/// </summary>
 		public static T GetValue<T>(IDataRecord record, int start, int length)
 		{
 			CheckGetValueArgs(record, start, length);
 			return DbValueTypeInfo.GetInfo<T>().GetValue(record, start, length);
 		}
 
+		/// <summary>
+		/// Converts the specified record fields to the specified type.
+		/// </summary>
 		public static object GetValue(Type type, IDataRecord record, int start, int length)
 		{
 			CheckGetValueArgs(record, start, length);
