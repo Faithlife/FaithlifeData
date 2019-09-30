@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
-using static Faithlife.Data.Tests.FluentAction;
+using static FluentAssertions.FluentActions;
 
 namespace Faithlife.Data.Tests
 {

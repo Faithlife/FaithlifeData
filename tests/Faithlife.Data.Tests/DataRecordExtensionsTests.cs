@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using FluentAssertions;
 using NUnit.Framework;
-using static Faithlife.Data.Tests.FluentAction;
+using static FluentAssertions.FluentActions;
 
 namespace Faithlife.Data.Tests
 {
