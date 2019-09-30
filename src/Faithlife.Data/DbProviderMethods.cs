@@ -29,26 +29,60 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Begins a transaction asynchronously.
 		/// </summary>
-		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken) =>
-			connection.BeginTransaction();
+		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken)
+		{
+#if NETSTANDARD2_1
+			if (connection is DbConnection dbConnection)
+				return await dbConnection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+#endif
+
+			return connection.BeginTransaction();
+		}
 
 		/// <summary>
 		/// Begins a transaction asynchronously.
 		/// </summary>
-		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, IsolationLevel isolationLevel, CancellationToken cancellationToken) =>
-			connection.BeginTransaction(isolationLevel);
+		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, IsolationLevel isolationLevel, CancellationToken cancellationToken)
+		{
+#if NETSTANDARD2_1
+			if (connection is DbConnection dbConnection)
+				return await dbConnection.BeginTransactionAsync(isolationLevel, cancellationToken).ConfigureAwait(false);
+#endif
+
+			return connection.BeginTransaction(isolationLevel);
+		}
 
 		/// <summary>
 		/// Commits a transaction asynchronously.
 		/// </summary>
-		public virtual async Task CommitTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken) =>
+		public virtual async Task CommitTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
+		{
+#if NETSTANDARD2_1
+			if (transaction is DbTransaction dbTransaction)
+			{
+				await dbTransaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+				return;
+			}
+#endif
+
 			transaction.Commit();
+		}
 
 		/// <summary>
 		/// Rolls back a transaction asynchronously.
 		/// </summary>
-		public virtual async Task RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken) =>
+		public virtual async Task RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
+		{
+#if NETSTANDARD2_1
+			if (transaction is DbTransaction dbTransaction)
+			{
+				await dbTransaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+				return;
+			}
+#endif
+
 			transaction.Rollback();
+		}
 
 		/// <summary>
 		/// Executes a non-query command asynchronously.
