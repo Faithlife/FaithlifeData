@@ -49,7 +49,7 @@ namespace Faithlife.Data
 		/// Executes the query, reading every record and converting it to the specified type with the specified delegate.
 		/// </summary>
 		public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read);
+			DoQuery(read ?? throw new ArgumentNullException(nameof(read)));
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
@@ -63,7 +63,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
 		public T QueryFirst<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read, single: false, orDefault: false);
+			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
@@ -77,7 +77,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read, single: false, orDefault: true);
+			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
@@ -91,7 +91,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
 		public T QuerySingle<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read, single: true, orDefault: false);
+			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
@@ -107,7 +107,7 @@ namespace Faithlife.Data
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
 		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read, single: true, orDefault: true);
+			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true);
 
 		/// <summary>
 		/// Executes the query, converting each record to the specified type using <see cref="DataRecordUtility" />.
@@ -119,49 +119,49 @@ namespace Faithlife.Data
 		/// Executes the query, converting each record to the specified type with the specified delegate.
 		/// </summary>
 		public async Task<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			await DoQueryAsync(read, cancellationToken).ConfigureAwait(false);
+			await DoQueryAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
 		public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync<T>(null, single: false, orDefault: false, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync<T>(null, single: false, orDefault: false, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
 		public async Task<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync(read, single: false, orDefault: false, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		public async Task<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync<T>(null, single: false, orDefault: true, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync<T>(null, single: false, orDefault: true, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		public async Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync(read, single: false, orDefault: true, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
 		public async Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync<T>(null, single: true, orDefault: false, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync<T>(null, single: true, orDefault: false, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
 		public async Task<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync(read, single: true, orDefault: false, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
@@ -169,7 +169,7 @@ namespace Faithlife.Data
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
 		public async Task<T> QuerySingleOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync<T>(null, single: true, orDefault: true, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync<T>(null, single: true, orDefault: true, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
@@ -177,28 +177,37 @@ namespace Faithlife.Data
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
 		public async Task<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			(await DoQueryFirstAsync(read, single: true, orDefault: true, cancellationToken).ConfigureAwait(false));
+			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type using <see cref="DataRecordUtility" />.
 		/// </summary>
 		public IEnumerable<T> Enumerate<T>() =>
-			DoEnumerate<T>(null, null);
+			DoEnumerate<T>(null);
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
 		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
-			DoEnumerate(read, null);
+			DoEnumerate(read ?? throw new ArgumentNullException(nameof(read)));
 
 		/// <summary>
 		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
-		public DbConnectorResultSet QueryMultiple()
+		public DbConnectorResultSets QueryMultiple()
 		{
 			var command = Create();
-			var reader = command.ExecuteReader();
-			return new DbConnectorResultSet(command, reader);
+			return new DbConnectorResultSets(command, command.ExecuteReader(), m_connector.ProviderMethods);
+		}
+
+		/// <summary>
+		/// Executes the query, preparing to read multiple result sets.
+		/// </summary>
+		public async Task<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
+		{
+			var methods = m_connector.ProviderMethods;
+			var command = Create();
+			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false), methods);
 		}
 
 		/// <summary>
@@ -302,48 +311,50 @@ namespace Faithlife.Data
 
 		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken)
 		{
+			var methods = m_connector.ProviderMethods;
 			var list = new List<T>();
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false))
+			using (var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false))
 			{
 				do
 				{
-					while (await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+					while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 						list.Add(read != null ? read(reader) : reader.Get<T>());
-				} while (await m_connector.ProviderMethods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+				} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 			}
 			return list;
 		}
 
 		private async Task<T> DoQueryFirstAsync<T>(Func<IDataRecord, T> read, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
+			var methods = m_connector.ProviderMethods;
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
 
 			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await m_connector.ProviderMethods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
+			using (var reader = await methods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
 			{
-				while (!(await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false)))
+				while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 				{
-					if (!(await m_connector.ProviderMethods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false)))
+					if (!await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
 						return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 				}
 
 				var value = read != null ? read(reader) : reader.Get<T>();
 
-				if (single && await m_connector.ProviderMethods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+				if (single && await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 					throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
 
-				if (single && await m_connector.ProviderMethods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
+				if (single && await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
 					throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
 
 				return value;
 			}
 		}
 
-		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T> read, CommandBehavior? commandBehavior)
+		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T> read)
 		{
 			using (var command = Create())
-			using (var reader = commandBehavior == null ? command.ExecuteReader() : command.ExecuteReader(commandBehavior.Value))
+			using (var reader = command.ExecuteReader())
 			{
 				do
 				{

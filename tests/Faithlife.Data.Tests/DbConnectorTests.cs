@@ -210,6 +210,28 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public async Task QueryMultipleAsyncTests()
+		{
+			using (var connector = CreateConnector())
+			using (await connector.OpenConnectionAsync())
+			{
+				await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
+				await connector.Command("insert into Items (Name) values ('item1'), ('item2');").ExecuteAsync();
+
+				using (var resultSet = await connector.Command(@"
+					select ItemId from Items where Name = 'item1';
+					select ItemId from Items where Name = 'item2';
+					").QueryMultipleAsync())
+				{
+					long id1 = (await resultSet.ReadAsync<long>()).Single();
+					long id2 = (await resultSet.ReadAsync<long>()).Single();
+					id1.Should().BeLessThan(id2);
+					Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
+				}
+			}
+		}
+
+		[Test]
 		public async Task BadCommandTest()
 		{
 			Invoking(() => default(DbConnectorCommand).Create()).Should().Throw<InvalidOperationException>();

@@ -45,6 +45,7 @@ namespace Faithlife.Data
 		{
 			if (record == null)
 				throw new ArgumentNullException(nameof(record));
+
 			int fromIndex = record.GetOrdinal(fromName);
 			int toIndex = record.GetOrdinal(toName);
 			return DataRecordUtility.GetValue<T>(record, fromIndex, toIndex - fromIndex + 1);

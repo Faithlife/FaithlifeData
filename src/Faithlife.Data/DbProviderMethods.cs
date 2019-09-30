@@ -5,10 +5,19 @@ using System.Threading.Tasks;
 
 namespace Faithlife.Data
 {
+	/// <summary>
+	/// Provides provider-specific database access methods.
+	/// </summary>
 	public class DbProviderMethods
 	{
+		/// <summary>
+		/// The default database access methods.
+		/// </summary>
 		public static readonly DbProviderMethods Default = new DbProviderMethods();
 
+		/// <summary>
+		/// Opens the connection asynchronously.
+		/// </summary>
 		public virtual async Task OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken)
 		{
 			if (connection is DbConnection dbConnection)
@@ -17,26 +26,33 @@ namespace Faithlife.Data
 				connection.Open();
 		}
 
-		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken)
-		{
-			return connection.BeginTransaction();
-		}
+		/// <summary>
+		/// Begins a transaction asynchronously.
+		/// </summary>
+		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken) =>
+			connection.BeginTransaction();
 
-		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, IsolationLevel isolationLevel, CancellationToken cancellationToken)
-		{
-			return connection.BeginTransaction(isolationLevel);
-		}
+		/// <summary>
+		/// Begins a transaction asynchronously.
+		/// </summary>
+		public virtual async Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, IsolationLevel isolationLevel, CancellationToken cancellationToken) =>
+			connection.BeginTransaction(isolationLevel);
 
-		public virtual async Task CommitTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
-		{
+		/// <summary>
+		/// Commits a transaction asynchronously.
+		/// </summary>
+		public virtual async Task CommitTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken) =>
 			transaction.Commit();
-		}
 
-		public virtual async Task RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
-		{
+		/// <summary>
+		/// Rolls back a transaction asynchronously.
+		/// </summary>
+		public virtual async Task RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken) =>
 			transaction.Rollback();
-		}
 
+		/// <summary>
+		/// Executes a non-query command asynchronously.
+		/// </summary>
 		public virtual async Task<int> ExecuteNonQueryAsync(IDbCommand command, CancellationToken cancellationToken)
 		{
 			if (command is DbCommand dbCommand)
@@ -45,6 +61,9 @@ namespace Faithlife.Data
 				return command.ExecuteNonQuery();
 		}
 
+		/// <summary>
+		/// Executes a command query asynchronously.
+		/// </summary>
 		public virtual async Task<IDataReader> ExecuteReaderAsync(IDbCommand command, CancellationToken cancellationToken)
 		{
 			if (command is DbCommand dbCommand)
@@ -53,6 +72,9 @@ namespace Faithlife.Data
 				return command.ExecuteReader();
 		}
 
+		/// <summary>
+		/// Executes a command query asynchronously.
+		/// </summary>
 		public virtual async Task<IDataReader> ExecuteReaderAsync(IDbCommand command, CommandBehavior commandBehavior, CancellationToken cancellationToken)
 		{
 			if (command is DbCommand dbCommand)
@@ -61,6 +83,9 @@ namespace Faithlife.Data
 				return command.ExecuteReader(commandBehavior);
 		}
 
+		/// <summary>
+		/// Reads the next record asynchronously.
+		/// </summary>
 		public virtual async Task<bool> ReadAsync(IDataReader reader, CancellationToken cancellationToken)
 		{
 			if (reader is DbDataReader dbReader)
@@ -69,6 +94,9 @@ namespace Faithlife.Data
 				return reader.Read();
 		}
 
+		/// <summary>
+		/// Reads the next result asynchronously.
+		/// </summary>
 		public virtual async Task<bool> NextResultAsync(IDataReader reader, CancellationToken cancellationToken)
 		{
 			if (reader is DbDataReader dbReader)
@@ -77,6 +105,9 @@ namespace Faithlife.Data
 				return reader.NextResult();
 		}
 
+		/// <summary>
+		/// Creates an instance.
+		/// </summary>
 		protected DbProviderMethods()
 		{
 		}
