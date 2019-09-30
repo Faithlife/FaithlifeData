@@ -8,7 +8,7 @@ using static Faithlife.Data.Tests.FluentAction;
 namespace Faithlife.Data.Tests
 {
 	[TestFixture]
-	public class DataRecordUtilityTests
+	public class DataRecordExtensionsTests
 	{
 		[Test]
 		public void Strings()
@@ -22,34 +22,12 @@ namespace Faithlife.Data.Tests
 					// get non-nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<string>(reader, 0, 1).Should().Be(s_record.TheString);
+					reader.Get<string>(0, 1).Should().Be(s_record.TheString);
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<string>(reader, 0, 1).Should().BeNull();
-				}
-			}
-		}
-
-		[Test]
-		public void StringsByType()
-		{
-			using (var connection = GetOpenConnection())
-			using (var command = connection.CreateCommand())
-			{
-				command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
-				using (var reader = command.ExecuteReader())
-				{
-					// get non-nulls
-					reader.Read().Should().BeTrue();
-
-					DataRecordUtility.GetValue(typeof(string), reader, 0, 1).Should().Be(s_record.TheString);
-
-					// get nulls
-					reader.Read().Should().BeTrue();
-
-					DataRecordUtility.GetValue(typeof(string), reader, 0, 1).Should().BeNull();
+					reader.Get<string>(0, 1).Should().BeNull();
 				}
 			}
 		}
@@ -66,20 +44,20 @@ namespace Faithlife.Data.Tests
 					// get non-nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<int>(reader, 1, 1).Should().Be(s_record.TheInt32);
-					DataRecordUtility.GetValue<long>(reader, 2, 1).Should().Be(s_record.TheInt64);
-					DataRecordUtility.GetValue<bool>(reader, 3, 1).Should().Be(s_record.TheBool);
-					DataRecordUtility.GetValue<float>(reader, 4, 1).Should().Be(s_record.TheSingle);
-					DataRecordUtility.GetValue<double>(reader, 5, 1).Should().Be(s_record.TheDouble);
+					reader.Get<int>(1, 1).Should().Be(s_record.TheInt32);
+					reader.Get<long>(2, 1).Should().Be(s_record.TheInt64);
+					reader.Get<bool>(3, 1).Should().Be(s_record.TheBool);
+					reader.Get<float>(4, 1).Should().Be(s_record.TheSingle);
+					reader.Get<double>(5, 1).Should().Be(s_record.TheDouble);
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
-					Invoking(() => DataRecordUtility.GetValue<int>(reader, 1, 1)).Should().Throw<InvalidOperationException>();
-					Invoking(() => DataRecordUtility.GetValue<long>(reader, 2, 1)).Should().Throw<InvalidOperationException>();
-					Invoking(() => DataRecordUtility.GetValue<bool>(reader, 3, 1)).Should().Throw<InvalidOperationException>();
-					Invoking(() => DataRecordUtility.GetValue<float>(reader, 4, 1)).Should().Throw<InvalidOperationException>();
-					Invoking(() => DataRecordUtility.GetValue<double>(reader, 5, 1)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<int>(1, 1)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<long>(2, 1)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<bool>(3, 1)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<float>(4, 1)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<double>(5, 1)).Should().Throw<InvalidOperationException>();
 				}
 			}
 		}
@@ -96,20 +74,20 @@ namespace Faithlife.Data.Tests
 					// get non-nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<int?>(reader, 1, 1).Should().Be(s_record.TheInt32);
-					DataRecordUtility.GetValue<long?>(reader, 2, 1).Should().Be(s_record.TheInt64);
-					DataRecordUtility.GetValue<bool?>(reader, 3, 1).Should().Be(s_record.TheBool);
-					DataRecordUtility.GetValue<float?>(reader, 4, 1).Should().Be(s_record.TheSingle);
-					DataRecordUtility.GetValue<double?>(reader, 5, 1).Should().Be(s_record.TheDouble);
+					reader.Get<int?>(1, 1).Should().Be(s_record.TheInt32);
+					reader.Get<long?>(2, 1).Should().Be(s_record.TheInt64);
+					reader.Get<bool?>(3, 1).Should().Be(s_record.TheBool);
+					reader.Get<float?>(4, 1).Should().Be(s_record.TheSingle);
+					reader.Get<double?>(5, 1).Should().Be(s_record.TheDouble);
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<int?>(reader, 1, 1).Should().BeNull();
-					DataRecordUtility.GetValue<long?>(reader, 2, 1).Should().BeNull();
-					DataRecordUtility.GetValue<bool?>(reader, 3, 1).Should().BeNull();
-					DataRecordUtility.GetValue<float?>(reader, 4, 1).Should().BeNull();
-					DataRecordUtility.GetValue<double?>(reader, 5, 1).Should().BeNull();
+					reader.Get<int?>(1, 1).Should().BeNull();
+					reader.Get<long?>(2, 1).Should().BeNull();
+					reader.Get<bool?>(3, 1).Should().BeNull();
+					reader.Get<float?>(4, 1).Should().BeNull();
+					reader.Get<double?>(5, 1).Should().BeNull();
 				}
 			}
 		}
@@ -126,18 +104,18 @@ namespace Faithlife.Data.Tests
 					// get non-nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<Answer>(reader, 1, 1).Should().Be(Answer.FortyTwo);
-					DataRecordUtility.GetValue<Answer>(reader, 2, 1).Should().Be(Answer.FortyTwo);
-					DataRecordUtility.GetValue<Answer?>(reader, 1, 1).Should().Be(Answer.FortyTwo);
-					DataRecordUtility.GetValue<Answer?>(reader, 2, 1).Should().Be(Answer.FortyTwo);
+					reader.Get<Answer>(1, 1).Should().Be(Answer.FortyTwo);
+					reader.Get<Answer>(2, 1).Should().Be(Answer.FortyTwo);
+					reader.Get<Answer?>(1, 1).Should().Be(Answer.FortyTwo);
+					reader.Get<Answer?>(2, 1).Should().Be(Answer.FortyTwo);
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
-					Invoking(() => DataRecordUtility.GetValue<Answer>(reader, 1, 1)).Should().Throw<InvalidOperationException>();
-					Invoking(() => DataRecordUtility.GetValue<Answer>(reader, 2, 1)).Should().Throw<InvalidOperationException>();
-					DataRecordUtility.GetValue<Answer?>(reader, 1, 1).Should().BeNull();
-					DataRecordUtility.GetValue<Answer?>(reader, 2, 1).Should().BeNull();
+					Invoking(() => reader.Get<Answer>(1, 1)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<Answer>(2, 1)).Should().Throw<InvalidOperationException>();
+					reader.Get<Answer?>(1, 1).Should().BeNull();
+					reader.Get<Answer?>(2, 1).Should().BeNull();
 				}
 			}
 		}
@@ -153,10 +131,10 @@ namespace Faithlife.Data.Tests
 				{
 					reader.Read().Should().BeTrue();
 
-					Invoking(() => DataRecordUtility.GetValue<ItemRecord>(reader, -1, 2)).Should().Throw<ArgumentException>();
-					Invoking(() => DataRecordUtility.GetValue<ItemRecord>(reader, 2, -1)).Should().Throw<ArgumentException>();
-					Invoking(() => DataRecordUtility.GetValue<ItemRecord>(reader, 7, 1)).Should().Throw<ArgumentException>();
-					Invoking(() => DataRecordUtility.GetValue<ItemRecord>(reader, 8, 0)).Should().Throw<ArgumentException>();
+					Invoking(() => reader.Get<ItemRecord>(-1, 2)).Should().Throw<ArgumentException>();
+					Invoking(() => reader.Get<ItemRecord>(2, -1)).Should().Throw<ArgumentException>();
+					Invoking(() => reader.Get<ItemRecord>(7, 1)).Should().Throw<ArgumentException>();
+					Invoking(() => reader.Get<ItemRecord>(8, 0)).Should().Throw<ArgumentException>();
 				}
 			}
 		}
@@ -172,8 +150,8 @@ namespace Faithlife.Data.Tests
 				{
 					reader.Read().Should().BeTrue();
 
-					Invoking(() => DataRecordUtility.GetValue<long>(reader, 1, 1).Should().Be(42)).Should().Throw<InvalidOperationException>();
-					Invoking(() => DataRecordUtility.GetValue<Answer>(reader, 0, 1).Should().Be(42)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<long>(1, 1).Should().Be(42)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<Answer>(0, 1).Should().Be(42)).Should().Throw<InvalidOperationException>();
 				}
 			}
 		}
@@ -189,9 +167,9 @@ namespace Faithlife.Data.Tests
 				{
 					reader.Read().Should().BeTrue();
 
-					Invoking(() => DataRecordUtility.GetValue<(string, int)>(reader, 0, 1)).Should().Throw<InvalidOperationException>();
-					DataRecordUtility.GetValue<(string, int)>(reader, 0, 2).Should().Be((s_record.TheString, s_record.TheInt32));
-					Invoking(() => DataRecordUtility.GetValue<(string, int)>(reader, 0, 3)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<(string, int)>(0, 1)).Should().Throw<InvalidOperationException>();
+					reader.Get<(string, int)>(0, 2).Should().Be((s_record.TheString, s_record.TheInt32));
+					Invoking(() => reader.Get<(string, int)>(0, 3)).Should().Throw<InvalidOperationException>();
 				}
 			}
 		}
@@ -208,12 +186,12 @@ namespace Faithlife.Data.Tests
 					// get non-nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<byte[]>(reader, 6, 1).Should().Equal(s_record.TheBlob);
+					reader.Get<byte[]>(6, 1).Should().Equal(s_record.TheBlob);
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<byte[]>(reader, 6, 1).Should().BeNull();
+					reader.Get<byte[]>(6, 1).Should().BeNull();
 				}
 			}
 		}
@@ -230,13 +208,13 @@ namespace Faithlife.Data.Tests
 					// get non-nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<(string, int, long, bool, float, double)>(reader, 0, 6)
+					reader.Get<(string, int, long, bool, float, double)>(0, 6)
 						.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
-					DataRecordUtility.GetValue<(string, int?, long?, bool?, float?, double?)>(reader, 0, 6)
+					reader.Get<(string, int?, long?, bool?, float?, double?)>(0, 6)
 						.Should().Be((null, null, null, null, null, null));
 				}
 			}
@@ -255,25 +233,25 @@ namespace Faithlife.Data.Tests
 					reader.Read().Should().BeTrue();
 
 					// DTO
-					DataRecordUtility.GetValue<ItemRecord>(reader, 0, 7).Should().BeEquivalentTo(s_record);
-					DataRecordUtility.GetValue<ItemRecord>(reader, 0, 1).Should().BeEquivalentTo(new ItemRecord { TheString = s_record.TheString });
-					DataRecordUtility.GetValue<ItemRecord>(reader, 0, 0).Should().BeNull();
-					DataRecordUtility.GetValue<ItemRecord>(reader, 7, 0).Should().BeNull();
+					reader.Get<ItemRecord>(0, 7).Should().BeEquivalentTo(s_record);
+					reader.Get<ItemRecord>(0, 1).Should().BeEquivalentTo(new ItemRecord { TheString = s_record.TheString });
+					reader.Get<ItemRecord>(0, 0).Should().BeNull();
+					reader.Get<ItemRecord>(7, 0).Should().BeNull();
 
 					// tuple with DTO
-					var tuple = DataRecordUtility.GetValue<(string, ItemRecord, bool)>(reader, 0, 4);
+					var tuple = reader.Get<(string, ItemRecord, bool)>(0, 4);
 					tuple.Item1.Should().Be(s_record.TheString);
 					tuple.Item2.Should().BeEquivalentTo(new ItemRecord { TheInt32 = s_record.TheInt32, TheInt64 = s_record.TheInt64 });
 					tuple.Item3.Should().BeTrue();
 
 					// tuple with two DTOs (needs NULL terminator)
-					Invoking(() => DataRecordUtility.GetValue<(ItemRecord, ItemRecord)>(reader, 0, 3)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<(ItemRecord, ItemRecord)>(0, 3)).Should().Throw<InvalidOperationException>();
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
 					// all nulls returns null DTO
-					DataRecordUtility.GetValue<ItemRecord>(reader, 0, 7).Should().BeNull();
+					reader.Get<ItemRecord>(0, 7).Should().BeNull();
 				}
 			}
 		}
@@ -291,7 +269,7 @@ namespace Faithlife.Data.Tests
 					reader.Read().Should().BeTrue();
 
 					// two DTOs
-					var tuple = DataRecordUtility.GetValue<(ItemRecord, ItemRecord)>(reader, 0, 5);
+					var tuple = reader.Get<(ItemRecord, ItemRecord)>(0, 5);
 					tuple.Item1.Should().BeEquivalentTo(new ItemRecord { TheString = s_record.TheString, TheInt64 = s_record.TheInt64 });
 					tuple.Item2.Should().BeEquivalentTo(new ItemRecord { TheBool = s_record.TheBool, TheDouble = s_record.TheDouble });
 
@@ -299,7 +277,7 @@ namespace Faithlife.Data.Tests
 					reader.Read().Should().BeTrue();
 
 					// two DTOs
-					tuple = DataRecordUtility.GetValue<(ItemRecord, ItemRecord)>(reader, 0, 5);
+					tuple = reader.Get<(ItemRecord, ItemRecord)>(0, 5);
 					tuple.Item1.Should().BeNull();
 					tuple.Item2.Should().BeNull();
 				}
@@ -316,7 +294,7 @@ namespace Faithlife.Data.Tests
 				using (var reader = command.ExecuteReader())
 				{
 					reader.Read().Should().BeTrue();
-					DataRecordUtility.GetValue<ItemRecord>(reader, 0, 2)
+					reader.Get<ItemRecord>(0, 2)
 						.Should().BeEquivalentTo(new ItemRecord { TheString = s_record.TheString, TheInt64 = s_record.TheInt64 });
 				}
 			}
@@ -332,7 +310,7 @@ namespace Faithlife.Data.Tests
 				using (var reader = command.ExecuteReader())
 				{
 					reader.Read().Should().BeTrue();
-					Invoking(() => DataRecordUtility.GetValue<ItemRecord>(reader, 0, 2)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<ItemRecord>(0, 2)).Should().Throw<InvalidOperationException>();
 				}
 			}
 		}
@@ -350,24 +328,24 @@ namespace Faithlife.Data.Tests
 					reader.Read().Should().BeTrue();
 
 					// dynamic
-					((string) DataRecordUtility.GetValue<dynamic>(reader, 0, 7).TheString).Should().Be(s_record.TheString);
-					((bool) ((dynamic) DataRecordUtility.GetValue<object>(reader, 0, 7)).TheBool).Should().Be(s_record.TheBool);
+					((string) reader.Get<dynamic>(0, 7).TheString).Should().Be(s_record.TheString);
+					((bool) ((dynamic) reader.Get<object>(0, 7)).TheBool).Should().Be(s_record.TheBool);
 
 					// tuple with dynamic
-					var tuple = DataRecordUtility.GetValue<(string, dynamic, bool)>(reader, 0, 4);
+					var tuple = reader.Get<(string, dynamic, bool)>(0, 4);
 					tuple.Item1.Should().Be(s_record.TheString);
 					((long) tuple.Item2.TheInt64).Should().Be(s_record.TheInt64);
 					tuple.Item3.Should().BeTrue();
 
 					// tuple with two dynamics (needs NULL terminator)
-					Invoking(() => DataRecordUtility.GetValue<(dynamic, dynamic)>(reader, 0, 3)).Should().Throw<InvalidOperationException>();
+					Invoking(() => reader.Get<(dynamic, dynamic)>(0, 3)).Should().Throw<InvalidOperationException>();
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
 					// all nulls returns null dynamic
-					((object) DataRecordUtility.GetValue<dynamic>(reader, 0, 7)).Should().BeNull();
-					DataRecordUtility.GetValue<object>(reader, 0, 7).Should().BeNull();
+					((object) reader.Get<dynamic>(0, 7)).Should().BeNull();
+					reader.Get<object>(0, 7).Should().BeNull();
 				}
 			}
 		}

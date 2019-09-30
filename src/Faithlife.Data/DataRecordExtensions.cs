@@ -12,31 +12,36 @@ namespace Faithlife.Data
 		/// Converts all record fields to the specified type.
 		/// </summary>
 		public static T Get<T>(this IDataRecord record) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), 0, record.FieldCount);
+			Get<T>(record ?? throw new ArgumentNullException(nameof(record)), 0, record.FieldCount);
 
 		/// <summary>
 		/// Converts the specified record field to the specified type.
 		/// </summary>
 		public static T Get<T>(this IDataRecord record, int index) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), index, 1);
+			Get<T>(record ?? throw new ArgumentNullException(nameof(record)), index, 1);
 
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
 		/// </summary>
-		public static T Get<T>(this IDataRecord record, int index, int count) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), index, count);
+		public static T Get<T>(this IDataRecord record, int index, int count)
+		{
+			int fieldCount = (record ?? throw new ArgumentNullException(nameof(record))).FieldCount;
+			if (index < 0 || count < 0 || index > fieldCount - count)
+				throw new ArgumentException($"Index {index} and count {count} are out of range for {fieldCount} fields.");
+			return DbValueTypeInfo.GetInfo<T>().GetValue(record, index, count);
+		}
 
 		/// <summary>
 		/// Converts the specified record field to the specified type.
 		/// </summary>
 		public static T Get<T>(this IDataRecord record, string name) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), record.GetOrdinal(name), 1);
+			Get<T>(record ?? throw new ArgumentNullException(nameof(record)), record.GetOrdinal(name), 1);
 
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
 		/// </summary>
 		public static T Get<T>(this IDataRecord record, string name, int count) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), record.GetOrdinal(name), count);
+			Get<T>(record ?? throw new ArgumentNullException(nameof(record)), record.GetOrdinal(name), count);
 
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
@@ -48,7 +53,7 @@ namespace Faithlife.Data
 
 			int fromIndex = record.GetOrdinal(fromName);
 			int toIndex = record.GetOrdinal(toName);
-			return DataRecordUtility.GetValue<T>(record, fromIndex, toIndex - fromIndex + 1);
+			return Get<T>(record, fromIndex, toIndex - fromIndex + 1);
 		}
 	}
 }

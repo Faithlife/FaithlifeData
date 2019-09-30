@@ -12,7 +12,7 @@ namespace Faithlife.Data
 	public sealed class DbConnectorResultSets : IDisposable
 	{
 		/// <summary>
-		/// Reads a result set, converting each record to the specified type using <see cref="DataRecordUtility" />.
+		/// Reads a result set, converting each record to the specified type.
 		/// </summary>
 		public IReadOnlyList<T> Read<T>() =>
 			DoRead<T>(null);
@@ -24,7 +24,7 @@ namespace Faithlife.Data
 			DoRead(read ?? throw new ArgumentNullException(nameof(read)));
 
 		/// <summary>
-		/// Reads a result set, converting each record to the specified type using <see cref="DataRecordUtility" />.
+		/// Reads a result set, converting each record to the specified type.
 		/// </summary>
 		public async Task<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default) =>
 			await DoReadAsync<T>(null, cancellationToken);
@@ -35,6 +35,9 @@ namespace Faithlife.Data
 		public async Task<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			await DoReadAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
 
+		/// <summary>
+		/// Disposes resources used by the result sets.
+		/// </summary>
 		public void Dispose()
 		{
 			m_reader.Dispose();

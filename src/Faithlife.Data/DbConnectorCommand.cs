@@ -40,7 +40,7 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Executes the query, reading every record and converting it to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, reading every record and converting it to the specified type.
 		/// </summary>
 		public IReadOnlyList<T> Query<T>() =>
 			DoQuery<T>(null);
@@ -52,7 +52,7 @@ namespace Faithlife.Data
 			DoQuery(read ?? throw new ArgumentNullException(nameof(read)));
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
 		public T QueryFirst<T>() =>
@@ -66,7 +66,7 @@ namespace Faithlife.Data
 			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		public T QueryFirstOrDefault<T>() =>
@@ -80,7 +80,7 @@ namespace Faithlife.Data
 			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
 		public T QuerySingle<T>() =>
@@ -94,7 +94,7 @@ namespace Faithlife.Data
 			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
@@ -110,7 +110,7 @@ namespace Faithlife.Data
 			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true);
 
 		/// <summary>
-		/// Executes the query, converting each record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting each record to the specified type.
 		/// </summary>
 		public async Task<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
 			await DoQueryAsync<T>(null, cancellationToken).ConfigureAwait(false);
@@ -122,7 +122,7 @@ namespace Faithlife.Data
 			await DoQueryAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
 		public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
@@ -136,7 +136,7 @@ namespace Faithlife.Data
 			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		public async Task<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
@@ -150,7 +150,7 @@ namespace Faithlife.Data
 			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
 		public async Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
@@ -164,7 +164,7 @@ namespace Faithlife.Data
 			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
-		/// Executes the query, converting the first record to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
@@ -180,7 +180,7 @@ namespace Faithlife.Data
 			await DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>
-		/// Executes the query, reading one record at a time and converting it to the specified type using <see cref="DataRecordUtility" />.
+		/// Executes the query, reading one record at a time and converting it to the specified type.
 		/// </summary>
 		public IEnumerable<T> Enumerate<T>() =>
 			DoEnumerate<T>(null);
