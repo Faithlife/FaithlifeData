@@ -11,26 +11,26 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
 		/// </summary>
-		public static T GetValue<T>(IDataRecord record, int start, int length)
+		public static T GetValue<T>(IDataRecord record, int index, int count)
 		{
-			CheckGetValueArgs(record, start, length);
-			return DbValueTypeInfo.GetInfo<T>().GetValue(record, start, length);
+			CheckGetValueArgs(record, index, count);
+			return DbValueTypeInfo.GetInfo<T>().GetValue(record, index, count);
 		}
 
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
 		/// </summary>
-		public static object GetValue(Type type, IDataRecord record, int start, int length)
+		public static object GetValue(Type type, IDataRecord record, int index, int count)
 		{
-			CheckGetValueArgs(record, start, length);
-			return DbValueTypeInfo.GetInfo(type).GetValue(record, start, length);
+			CheckGetValueArgs(record, index, count);
+			return DbValueTypeInfo.GetInfo(type).GetValue(record, index, count);
 		}
 
-		private static void CheckGetValueArgs(IDataRecord record, int start, int length)
+		private static void CheckGetValueArgs(IDataRecord record, int index, int count)
 		{
 			int fieldCount = (record ?? throw new ArgumentNullException(nameof(record))).FieldCount;
-			if (start < 0 || length < 0 || start > fieldCount - length)
-				throw new ArgumentException($"Range start {start} and length {length} are out of range for {fieldCount} fields.");
+			if (index < 0 || count < 0 || index > fieldCount - count)
+				throw new ArgumentException($"Index {index} and count {count} are out of range for {fieldCount} fields.");
 		}
 	}
 }

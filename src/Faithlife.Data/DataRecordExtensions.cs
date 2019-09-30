@@ -23,8 +23,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
 		/// </summary>
-		public static T Get<T>(this IDataRecord record, int index, int length) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), index, length);
+		public static T Get<T>(this IDataRecord record, int index, int count) =>
+			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), index, count);
 
 		/// <summary>
 		/// Converts the specified record field to the specified type.
@@ -35,8 +35,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
 		/// </summary>
-		public static T Get<T>(this IDataRecord record, string name, int length) =>
-			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), record.GetOrdinal(name), length);
+		public static T Get<T>(this IDataRecord record, string name, int count) =>
+			DataRecordUtility.GetValue<T>(record ?? throw new ArgumentNullException(nameof(record)), record.GetOrdinal(name), count);
 
 		/// <summary>
 		/// Converts the specified record fields to the specified type.
