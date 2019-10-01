@@ -12,7 +12,7 @@ namespace Faithlife.Data
 	/// <summary>
 	/// Encapsulates the text and parameters of a database command.
 	/// </summary>
-	public struct DbConnectorCommand
+	public readonly struct DbConnectorCommand
 	{
 		/// <summary>
 		/// The text of the command.

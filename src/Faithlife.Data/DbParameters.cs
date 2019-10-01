@@ -9,7 +9,7 @@ namespace Faithlife.Data
 	/// <summary>
 	/// An immutable list of parameters.
 	/// </summary>
-	public struct DbParameters : IReadOnlyList<(string Name, object Value)>
+	public readonly struct DbParameters : IReadOnlyList<(string Name, object Value)>
 	{
 		/// <summary>
 		/// An empty list of parameters.
