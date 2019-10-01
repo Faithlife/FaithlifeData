@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -191,6 +192,20 @@ namespace Faithlife.Data
 		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
 			DoEnumerate(read ?? throw new ArgumentNullException(nameof(read)));
 
+#if NETSTANDARD2_1
+		/// <summary>
+		/// Executes the query, reading one record at a time and converting it to the specified type.
+		/// </summary>
+		public IAsyncEnumerable<T> EnumerateAsync<T>(CancellationToken cancellationToken = default) =>
+			DoEnumerateAsync<T>(null, cancellationToken);
+
+		/// <summary>
+		/// Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
+		/// </summary>
+		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			DoEnumerateAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
+#endif
+
 		/// <summary>
 		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
@@ -363,6 +378,23 @@ namespace Faithlife.Data
 				} while (reader.NextResult());
 			}
 		}
+
+#if NETSTANDARD2_1
+		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T> read, [EnumeratorCancellation] CancellationToken cancellationToken)
+		{
+			var methods = m_connector.ProviderMethods;
+
+			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
+			using (var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false))
+			{
+				do
+				{
+					while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+						yield return read != null ? read(reader) : reader.Get<T>();
+				} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+			}
+		}
+#endif
 
 		private readonly DbConnector m_connector;
 	}
