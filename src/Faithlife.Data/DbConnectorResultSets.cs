@@ -69,9 +69,9 @@ namespace Faithlife.Data
 				throw new InvalidOperationException("No more results.");
 
 			var list = new List<T>();
-			while (await m_methods.ReadAsync(m_reader, cancellationToken))
+			while (await m_methods.ReadAsync(m_reader, cancellationToken).ConfigureAwait(false))
 				list.Add(read != null ? read(m_reader) : m_reader.Get<T>());
-			m_done = !await m_methods.NextResultAsync(m_reader, cancellationToken);
+			m_done = !await m_methods.NextResultAsync(m_reader, cancellationToken).ConfigureAwait(false);
 			return list;
 		}
 
