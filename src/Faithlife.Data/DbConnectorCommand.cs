@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+#if NETSTANDARD2_1
 using System.Runtime.CompilerServices;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,8 +29,8 @@ namespace Faithlife.Data
 		/// </summary>
 		public int Execute()
 		{
-			using (var command = Create())
-				return command.ExecuteNonQuery();
+			using var command = Create();
+			return command.ExecuteNonQuery();
 		}
 
 		/// <summary>
@@ -36,8 +38,8 @@ namespace Faithlife.Data
 		/// </summary>
 		public async Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
-			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-				return await m_connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
+			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			return await m_connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -286,16 +288,17 @@ namespace Faithlife.Data
 
 		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read)
 		{
+			using var command = Create();
+			using var reader = command.ExecuteReader();
+
 			var list = new List<T>();
-			using (var command = Create())
-			using (var reader = command.ExecuteReader())
+
+			do
 			{
-				do
-				{
-					while (reader.Read())
-						list.Add(read != null ? read(reader) : reader.Get<T>());
-				} while (reader.NextResult());
-			}
+				while (reader.Read())
+					list.Add(read != null ? read(reader) : reader.Get<T>());
+			} while (reader.NextResult());
+
 			return list;
 		}
 
@@ -303,40 +306,41 @@ namespace Faithlife.Data
 		{
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
 
-			using (var command = Create())
-			using (var reader = command.ExecuteReader(commandBehavior))
+			using var command = Create();
+			using var reader = command.ExecuteReader(commandBehavior);
+
+			while (!reader.Read())
 			{
-				while (!reader.Read())
-				{
-					if (!reader.NextResult())
-						return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
-				}
-
-				var value = read != null ? read(reader) : reader.Get<T>();
-
-				if (single && reader.Read())
-					throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
-
-				if (single && reader.NextResult())
-					throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
-
-				return value;
+				if (!reader.NextResult())
+					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 			}
+
+			var value = read != null ? read(reader) : reader.Get<T>();
+
+			if (single && reader.Read())
+				throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
+
+			if (single && reader.NextResult())
+				throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
+
+			return value;
 		}
 
 		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
+
+			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+
 			var list = new List<T>();
-			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false))
+
+			do
 			{
-				do
-				{
-					while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-						list.Add(read != null ? read(reader) : reader.Get<T>());
-				} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
-			}
+				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+					list.Add(read != null ? read(reader) : reader.Get<T>());
+			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+
 			return list;
 		}
 
@@ -345,38 +349,36 @@ namespace Faithlife.Data
 			var methods = m_connector.ProviderMethods;
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
 
-			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await methods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false))
+			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false);
+
+			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
-				while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-				{
-					if (!await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
-						return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
-				}
-
-				var value = read != null ? read(reader) : reader.Get<T>();
-
-				if (single && await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-					throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
-
-				if (single && await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
-					throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
-
-				return value;
+				if (!await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
+					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 			}
+
+			var value = read != null ? read(reader) : reader.Get<T>();
+
+			if (single && await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+				throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
+
+			if (single && await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
+				throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
+
+			return value;
 		}
 
 		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T> read)
 		{
-			using (var command = Create())
-			using (var reader = command.ExecuteReader())
+			using var command = Create();
+			using var reader = command.ExecuteReader();
+
+			do
 			{
-				do
-				{
-					while (reader.Read())
-						yield return read != null ? read(reader) : reader.Get<T>();
-				} while (reader.NextResult());
-			}
+				while (reader.Read())
+					yield return read != null ? read(reader) : reader.Get<T>();
+			} while (reader.NextResult());
 		}
 
 #if NETSTANDARD2_1
@@ -384,15 +386,14 @@ namespace Faithlife.Data
 		{
 			var methods = m_connector.ProviderMethods;
 
-			using (var command = await CreateAsync(cancellationToken).ConfigureAwait(false))
-			using (var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false))
+			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+
+			do
 			{
-				do
-				{
-					while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-						yield return read != null ? read(reader) : reader.Get<T>();
-				} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
-			}
+				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+					yield return read != null ? read(reader) : reader.Get<T>();
+			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 		}
 #endif
 
