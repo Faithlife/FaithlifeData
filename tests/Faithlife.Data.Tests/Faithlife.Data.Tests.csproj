@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworks>net472;netcoreapp3.0</TargetFrameworks>
+    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <Platforms>x64</Platforms>
-    <Platform>x64</Platform>
-    <PlatformTarget>x64</PlatformTarget>
-    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(MONO_ROOT)' != ''">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' and '$(MONO_ROOT)' != '' ">
     <FrameworkPathOverride>$(MONO_ROOT)/lib/mono/4.7.2-api/</FrameworkPathOverride>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
