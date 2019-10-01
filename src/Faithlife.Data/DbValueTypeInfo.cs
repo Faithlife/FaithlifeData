@@ -25,8 +25,8 @@ namespace Faithlife.Data
 
 			if (type.GetTypeInfo().IsEnum)
 				return DbValueTypeStrategy.Enum;
-			else
-				return DbValueTypeStrategy.DtoProperties;
+
+			return DbValueTypeStrategy.DtoProperties;
 		}
 
 		private static IDbValueTypeInfo CreateInfo(Type type) =>
