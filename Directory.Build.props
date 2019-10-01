@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>0.100.1</VersionPrefix>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);1998</NoWarn>
     <DebugType>portable</DebugType>
