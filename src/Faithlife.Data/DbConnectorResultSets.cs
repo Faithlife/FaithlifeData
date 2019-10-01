@@ -26,14 +26,14 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type.
 		/// </summary>
-		public async Task<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default) =>
-			await DoReadAsync<T>(null, cancellationToken);
+		public Task<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default) =>
+			DoReadAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type with the specified delegate.
 		/// </summary>
-		public async Task<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			await DoReadAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
+		public Task<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+			DoReadAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
 
 		/// <summary>
 		/// Disposes resources used by the result sets.
