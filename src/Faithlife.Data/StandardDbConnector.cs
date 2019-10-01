@@ -10,7 +10,7 @@ namespace Faithlife.Data
 		public StandardDbConnector(IDbConnection connection, DbConnectorSettings settings)
 		{
 			m_connection = connection ?? throw new ArgumentNullException(nameof(connection));
-			settings = settings ?? s_defaultSettings;
+			settings ??= s_defaultSettings;
 
 			m_shouldLazyOpen = settings.LazyOpen;
 			m_isConnectionOpen = m_connection.State == ConnectionState.Open;
