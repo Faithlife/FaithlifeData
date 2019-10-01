@@ -15,19 +15,18 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="connection">The database connection.</param>
 		/// <param name="settings">The settings.</param>
-		public static DbConnector Create(IDbConnection connection, DbConnectorSettings settings = null) =>
-			new StandardDbConnector(connection, settings);
+		public static DbConnector Create(IDbConnection connection, DbConnectorSettings? settings = null) =>
+			new StandardDbConnector(connection, settings ?? s_defaultSettings);
 
 		/// <summary>
 		/// The database connection.
 		/// </summary>
-		/// <returns>The database connection, or null if the connector is disposed.</returns>
 		public abstract IDbConnection Connection { get; }
 
 		/// <summary>
 		/// The current transaction, if any.
 		/// </summary>
-		public abstract IDbTransaction Transaction { get; }
+		public abstract IDbTransaction? Transaction { get; }
 
 		/// <summary>
 		/// Special methods provided by the database provider.
@@ -129,5 +128,7 @@ namespace Faithlife.Data
 		/// Disposes the connector.
 		/// </summary>
 		public abstract void Dispose();
+
+		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 	}
 }

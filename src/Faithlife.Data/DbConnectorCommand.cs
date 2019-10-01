@@ -286,7 +286,7 @@ namespace Faithlife.Data
 			return command;
 		}
 
-		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T> read)
+		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T>? read)
 		{
 			using var command = Create();
 			using var reader = command.ExecuteReader();
@@ -302,7 +302,7 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private T DoQueryFirst<T>(Func<IDataRecord, T> read, bool single, bool orDefault)
+		private T DoQueryFirst<T>(Func<IDataRecord, T>? read, bool single, bool orDefault)
 		{
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
 
@@ -312,7 +312,7 @@ namespace Faithlife.Data
 			while (!reader.Read())
 			{
 				if (!reader.NextResult())
-					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+					return orDefault ? default(T)! : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 			}
 
 			var value = read != null ? read(reader) : reader.Get<T>();
@@ -326,7 +326,7 @@ namespace Faithlife.Data
 			return value;
 		}
 
-		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken)
+		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 
@@ -344,7 +344,7 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private async Task<T> DoQueryFirstAsync<T>(Func<IDataRecord, T> read, bool single, bool orDefault, CancellationToken cancellationToken)
+		private async Task<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
@@ -355,7 +355,7 @@ namespace Faithlife.Data
 			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
 				if (!await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
-					return orDefault ? default(T) : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+					return orDefault ? default(T)! : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 			}
 
 			var value = read != null ? read(reader) : reader.Get<T>();
@@ -369,7 +369,7 @@ namespace Faithlife.Data
 			return value;
 		}
 
-		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T> read)
+		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? read)
 		{
 			using var command = Create();
 			using var reader = command.ExecuteReader();
@@ -382,7 +382,7 @@ namespace Faithlife.Data
 		}
 
 #if NETSTANDARD2_1
-		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T> read, [EnumeratorCancellation] CancellationToken cancellationToken)
+		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? read, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 

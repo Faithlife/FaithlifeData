@@ -149,7 +149,7 @@ namespace Faithlife.Data.Tests
 			reader.Read().Should().BeTrue();
 
 			Invoking(() => reader.Get<(string, int)>(0, 1)).Should().Throw<InvalidOperationException>();
-			reader.Get<(string, int)>(0, 2).Should().Be((s_record.TheString, s_record.TheInt32));
+			reader.Get<(string?, int)>(0, 2).Should().Be((s_record.TheString, s_record.TheInt32));
 			Invoking(() => reader.Get<(string, int)>(0, 3)).Should().Throw<InvalidOperationException>();
 		}
 
@@ -183,20 +183,20 @@ namespace Faithlife.Data.Tests
 			// get non-nulls
 			reader.Read().Should().BeTrue();
 
-			reader.Get<(string, int, long, bool, float, double)>(0, 6)
+			reader.Get<(string?, int, long, bool, float, double)>(0, 6)
 				.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
 #if NETCOREAPP3_0
-			reader.Get<(string, int, long, bool, float, double)>(..^1)
+			reader.Get<(string?, int, long, bool, float, double)>(..^1)
 				.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
 #endif
 
 			// get nulls
 			reader.Read().Should().BeTrue();
 
-			reader.Get<(string, int?, long?, bool?, float?, double?)>(0, 6)
+			reader.Get<(string?, int?, long?, bool?, float?, double?)>(0, 6)
 				.Should().Be((null, null, null, null, null, null));
 #if NETCOREAPP3_0
-			reader.Get<(string, int?, long?, bool?, float?, double?)>(..6)
+			reader.Get<(string?, int?, long?, bool?, float?, double?)>(..6)
 				.Should().Be((null, null, null, null, null, null));
 #endif
 		}
@@ -386,13 +386,13 @@ namespace Faithlife.Data.Tests
 
 		private class ItemRecord
 		{
-			public string TheString { get; set; }
+			public string? TheString { get; set; }
 			public int TheInt32 { get; set; }
 			public long TheInt64 { get; set; }
 			public bool TheBool { get; set; }
 			public float TheSingle { get; set; }
 			public double TheDouble { get; set; }
-			public byte[] TheBlob { get; set; }
+			public byte[]? TheBlob { get; set; }
 		}
 
 		private enum Answer

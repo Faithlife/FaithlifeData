@@ -51,7 +51,7 @@ namespace Faithlife.Data
 			m_methods = methods;
 		}
 
-		private IReadOnlyList<T> DoRead<T>(Func<IDataRecord, T> read)
+		private IReadOnlyList<T> DoRead<T>(Func<IDataRecord, T>? read)
 		{
 			if (m_done)
 				throw new InvalidOperationException("No more results.");
@@ -63,7 +63,7 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private async Task<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken)
+		private async Task<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
 		{
 			if (m_done)
 				throw new InvalidOperationException("No more results.");

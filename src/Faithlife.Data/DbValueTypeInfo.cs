@@ -76,7 +76,7 @@ namespace Faithlife.Data
 				for (int i = index; i < index + count; i++)
 				{
 					string name = record.GetName(i);
-					if (!m_properties.TryGetValue(name, out var property))
+					if (!m_properties!.TryGetValue(name, out var property))
 						throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
 					if (!record.IsDBNull(i))
 					{
@@ -104,7 +104,7 @@ namespace Faithlife.Data
 			else if (m_strategy == DbValueTypeStrategy.ByteArray)
 			{
 				if (record.IsDBNull(index))
-					return default;
+					return default!;
 
 				int byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
 				byte[] bytes = new byte[byteCount];
@@ -113,8 +113,8 @@ namespace Faithlife.Data
 			}
 			else if (m_strategy == DbValueTypeStrategy.Tuple)
 			{
-				int valueCount = m_tupleTypeInfos.Count;
-				object[] values = new object[valueCount];
+				int valueCount = m_tupleTypeInfos!.Count;
+				object?[] values = new object[valueCount];
 				int recordIndex = index;
 				for (int valueIndex = 0; valueIndex < valueCount; valueIndex++)
 				{
@@ -168,7 +168,7 @@ namespace Faithlife.Data
 					recordIndex = nullIndex + 1 ?? recordIndex + fieldCount;
 				}
 
-				return m_tupleInfo.CreateNew(values);
+				return m_tupleInfo!.CreateNew(values);
 			}
 			else if (m_strategy == DbValueTypeStrategy.CastValue || m_strategy == DbValueTypeStrategy.Enum)
 			{
@@ -177,7 +177,7 @@ namespace Faithlife.Data
 				{
 					if (m_nullableType == null)
 						throw new InvalidOperationException($"Failed to cast null to {Type.FullName}.");
-					return default;
+					return default!;
 				}
 
 				try
@@ -232,13 +232,13 @@ namespace Faithlife.Data
 			}
 		}
 
-		object IDbValueTypeInfo.GetValue(IDataRecord record, int index, int count) => GetValue(record, index, count);
+		object? IDbValueTypeInfo.GetValue(IDataRecord record, int index, int count) => GetValue(record, index, count);
 
 		private readonly Type m_coreType;
-		private readonly Type m_nullableType;
+		private readonly Type? m_nullableType;
 		private readonly DbValueTypeStrategy m_strategy;
-		private readonly Dictionary<string, (IDtoProperty<T> Dto, IDbValueTypeInfo Db)> m_properties;
-		private readonly TupleInfo<T> m_tupleInfo;
-		private readonly IReadOnlyList<IDbValueTypeInfo> m_tupleTypeInfos;
+		private readonly Dictionary<string, (IDtoProperty<T> Dto, IDbValueTypeInfo Db)>? m_properties;
+		private readonly TupleInfo<T>? m_tupleInfo;
+		private readonly IReadOnlyList<IDbValueTypeInfo>? m_tupleTypeInfos;
 	}
 }
