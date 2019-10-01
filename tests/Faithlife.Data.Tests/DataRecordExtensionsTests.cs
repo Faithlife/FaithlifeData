@@ -210,12 +210,20 @@ namespace Faithlife.Data.Tests
 
 					reader.Get<(string, int, long, bool, float, double)>(0, 6)
 						.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
+#if NETCOREAPP3_0
+					reader.Get<(string, int, long, bool, float, double)>(..^1)
+						.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
+#endif
 
 					// get nulls
 					reader.Read().Should().BeTrue();
 
 					reader.Get<(string, int?, long?, bool?, float?, double?)>(0, 6)
 						.Should().Be((null, null, null, null, null, null));
+#if NETCOREAPP3_0
+					reader.Get<(string, int?, long?, bool?, float?, double?)>(..6)
+						.Should().Be((null, null, null, null, null, null));
+#endif
 				}
 			}
 		}

@@ -62,6 +62,18 @@ namespace Faithlife.Data
 		/// </summary>
 		public static T Get<T>(this IDataRecord record, Index index) =>
 			Get<T>(record ?? throw new ArgumentNullException(nameof(record)), index.GetOffset(record.FieldCount), 1);
+
+		/// <summary>
+		/// Converts the specified record fields to the specified type.
+		/// </summary>
+		public static T Get<T>(this IDataRecord record, Range range)
+		{
+			if (record == null)
+				throw new ArgumentNullException(nameof(record));
+
+			var (index, count) = range.GetOffsetAndLength(record.FieldCount);
+			return Get<T>(record, index, count);
+		}
 #endif
 	}
 }
