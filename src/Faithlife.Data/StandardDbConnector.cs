@@ -206,10 +206,7 @@ namespace Faithlife.Data
 
 		private sealed class ConnectionCloser : IDisposable
 		{
-			public ConnectionCloser(StandardDbConnector connector)
-			{
-				m_connector = connector;
-			}
+			public ConnectionCloser(StandardDbConnector connector) => m_connector = connector;
 
 			public void Dispose()
 			{
@@ -222,10 +219,7 @@ namespace Faithlife.Data
 
 		private sealed class TransactionDisposer : IDisposable
 		{
-			public TransactionDisposer(StandardDbConnector connector)
-			{
-				m_connector = connector;
-			}
+			public TransactionDisposer(StandardDbConnector connector) => m_connector = connector;
 
 			public void Dispose()
 			{
