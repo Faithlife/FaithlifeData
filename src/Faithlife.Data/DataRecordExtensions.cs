@@ -55,5 +55,13 @@ namespace Faithlife.Data
 			int toIndex = record.GetOrdinal(toName);
 			return Get<T>(record, fromIndex, toIndex - fromIndex + 1);
 		}
+
+#if NETSTANDARD2_1
+		/// <summary>
+		/// Converts the specified record field to the specified type.
+		/// </summary>
+		public static T Get<T>(this IDataRecord record, Index index) =>
+			Get<T>(record ?? throw new ArgumentNullException(nameof(record)), index.GetOffset(record.FieldCount), 1);
+#endif
 	}
 }

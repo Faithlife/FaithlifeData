@@ -377,6 +377,9 @@ namespace Faithlife.Data.Tests
 					reader.Read().Should().BeTrue();
 					reader.Get<long>(2).Should().Be(s_record.TheInt64);
 					reader.Get<long>("TheInt64").Should().Be(s_record.TheInt64);
+#if NETCOREAPP3_0
+					reader.Get<long>(^5).Should().Be(s_record.TheInt64);
+#endif
 				}
 			}
 		}
