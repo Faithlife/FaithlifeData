@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 #if NETSTANDARD2_1
 using System.Runtime.CompilerServices;
 #endif
@@ -72,6 +73,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
+		[return: MaybeNull]
 		public T QueryFirstOrDefault<T>() =>
 			DoQueryFirst<T>(null, single: false, orDefault: true);
 
@@ -79,6 +81,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
+		[return: MaybeNull]
 		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> read) =>
 			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true);
 
@@ -101,6 +104,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
+		[return: MaybeNull]
 		public T QuerySingleOrDefault<T>() =>
 			DoQueryFirst<T>(null, single: true, orDefault: true);
 
@@ -109,6 +113,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
+		[return: MaybeNull]
 		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> read) =>
 			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true);
 
@@ -302,6 +307,7 @@ namespace Faithlife.Data
 			return list;
 		}
 
+		[return: MaybeNull]
 		private T DoQueryFirst<T>(Func<IDataRecord, T>? read, bool single, bool orDefault)
 		{
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
