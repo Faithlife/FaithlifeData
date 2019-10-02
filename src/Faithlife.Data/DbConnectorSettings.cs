@@ -30,16 +30,16 @@ namespace Faithlife.Data
 		/// <summary>
 		/// The current transaction of the connection.
 		/// </summary>
-		public IDbTransaction CurrentTransaction { get; set; }
+		public IDbTransaction? CurrentTransaction { get; set; }
 
 		/// <summary>
 		/// Called when the connector is disposed.
 		/// </summary>
-		public Action WhenDisposed { get; set; }
+		public Action? WhenDisposed { get; set; }
 
 		/// <summary>
 		/// Provider-specific database methods.
 		/// </summary>
-		public DbProviderMethods ProviderMethods { get; set; }
+		public DbProviderMethods? ProviderMethods { get; set; }
 	}
 }

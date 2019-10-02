@@ -54,8 +54,8 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void Nulls()
 		{
-			Invoking(() => DbParameters.Create(null)).Should().Throw<ArgumentNullException>();
-			Invoking(() => new DbParameters().Add(null)).Should().Throw<ArgumentNullException>();
+			Invoking(() => DbParameters.Create(null!)).Should().Throw<ArgumentNullException>();
+			Invoking(() => new DbParameters().Add(null!)).Should().Throw<ArgumentNullException>();
 		}
 
 		private sealed class HasTwo

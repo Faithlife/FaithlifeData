@@ -18,7 +18,7 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void NullConnection()
 		{
-			Invoking(() => DbConnector.Create(null)).Should().Throw<ArgumentNullException>();
+			Invoking(() => DbConnector.Create(null!)).Should().Throw<ArgumentNullException>();
 		}
 
 		[Test]

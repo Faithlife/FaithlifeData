@@ -10,7 +10,6 @@ namespace Faithlife.Data
 		public StandardDbConnector(IDbConnection connection, DbConnectorSettings settings)
 		{
 			m_connection = connection ?? throw new ArgumentNullException(nameof(connection));
-			settings ??= s_defaultSettings;
 
 			m_shouldLazyOpen = settings.LazyOpen;
 			m_isConnectionOpen = m_connection.State == ConnectionState.Open;
@@ -29,7 +28,9 @@ namespace Faithlife.Data
 		{
 			get
 			{
-				if (m_connection != null && m_pendingLazyOpen)
+				VerifyNotDisposed();
+
+				if (m_pendingLazyOpen)
 				{
 					m_pendingLazyOpen = false;
 					m_connection.Open();
@@ -39,13 +40,15 @@ namespace Faithlife.Data
 			}
 		}
 
-		public override IDbTransaction Transaction => m_transaction;
+		public override IDbTransaction? Transaction => m_transaction;
 
 		public override DbProviderMethods ProviderMethods => m_providerMethods;
 
 		public override async Task<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
 		{
-			if (m_connection != null && m_pendingLazyOpen)
+			VerifyNotDisposed();
+
+			if (m_pendingLazyOpen)
 			{
 				m_pendingLazyOpen = false;
 				await m_providerMethods.OpenConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
@@ -110,42 +113,41 @@ namespace Faithlife.Data
 
 		public override void CommitTransaction()
 		{
-			VerifyCanEndTransaction();
-			m_transaction.Commit();
+			VerifyGetTransaction().Commit();
 			DisposeTransaction();
 		}
 
 		public override async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
 		{
-			VerifyCanEndTransaction();
-			await m_providerMethods.CommitTransactionAsync(m_transaction, cancellationToken).ConfigureAwait(false);
+			await m_providerMethods.CommitTransactionAsync(VerifyGetTransaction(), cancellationToken).ConfigureAwait(false);
 			DisposeTransaction();
 		}
 
 		public override void RollbackTransaction()
 		{
-			VerifyCanEndTransaction();
-			m_transaction.Rollback();
+			VerifyGetTransaction().Rollback();
 			DisposeTransaction();
 		}
 
 		public override async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
 		{
-			VerifyCanEndTransaction();
-			await m_providerMethods.RollbackTransactionAsync(m_transaction, cancellationToken).ConfigureAwait(false);
+			await m_providerMethods.RollbackTransactionAsync(VerifyGetTransaction(), cancellationToken).ConfigureAwait(false);
 			DisposeTransaction();
 		}
 
 		public override void Dispose()
 		{
-			DisposeTransaction();
+			if (!m_isDisposed)
+			{
+				DisposeTransaction();
 
-			if (!m_noDisposeConnection)
-				m_connection?.Dispose();
-			m_connection = null;
+				if (!m_noDisposeConnection)
+					m_connection.Dispose();
 
-			m_whenDisposed?.Invoke();
-			m_whenDisposed = null;
+				m_whenDisposed?.Invoke();
+
+				m_isDisposed = true;
+			}
 		}
 
 		private void CloseConnection()
@@ -174,7 +176,7 @@ namespace Faithlife.Data
 
 		private void VerifyNotDisposed()
 		{
-			if (m_connection == null)
+			if (m_isDisposed)
 				throw new ObjectDisposedException(typeof(StandardDbConnector).ToString());
 		}
 
@@ -196,12 +198,14 @@ namespace Faithlife.Data
 				throw new InvalidOperationException("A transaction is already started.");
 		}
 
-		private void VerifyCanEndTransaction()
+		private IDbTransaction VerifyGetTransaction()
 		{
 			VerifyNotDisposed();
 
 			if (m_transaction == null)
 				throw new InvalidOperationException("No transaction available; call BeginTransaction first.");
+
+			return m_transaction;
 		}
 
 		private sealed class ConnectionCloser : IDisposable
@@ -214,7 +218,7 @@ namespace Faithlife.Data
 				m_connector = null;
 			}
 
-			private StandardDbConnector m_connector;
+			private StandardDbConnector? m_connector;
 		}
 
 		private sealed class TransactionDisposer : IDisposable
@@ -227,20 +231,19 @@ namespace Faithlife.Data
 				m_connector = null;
 			}
 
-			private StandardDbConnector m_connector;
+			private StandardDbConnector? m_connector;
 		}
-
-		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 
 		private readonly bool m_noDisposeConnection;
 		private readonly bool m_noDisposeTransaction;
 		private readonly bool m_noCloseConnection;
 		private readonly bool m_shouldLazyOpen;
 		private readonly DbProviderMethods m_providerMethods;
-		private IDbConnection m_connection;
-		private IDbTransaction m_transaction;
+		private readonly Action? m_whenDisposed;
+		private readonly IDbConnection m_connection;
+		private IDbTransaction? m_transaction;
 		private bool m_pendingLazyOpen;
 		private bool m_isConnectionOpen;
-		private Action m_whenDisposed;
+		private bool m_isDisposed;
 	}
 }
