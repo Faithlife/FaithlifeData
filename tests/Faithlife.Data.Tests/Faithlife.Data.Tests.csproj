@@ -26,7 +26,7 @@
     <ProjectReference Include="..\..\src\Faithlife.Data\Faithlife.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
