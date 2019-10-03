@@ -8,6 +8,10 @@ Prefix the description of the change with `[major]`, `[minor]`, or `[patch]` in 
 
 ## Released
 
+### 0.201.0
+
+* [major] Allow `object` to return a single field as-is instead of building a dynamic object with one property.
+
 ### 0.200.0
 
 * [major] Eliminate `DataRecordUtility`.

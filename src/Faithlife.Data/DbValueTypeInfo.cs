@@ -86,7 +86,7 @@ namespace Faithlife.Data
 				}
 				return notNull ? dto : default;
 			}
-			else if (m_strategy == DbValueTypeStrategy.Dynamic)
+			else if (m_strategy == DbValueTypeStrategy.Dynamic && count > 1)
 			{
 				IDictionary<string, object> obj = new ExpandoObject();
 				bool notNull = false;
@@ -125,17 +125,19 @@ namespace Faithlife.Data
 					if (info.FieldCount == null)
 					{
 						int? remainingFieldCount = 0;
+						int minimumRemainingFieldCount = 0;
 						for (int nextValueIndex = valueIndex + 1; nextValueIndex < valueCount; nextValueIndex++)
 						{
 							int? nextFieldCount = m_tupleTypeInfos[nextValueIndex].FieldCount;
 							if (nextFieldCount != null)
 							{
 								remainingFieldCount += nextFieldCount.Value;
+								minimumRemainingFieldCount += nextFieldCount.Value;
 							}
 							else
 							{
 								remainingFieldCount = null;
-								break;
+								minimumRemainingFieldCount += 1;
 							}
 						}
 
@@ -154,9 +156,18 @@ namespace Faithlife.Data
 								}
 							}
 
-							if (nullIndex == null)
+							if (nullIndex != null)
+							{
+								fieldCount = nullIndex.Value - recordIndex;
+							}
+							else if (count - (recordIndex + 1) == minimumRemainingFieldCount)
+							{
+								fieldCount = 1;
+							}
+							else
+							{
 								throw new InvalidOperationException($"Tuple item {valueIndex} must be terminated by a field named 'NULL': {Type.FullName}");
-							fieldCount = nullIndex.Value - recordIndex;
+							}
 						}
 					}
 					else
@@ -170,7 +181,7 @@ namespace Faithlife.Data
 
 				return m_tupleInfo!.CreateNew(values);
 			}
-			else if (m_strategy == DbValueTypeStrategy.CastValue || m_strategy == DbValueTypeStrategy.Enum)
+			else if (m_strategy == DbValueTypeStrategy.CastValue || m_strategy == DbValueTypeStrategy.Enum || m_strategy == DbValueTypeStrategy.Dynamic)
 			{
 				object value = record.GetValue(index);
 				if (value == DBNull.Value)

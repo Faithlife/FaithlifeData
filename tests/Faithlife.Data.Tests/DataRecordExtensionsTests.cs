@@ -260,6 +260,31 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void TwoOneFieldDtos()
+		{
+			using var connection = GetOpenConnection();
+			using var command = connection.CreateCommand();
+			command.CommandText = "select TheString, TheInt64 from items;";
+			using var reader = command.ExecuteReader();
+
+			// get non-nulls
+			reader.Read().Should().BeTrue();
+
+			// two DTOs
+			var tuple = reader.Get<(ItemRecord, ItemRecord)>(0, 2);
+			tuple.Item1.Should().BeEquivalentTo(new ItemRecord { TheString = s_record.TheString });
+			tuple.Item2.Should().BeEquivalentTo(new ItemRecord { TheInt64 = s_record.TheInt64 });
+
+			// get nulls
+			reader.Read().Should().BeTrue();
+
+			// two DTOs
+			tuple = reader.Get<(ItemRecord, ItemRecord)>(0, 2);
+			tuple.Item1.Should().BeNull();
+			tuple.Item2.Should().BeNull();
+		}
+
+		[Test]
 		public void CaseInsensitivePropertyName()
 		{
 			using var connection = GetOpenConnection();
@@ -317,6 +342,41 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void ObjectTests()
+		{
+			using var connection = GetOpenConnection();
+			using var command = connection.CreateCommand();
+			command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
+			using var reader = command.ExecuteReader();
+
+			// get non-nulls
+			reader.Read().Should().BeTrue();
+
+			// object/dynamic
+			reader.Get<object>(0).Should().Be(s_record.TheString);
+			((bool) reader.Get<dynamic>(3)).Should().Be(s_record.TheBool);
+
+			// tuple with object
+			var tuple = reader.Get<(string, object, long)>(0, 3);
+			tuple.Item1.Should().Be(s_record.TheString);
+			tuple.Item2.Should().Be(s_record.TheInt32);
+			tuple.Item3.Should().Be(s_record.TheInt64);
+
+			// tuple with three objects (doesn't need NULL terminator when the field count matches exactly)
+			var tuple2 = reader.Get<(object, object, object)>(0, 3);
+			tuple2.Item1.Should().Be(s_record.TheString);
+			tuple2.Item2.Should().Be(s_record.TheInt32);
+			tuple2.Item3.Should().Be(s_record.TheInt64);
+
+			// get nulls
+			reader.Read().Should().BeTrue();
+
+			// all nulls returns null dynamic
+			reader.Get<object>(0).Should().BeNull();
+			((object) reader.Get<dynamic>(0)).Should().BeNull();
+		}
+
+		[Test]
 		public void GetExtension()
 		{
 			using var connection = GetOpenConnection();
@@ -354,6 +414,9 @@ namespace Faithlife.Data.Tests
 
 			reader.Read().Should().BeTrue();
 			reader.Get<(long, bool)>(2, 2).Should().Be((s_record.TheInt64, s_record.TheBool));
+#if NETCOREAPP3_0
+			reader.Get<(long, bool)>(2..4).Should().Be((s_record.TheInt64, s_record.TheBool));
+#endif
 			reader.Get<(long, bool)>("TheInt64", 2).Should().Be((s_record.TheInt64, s_record.TheBool));
 			reader.Get<(long, bool)>("TheInt64", "TheBool").Should().Be((s_record.TheInt64, s_record.TheBool));
 		}
