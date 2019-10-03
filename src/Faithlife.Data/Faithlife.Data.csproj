@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Faithlife.Reflection" Version="1.0.0" />
+    <PackageReference Include="Faithlife.Reflection" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

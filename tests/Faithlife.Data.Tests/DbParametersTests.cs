@@ -23,7 +23,7 @@ namespace Faithlife.Data.Tests
 			DbParameters.Create().Should().BeEmpty();
 			DbParameters.Create(("one", 1)).Should().Equal(("one", 1));
 			DbParameters.Create(("one", 1), ("two", 2L)).Should().Equal(("one", 1), ("two", 2L));
-			DbParameters.Create(new List<(string, object)> { ("one", 1), ("two", 2L) }).Should().Equal(("one", 1), ("two", 2L));
+			DbParameters.Create(new List<(string, object?)> { ("one", 1), ("two", 2L) }).Should().Equal(("one", 1), ("two", 2L));
 		}
 
 		[Test]
@@ -35,7 +35,7 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void Add()
 		{
-			new DbParameters().Add("one", 1).Add(("two", 2L)).Add().Add(("three", 3.0f), ("four", 4.0)).Add(new List<(string, object)> { ("five", 5) }).Should().HaveCount(5);
+			new DbParameters().Add("one", 1).Add(("two", 2L)).Add().Add(("three", 3.0f), ("four", 4.0)).Add(new List<(string, object?)> { ("five", 5) }).Should().HaveCount(5);
 		}
 
 		[Test]

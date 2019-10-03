@@ -122,7 +122,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand Command(string text, params (string Name, object Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters));
+		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters));
 
 		/// <summary>
 		/// Disposes the connector.

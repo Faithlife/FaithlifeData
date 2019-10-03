@@ -9,7 +9,7 @@ namespace Faithlife.Data
 	/// <summary>
 	/// An immutable list of parameters.
 	/// </summary>
-	public readonly struct DbParameters : IReadOnlyList<(string Name, object Value)>
+	public readonly struct DbParameters : IReadOnlyList<(string Name, object? Value)>
 	{
 		/// <summary>
 		/// An empty list of parameters.
@@ -19,12 +19,12 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates a list of parameters.
 		/// </summary>
-		public static DbParameters Create(params (string Name, object Value)[] parameters) => new DbParameters(parameters);
+		public static DbParameters Create(params (string Name, object? Value)[] parameters) => new DbParameters(parameters);
 
 		/// <summary>
 		/// Creates a list of parameters.
 		/// </summary>
-		public static DbParameters Create(IEnumerable<(string Name, object Value)> parameters) => new DbParameters(parameters);
+		public static DbParameters Create(IEnumerable<(string Name, object? Value)> parameters) => new DbParameters(parameters);
 
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
@@ -39,22 +39,22 @@ namespace Faithlife.Data
 		/// <summary>
 		/// The parameter at the specified index.
 		/// </summary>
-		public (string Name, object Value) this[int index] => Parameters[index];
+		public (string Name, object? Value) this[int index] => Parameters[index];
 
 		/// <summary>
 		/// Adds a parameter.
 		/// </summary>
-		public DbParameters Add(string name, object value) => new DbParameters(Parameters.Append((name, value)));
+		public DbParameters Add(string name, object? value) => new DbParameters(Parameters.Append((name, value)));
 
 		/// <summary>
 		/// Adds parameters.
 		/// </summary>
-		public DbParameters Add(params (string Name, object Value)[] parameters) => new DbParameters(Parameters.Concat(parameters));
+		public DbParameters Add(params (string Name, object? Value)[] parameters) => new DbParameters(Parameters.Concat(parameters));
 
 		/// <summary>
 		/// Adds parameters.
 		/// </summary>
-		public DbParameters Add(IEnumerable<(string Name, object Value)> parameters) => new DbParameters(Parameters.Concat(parameters));
+		public DbParameters Add(IEnumerable<(string Name, object? Value)> parameters) => new DbParameters(Parameters.Concat(parameters));
 
 		/// <summary>
 		/// Adds the properties of a DTO as parameters.
@@ -65,18 +65,18 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Used to enumerate the parameters.
 		/// </summary>
-		public IEnumerator<(string Name, object Value)> GetEnumerator() => Parameters.GetEnumerator();
+		public IEnumerator<(string Name, object? Value)> GetEnumerator() => Parameters.GetEnumerator();
 
 		/// <summary>
 		/// Used to enumerate the parameters.
 		/// </summary>
 		IEnumerator IEnumerable.GetEnumerator() => Parameters.GetEnumerator();
 
-		private DbParameters(IEnumerable<(string Name, object Value)> parameters) =>
+		private DbParameters(IEnumerable<(string Name, object? Value)> parameters) =>
 			m_parameters = (parameters ?? throw new ArgumentNullException(nameof(parameters))).ToList();
 
-		private IReadOnlyList<(string Name, object Value)> Parameters => m_parameters ?? Array.Empty<(string Name, object Value)>();
+		private IReadOnlyList<(string Name, object? Value)> Parameters => m_parameters ?? Array.Empty<(string Name, object? Value)>();
 
-		private readonly IReadOnlyList<(string Name, object Value)> m_parameters;
+		private readonly IReadOnlyList<(string Name, object? Value)> m_parameters;
 	}
 }
