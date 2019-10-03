@@ -76,7 +76,7 @@ namespace Faithlife.Data
 				for (int i = index; i < index + count; i++)
 				{
 					string name = record.GetName(i);
-					if (!m_properties!.TryGetValue(name, out var property))
+					if (!m_properties!.TryGetValue(NormalizeFieldName(name), out var property))
 						throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
 					if (!record.IsDBNull(i))
 					{
@@ -229,7 +229,10 @@ namespace Faithlife.Data
 			m_strategy = DbValueTypeInfo.GetStrategy(m_coreType);
 			if (m_strategy == DbValueTypeStrategy.DtoProperties)
 			{
-				m_properties = DtoInfo.GetInfo<T>().Properties.ToDictionary(x => x.Name, x => (x, DbValueTypeInfo.GetInfo(x.ValueType)), StringComparer.OrdinalIgnoreCase);
+				m_properties = DtoInfo.GetInfo<T>().Properties.ToDictionary(
+					x => NormalizeFieldName(x.Name),
+					x => (x, DbValueTypeInfo.GetInfo(x.ValueType)),
+					StringComparer.OrdinalIgnoreCase);
 			}
 			else if (m_strategy == DbValueTypeStrategy.Tuple)
 			{
@@ -244,6 +247,8 @@ namespace Faithlife.Data
 		}
 
 		object? IDbValueTypeInfo.GetValue(IDataRecord record, int index, int count) => GetValue(record, index, count);
+
+		private static string NormalizeFieldName(string text) => text.Replace("_", "");
 
 		private readonly Type m_coreType;
 		private readonly Type? m_nullableType;

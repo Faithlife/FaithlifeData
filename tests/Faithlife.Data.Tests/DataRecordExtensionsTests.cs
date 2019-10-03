@@ -298,6 +298,19 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void UnderscorePropertyName()
+		{
+			using var connection = GetOpenConnection();
+			using var command = connection.CreateCommand();
+			command.CommandText = "select TheString as the_string, TheInt64 as the_int64 from items;";
+			using var reader = command.ExecuteReader();
+
+			reader.Read().Should().BeTrue();
+			reader.Get<ItemRecord>(0, 2)
+				.Should().BeEquivalentTo(new ItemRecord { TheString = s_record.TheString, TheInt64 = s_record.TheInt64 });
+		}
+
+		[Test]
 		public void BadPropertyName()
 		{
 			using var connection = GetOpenConnection();

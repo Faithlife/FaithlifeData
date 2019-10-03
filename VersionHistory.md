@@ -11,6 +11,7 @@ Prefix the description of the change with `[major]`, `[minor]`, or `[patch]` in 
 ### 0.201.0
 
 * [major] Allow `object` to return a single field as-is instead of building a dynamic object with one property.
+* [minor] Ignore underscores when mapping fields to DTO properties.
 
 ### 0.200.0
 
