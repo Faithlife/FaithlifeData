@@ -8,7 +8,7 @@
 
 The **Faithlife.Data** class library provides an enhanced API for interacting with ADO.NET-compatible databases. It is similar to [Dapper](https://github.com/StackExchange/Dapper) and other "micro" ORMs for .NET.
 
-To use this library, call [`DbConnector.Create()`](Faithlife.Data/DbConnector/Create.md) to create a [`DbConnector`](Faithlife.Data/DbConnector.md) with a valid `IDbConnection` from your favorite ADO.NET database provider, e.g. [System.Data.SqlClient](https://www.nuget.org/packages/System.Data.SqlClient/) for SQL Server or [MySqlConnector](https://www.nuget.org/packages/MySqlConnector/) for MySQL.
+To use this library, call [`DbConnector.Create()`](Faithlife.Data/DbConnector/Create.md) to create a [`DbConnector`](Faithlife.Data/DbConnector.md) with a valid `IDbConnection` from your favorite ADO.NET database provider, e.g. [Microsoft.Data.SqlClient](https://www.nuget.org/packages/Microsoft.Data.SqlClient/) for SQL Server or [MySqlConnector](https://www.nuget.org/packages/MySqlConnector/) for MySQL.
 
 With a `DbConnector`, you can:
 
