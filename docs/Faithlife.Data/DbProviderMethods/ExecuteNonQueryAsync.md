@@ -1,5 +1,7 @@
 # DbProviderMethods.ExecuteNonQueryAsync method
 
+Executes a non-query command asynchronously.
+
 ```csharp
 public virtual Task<int> ExecuteNonQueryAsync(IDbCommand command, 
     CancellationToken cancellationToken)

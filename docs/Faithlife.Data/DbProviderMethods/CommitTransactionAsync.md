@@ -1,5 +1,7 @@
 # DbProviderMethods.CommitTransactionAsync method
 
+Commits a transaction asynchronously.
+
 ```csharp
 public virtual Task CommitTransactionAsync(IDbTransaction transaction, 
     CancellationToken cancellationToken)

@@ -1,6 +1,6 @@
 # DbConnector.Command method (1 of 3)
 
-Starts a new command.
+Creates a new command.
 
 ```csharp
 public DbConnectorCommand Command(string text)
@@ -12,7 +12,7 @@ public DbConnectorCommand Command(string text)
 
 ## See Also
 
-* class [DbConnectorCommand](../DbConnectorCommand.md)
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -20,7 +20,7 @@ public DbConnectorCommand Command(string text)
 
 # DbConnector.Command method (2 of 3)
 
-Starts a new command.
+Creates a new command.
 
 ```csharp
 public DbConnectorCommand Command(string text, DbParameters parameters)
@@ -33,8 +33,8 @@ public DbConnectorCommand Command(string text, DbParameters parameters)
 
 ## See Also
 
-* class [DbConnectorCommand](../DbConnectorCommand.md)
-* class [DbParameters](../DbParameters.md)
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
+* struct [DbParameters](../DbParameters.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -42,7 +42,7 @@ public DbConnectorCommand Command(string text, DbParameters parameters)
 
 # DbConnector.Command method (3 of 3)
 
-Starts a new command.
+Creates a new command.
 
 ```csharp
 public DbConnectorCommand Command(string text, params ValueTuple<string, object>[] parameters)
@@ -55,7 +55,7 @@ public DbConnectorCommand Command(string text, params ValueTuple<string, object>
 
 ## See Also
 
-* class [DbConnectorCommand](../DbConnectorCommand.md)
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

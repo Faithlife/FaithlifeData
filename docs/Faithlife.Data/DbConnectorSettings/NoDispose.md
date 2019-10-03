@@ -1,6 +1,6 @@
 # DbConnectorSettings.NoDispose property
 
-Do not dispose the connection when the connector is disposed.
+If true, does not dispose the connection when the connector is disposed.
 
 ```csharp
 public bool NoDispose { get; set; }

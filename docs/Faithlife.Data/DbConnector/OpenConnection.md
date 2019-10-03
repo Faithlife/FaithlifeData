@@ -8,7 +8,7 @@ public abstract IDisposable OpenConnection()
 
 ## Return Value
 
-An !:IDisposable that should be disposed when the connection should be closed.
+An IDisposable that should be disposed when the connection should be closed.
 
 ## See Also
 

@@ -1,5 +1,7 @@
 # DbProviderMethods.ReadAsync method
 
+Reads the next record asynchronously.
+
 ```csharp
 public virtual Task<bool> ReadAsync(IDataReader reader, CancellationToken cancellationToken)
 ```

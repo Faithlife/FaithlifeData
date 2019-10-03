@@ -13,7 +13,7 @@ public abstract Task<IDisposable> BeginTransactionAsync(
 
 ## Return Value
 
-An !:IDisposable that should be disposed when the transaction has been committed or should be rolled back.
+An IDisposable that should be disposed when the transaction has been committed or should be rolled back.
 
 ## See Also
 
@@ -38,7 +38,7 @@ public abstract Task<IDisposable> BeginTransactionAsync(IsolationLevel isolation
 
 ## Return Value
 
-An !:IDisposable that should be disposed when the transaction has been committed or should be rolled back.
+An IDisposable that should be disposed when the transaction has been committed or should be rolled back.
 
 ## See Also
 

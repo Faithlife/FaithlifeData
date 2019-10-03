@@ -1,5 +1,7 @@
 # DbProviderMethods.BeginTransactionAsync method (1 of 2)
 
+Begins a transaction asynchronously.
+
 ```csharp
 public virtual Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, 
     CancellationToken cancellationToken)
@@ -13,6 +15,8 @@ public virtual Task<IDbTransaction> BeginTransactionAsync(IDbConnection connecti
 ---
 
 # DbProviderMethods.BeginTransactionAsync method (2 of 2)
+
+Begins a transaction asynchronously.
 
 ```csharp
 public virtual Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, 

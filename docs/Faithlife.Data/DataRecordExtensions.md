@@ -1,5 +1,7 @@
 # DataRecordExtensions class
 
+Extension methods for IDataRecord.
+
 ```csharp
 public static class DataRecordExtensions
 ```
@@ -8,7 +10,7 @@ public static class DataRecordExtensions
 
 | name | description |
 | --- | --- |
-| static [Get&lt;T&gt;](DataRecordExtensions/Get.md)(…) |  (6 methods) |
+| static [Get&lt;T&gt;](DataRecordExtensions/Get.md)(…) | Converts all record fields to the specified type. (6 methods) |
 
 ## See Also
 

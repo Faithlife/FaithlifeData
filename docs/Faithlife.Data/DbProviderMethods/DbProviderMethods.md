@@ -1,6 +1,6 @@
 # DbProviderMethods constructor
 
-The default constructor.
+Creates an instance.
 
 ```csharp
 protected DbProviderMethods()

@@ -1,5 +1,7 @@
 # DbProviderMethods.Default field
 
+The default database access methods.
+
 ```csharp
 public static readonly DbProviderMethods Default;
 ```

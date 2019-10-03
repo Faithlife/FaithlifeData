@@ -1,35 +1,40 @@
-# DbConnectorCommand class
+# DbConnectorCommand structure
+
+Encapsulates the text and parameters of a database command.
 
 ```csharp
-public class DbConnectorCommand
+public struct DbConnectorCommand
 ```
 
 ## Public Members
 
 | name | description |
 | --- | --- |
-| [Create](DbConnectorCommand/Create.md)() |  |
-| [CreateAsync](DbConnectorCommand/CreateAsync.md)(…) |  |
-| [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)() |  |
-| [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)(…) |  |
-| [Execute](DbConnectorCommand/Execute.md)() |  |
-| [ExecuteAsync](DbConnectorCommand/ExecuteAsync.md)(…) |  |
-| [Query&lt;T&gt;](DbConnectorCommand/Query.md)() |  |
-| [Query&lt;T&gt;](DbConnectorCommand/Query.md)(…) |  |
-| [QueryAsync&lt;T&gt;](DbConnectorCommand/QueryAsync.md)(…) |  (2 methods) |
-| [QueryFirst&lt;T&gt;](DbConnectorCommand/QueryFirst.md)() |  |
-| [QueryFirst&lt;T&gt;](DbConnectorCommand/QueryFirst.md)(…) |  |
-| [QueryFirstAsync&lt;T&gt;](DbConnectorCommand/QueryFirstAsync.md)(…) |  (2 methods) |
-| [QueryFirstOrDefault&lt;T&gt;](DbConnectorCommand/QueryFirstOrDefault.md)() |  |
-| [QueryFirstOrDefault&lt;T&gt;](DbConnectorCommand/QueryFirstOrDefault.md)(…) |  |
-| [QueryFirstOrDefaultAsync&lt;T&gt;](DbConnectorCommand/QueryFirstOrDefaultAsync.md)(…) |  (2 methods) |
-| [QueryMultiple](DbConnectorCommand/QueryMultiple.md)() |  |
-| [QuerySingle&lt;T&gt;](DbConnectorCommand/QuerySingle.md)() |  |
-| [QuerySingle&lt;T&gt;](DbConnectorCommand/QuerySingle.md)(…) |  |
-| [QuerySingleAsync&lt;T&gt;](DbConnectorCommand/QuerySingleAsync.md)(…) |  (2 methods) |
-| [QuerySingleOrDefault&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefault.md)() |  |
-| [QuerySingleOrDefault&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefault.md)(…) |  |
-| [QuerySingleOrDefaultAsync&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefaultAsync.md)(…) |  (2 methods) |
+| [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
+| [Text](DbConnectorCommand/Text.md) { get; } | The text of the command. |
+| [Create](DbConnectorCommand/Create.md)() | Creates an IDbCommand from the text and parameters. |
+| [CreateAsync](DbConnectorCommand/CreateAsync.md)(…) | Creates an IDbCommand from the text and parameters. |
+| [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)() | Executes the query, reading one record at a time and converting it to the specified type. |
+| [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)(…) | Executes the query, reading one record at a time and converting it to the specified type with the specified delegate. |
+| [Execute](DbConnectorCommand/Execute.md)() | Executes the command, returning the number of rows affected. |
+| [ExecuteAsync](DbConnectorCommand/ExecuteAsync.md)(…) | Executes the command, returning the number of rows affected. |
+| [Query&lt;T&gt;](DbConnectorCommand/Query.md)() | Executes the query, reading every record and converting it to the specified type. |
+| [Query&lt;T&gt;](DbConnectorCommand/Query.md)(…) | Executes the query, reading every record and converting it to the specified type with the specified delegate. |
+| [QueryAsync&lt;T&gt;](DbConnectorCommand/QueryAsync.md)(…) | Executes the query, converting each record to the specified type. (2 methods) |
+| [QueryFirst&lt;T&gt;](DbConnectorCommand/QueryFirst.md)() | Executes the query, converting the first record to the specified type. |
+| [QueryFirst&lt;T&gt;](DbConnectorCommand/QueryFirst.md)(…) | Executes the query, converting the first record to the specified type with the specified delegate. |
+| [QueryFirstAsync&lt;T&gt;](DbConnectorCommand/QueryFirstAsync.md)(…) | Executes the query, converting the first record to the specified type. (2 methods) |
+| [QueryFirstOrDefault&lt;T&gt;](DbConnectorCommand/QueryFirstOrDefault.md)() | Executes the query, converting the first record to the specified type. |
+| [QueryFirstOrDefault&lt;T&gt;](DbConnectorCommand/QueryFirstOrDefault.md)(…) | Executes the query, converting the first record to the specified type with the specified delegate. |
+| [QueryFirstOrDefaultAsync&lt;T&gt;](DbConnectorCommand/QueryFirstOrDefaultAsync.md)(…) | Executes the query, converting the first record to the specified type. (2 methods) |
+| [QueryMultiple](DbConnectorCommand/QueryMultiple.md)() | Executes the query, preparing to read multiple result sets. |
+| [QueryMultipleAsync](DbConnectorCommand/QueryMultipleAsync.md)(…) | Executes the query, preparing to read multiple result sets. |
+| [QuerySingle&lt;T&gt;](DbConnectorCommand/QuerySingle.md)() | Executes the query, converting the first record to the specified type. |
+| [QuerySingle&lt;T&gt;](DbConnectorCommand/QuerySingle.md)(…) | Executes the query, converting the first record to the specified type with the specified delegate. |
+| [QuerySingleAsync&lt;T&gt;](DbConnectorCommand/QuerySingleAsync.md)(…) | Executes the query, converting the first record to the specified type. (2 methods) |
+| [QuerySingleOrDefault&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefault.md)() | Executes the query, converting the first record to the specified type. |
+| [QuerySingleOrDefault&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefault.md)(…) | Executes the query, converting the first record to the specified type with the specified delegate. |
+| [QuerySingleOrDefaultAsync&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefaultAsync.md)(…) | Executes the query, converting the first record to the specified type. (2 methods) |
 
 ## See Also
 

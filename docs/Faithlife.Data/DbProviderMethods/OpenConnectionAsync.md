@@ -1,5 +1,7 @@
 # DbProviderMethods.OpenConnectionAsync method
 
+Opens the connection asynchronously.
+
 ```csharp
 public virtual Task OpenConnectionAsync(IDbConnection connection, 
     CancellationToken cancellationToken)

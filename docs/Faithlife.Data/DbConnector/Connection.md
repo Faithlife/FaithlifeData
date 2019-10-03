@@ -6,10 +6,6 @@ The database connection.
 public abstract IDbConnection Connection { get; }
 ```
 
-## Return Value
-
-The database connection, or null if the connector is disposed.
-
 ## See Also
 
 * class [DbConnector](../DbConnector.md)

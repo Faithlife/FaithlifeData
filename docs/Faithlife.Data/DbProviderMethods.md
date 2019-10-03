@@ -1,5 +1,7 @@
 # DbProviderMethods class
 
+Provides provider-specific database access methods.
+
 ```csharp
 public class DbProviderMethods
 ```
@@ -8,21 +10,21 @@ public class DbProviderMethods
 
 | name | description |
 | --- | --- |
-| static readonly [Default](DbProviderMethods/Default.md) |  |
-| virtual [BeginTransactionAsync](DbProviderMethods/BeginTransactionAsync.md)(…) |  (2 methods) |
-| virtual [CommitTransactionAsync](DbProviderMethods/CommitTransactionAsync.md)(…) |  |
-| virtual [ExecuteNonQueryAsync](DbProviderMethods/ExecuteNonQueryAsync.md)(…) |  |
-| virtual [ExecuteReaderAsync](DbProviderMethods/ExecuteReaderAsync.md)(…) |  (2 methods) |
-| virtual [NextResultAsync](DbProviderMethods/NextResultAsync.md)(…) |  |
-| virtual [OpenConnectionAsync](DbProviderMethods/OpenConnectionAsync.md)(…) |  |
-| virtual [ReadAsync](DbProviderMethods/ReadAsync.md)(…) |  |
-| virtual [RollbackTransactionAsync](DbProviderMethods/RollbackTransactionAsync.md)(…) |  |
+| static readonly [Default](DbProviderMethods/Default.md) | The default database access methods. |
+| virtual [BeginTransactionAsync](DbProviderMethods/BeginTransactionAsync.md)(…) | Begins a transaction asynchronously. (2 methods) |
+| virtual [CommitTransactionAsync](DbProviderMethods/CommitTransactionAsync.md)(…) | Commits a transaction asynchronously. |
+| virtual [ExecuteNonQueryAsync](DbProviderMethods/ExecuteNonQueryAsync.md)(…) | Executes a non-query command asynchronously. |
+| virtual [ExecuteReaderAsync](DbProviderMethods/ExecuteReaderAsync.md)(…) | Executes a command query asynchronously. (2 methods) |
+| virtual [NextResultAsync](DbProviderMethods/NextResultAsync.md)(…) | Reads the next result asynchronously. |
+| virtual [OpenConnectionAsync](DbProviderMethods/OpenConnectionAsync.md)(…) | Opens the connection asynchronously. |
+| virtual [ReadAsync](DbProviderMethods/ReadAsync.md)(…) | Reads the next record asynchronously. |
+| virtual [RollbackTransactionAsync](DbProviderMethods/RollbackTransactionAsync.md)(…) | Rolls back a transaction asynchronously. |
 
 ## Protected Members
 
 | name | description |
 | --- | --- |
-| [DbProviderMethods](DbProviderMethods/DbProviderMethods.md)() | The default constructor. |
+| [DbProviderMethods](DbProviderMethods/DbProviderMethods.md)() | Creates an instance. |
 
 ## See Also
 

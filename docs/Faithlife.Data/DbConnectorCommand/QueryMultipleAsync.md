@@ -1,14 +1,15 @@
-# DbConnectorCommand.CreateAsync method
+# DbConnectorCommand.QueryMultipleAsync method
 
-Creates an IDbCommand from the text and parameters.
+Executes the query, preparing to read multiple result sets.
 
 ```csharp
-public Task<IDbCommand> CreateAsync(
+public Task<DbConnectorResultSets> QueryMultipleAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 
 ## See Also
 
+* class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

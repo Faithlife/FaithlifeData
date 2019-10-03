@@ -3,7 +3,7 @@
 Settings when creating a [`DbConnector`](DbConnector.md).
 
 ```csharp
-public sealed class DbConnectorSettings
+public class DbConnectorSettings
 ```
 
 ## Public Members
@@ -11,10 +11,10 @@ public sealed class DbConnectorSettings
 | name | description |
 | --- | --- |
 | [DbConnectorSettings](DbConnectorSettings/DbConnectorSettings.md)() | The default constructor. |
-| [AutoOpen](DbConnectorSettings/AutoOpen.md) { get; set; } | Automatically opens the connection. |
+| [AutoOpen](DbConnectorSettings/AutoOpen.md) { get; set; } | If true, automatically opens the connection. |
 | [CurrentTransaction](DbConnectorSettings/CurrentTransaction.md) { get; set; } | The current transaction of the connection. |
-| [LazyOpen](DbConnectorSettings/LazyOpen.md) { get; set; } | Do not actually open the connection until it is needed. |
-| [NoDispose](DbConnectorSettings/NoDispose.md) { get; set; } | Do not dispose the connection when the connector is disposed. |
+| [LazyOpen](DbConnectorSettings/LazyOpen.md) { get; set; } | If true, does not actually open the connection until it is needed. |
+| [NoDispose](DbConnectorSettings/NoDispose.md) { get; set; } | If true, does not dispose the connection when the connector is disposed. |
 | [ProviderMethods](DbConnectorSettings/ProviderMethods.md) { get; set; } | Provider-specific database methods. |
 | [WhenDisposed](DbConnectorSettings/WhenDisposed.md) { get; set; } | Called when the connector is disposed. |
 

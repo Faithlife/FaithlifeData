@@ -1,5 +1,7 @@
 # DbProviderMethods.NextResultAsync method
 
+Reads the next result asynchronously.
+
 ```csharp
 public virtual Task<bool> NextResultAsync(IDataReader reader, CancellationToken cancellationToken)
 ```

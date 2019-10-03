@@ -1,20 +1,21 @@
-# DbParameters class
+# DbParameters structure
+
+An immutable list of parameters.
 
 ```csharp
-public sealed class DbParameters : IReadOnlyList<ValueTuple<string, object>>
+public struct DbParameters : IReadOnlyList<ValueTuple<string, object>>
 ```
 
 ## Public Members
 
 | name | description |
 | --- | --- |
-| [DbParameters](DbParameters/DbParameters.md)() | Creates an empty list of parameters. |
-| [DbParameters](DbParameters/DbParameters.md)(…) | Creates a list of parameters. |
-| static [Create](DbParameters/Create.md)(…) | Creates a list of parameters. |
+| static readonly [Empty](DbParameters/Empty.md) | An empty list of parameters. |
+| static [Create](DbParameters/Create.md)(…) | Creates a list of parameters. (2 methods) |
 | static [FromDto](DbParameters/FromDto.md)(…) | Creates a list of parameters from the properties of a DTO. |
 | [Count](DbParameters/Count.md) { get; } | The number of parameters. |
 | [Item](DbParameters/Item.md) { get; } | The parameter at the specified index. |
-| [Add](DbParameters/Add.md)(…) | Adds a parameter. (2 methods) |
+| [Add](DbParameters/Add.md)(…) | Adds a parameter. (3 methods) |
 | [AddDto](DbParameters/AddDto.md)(…) | Adds the properties of a DTO as parameters. |
 | [GetEnumerator](DbParameters/GetEnumerator.md)() | Used to enumerate the parameters. |
 

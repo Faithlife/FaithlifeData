@@ -1,5 +1,7 @@
 # DbProviderMethods.ExecuteReaderAsync method (1 of 2)
 
+Executes a command query asynchronously.
+
 ```csharp
 public virtual Task<IDataReader> ExecuteReaderAsync(IDbCommand command, 
     CancellationToken cancellationToken)
@@ -13,6 +15,8 @@ public virtual Task<IDataReader> ExecuteReaderAsync(IDbCommand command,
 ---
 
 # DbProviderMethods.ExecuteReaderAsync method (2 of 2)
+
+Executes a command query asynchronously.
 
 ```csharp
 public virtual Task<IDataReader> ExecuteReaderAsync(IDbCommand command, 

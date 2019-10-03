@@ -1,9 +1,9 @@
-# DbParameters indexer
+# DbParameters.Empty field
 
-The parameter at the specified index.
+An empty list of parameters.
 
 ```csharp
-public ValueTuple<string, object> this[int index] { get; }
+public static readonly DbParameters Empty;
 ```
 
 ## See Also

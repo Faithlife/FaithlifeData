@@ -1,5 +1,7 @@
 # DbProviderMethods.RollbackTransactionAsync method
 
+Rolls back a transaction asynchronously.
+
 ```csharp
 public virtual Task RollbackTransactionAsync(IDbTransaction transaction, 
     CancellationToken cancellationToken)

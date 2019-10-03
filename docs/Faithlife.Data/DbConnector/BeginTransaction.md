@@ -8,7 +8,7 @@ public abstract IDisposable BeginTransaction()
 
 ## Return Value
 
-An !:IDisposable that should be disposed when the transaction has been committed or should be rolled back.
+An IDisposable that should be disposed when the transaction has been committed or should be rolled back.
 
 ## See Also
 
@@ -31,7 +31,7 @@ public abstract IDisposable BeginTransaction(IsolationLevel isolationLevel)
 
 ## Return Value
 
-An !:IDisposable that should be disposed when the transaction has been committed or should be rolled back.
+An IDisposable that should be disposed when the transaction has been committed or should be rolled back.
 
 ## See Also
 

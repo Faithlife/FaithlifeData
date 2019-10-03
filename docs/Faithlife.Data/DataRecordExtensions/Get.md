@@ -1,5 +1,7 @@
 # DataRecordExtensions.Get&lt;T&gt; method (1 of 6)
 
+Converts all record fields to the specified type.
+
 ```csharp
 public static T Get<T>(this IDataRecord record)
 ```
@@ -12,6 +14,8 @@ public static T Get<T>(this IDataRecord record)
 ---
 
 # DataRecordExtensions.Get&lt;T&gt; method (2 of 6)
+
+Converts the specified record field to the specified type.
 
 ```csharp
 public static T Get<T>(this IDataRecord record, int index)
@@ -26,6 +30,8 @@ public static T Get<T>(this IDataRecord record, int index)
 
 # DataRecordExtensions.Get&lt;T&gt; method (3 of 6)
 
+Converts the specified record field to the specified type.
+
 ```csharp
 public static T Get<T>(this IDataRecord record, string name)
 ```
@@ -39,8 +45,10 @@ public static T Get<T>(this IDataRecord record, string name)
 
 # DataRecordExtensions.Get&lt;T&gt; method (4 of 6)
 
+Converts the specified record fields to the specified type.
+
 ```csharp
-public static T Get<T>(this IDataRecord record, int index, int length)
+public static T Get<T>(this IDataRecord record, int index, int count)
 ```
 
 ## See Also
@@ -52,8 +60,10 @@ public static T Get<T>(this IDataRecord record, int index, int length)
 
 # DataRecordExtensions.Get&lt;T&gt; method (5 of 6)
 
+Converts the specified record fields to the specified type.
+
 ```csharp
-public static T Get<T>(this IDataRecord record, string name, int length)
+public static T Get<T>(this IDataRecord record, string name, int count)
 ```
 
 ## See Also
@@ -64,6 +74,8 @@ public static T Get<T>(this IDataRecord record, string name, int length)
 ---
 
 # DataRecordExtensions.Get&lt;T&gt; method (6 of 6)
+
+Converts the specified record fields to the specified type.
 
 ```csharp
 public static T Get<T>(this IDataRecord record, string fromName, string toName)

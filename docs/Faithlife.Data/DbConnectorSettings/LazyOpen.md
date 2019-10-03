@@ -1,6 +1,6 @@
 # DbConnectorSettings.LazyOpen property
 
-Do not actually open the connection until it is needed.
+If true, does not actually open the connection until it is needed.
 
 ```csharp
 public bool LazyOpen { get; set; }
@@ -8,7 +8,7 @@ public bool LazyOpen { get; set; }
 
 ## Remarks
 
-If this flag is set, [`OpenConnection`](../DbConnector/OpenConnection.md) doesn't immediately open the connection, but rather waits until the Connection property is first accessed.
+If this property is true, [`OpenConnection`](../DbConnector/OpenConnection.md) doesn't immediately open the connection, but rather waits until the Connection property is first accessed.
 
 ## See Also
 
