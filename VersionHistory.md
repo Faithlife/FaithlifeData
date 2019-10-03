@@ -8,6 +8,21 @@ Prefix the description of the change with `[major]`, `[minor]`, or `[patch]` in 
 
 ## Released
 
+### 0.200.0
+
+* [major] Eliminate `DataRecordUtility`.
+* [major] Rename `DbConnectorResultSet` to `DbConnectorResultSets`.
+* [major] Make `DbParameters` an immutable `struct`.
+* [major] Use `count` parameter name consistently.
+* [major] Support nullable reference types. Make some previously nullable parameters and properties non-nullable.
+* [minor] Add `QueryMultipleAsync`.
+* [minor] Add `EnumerateAsync`, which uses the new `IAsyncEnumerable` (.NET Standard 2.1).
+* [minor] Support index/range for data record access (.NET Standard 2.1).
+* [minor] Expose text and parameters of commands.
+* [patch] Support new async ADO.NET methods from .NET Standard 2.1.
+* [patch] Add XML documentation comments.
+* [patch] Improve NuGet package description and tags.
+
 ### 0.100.1
 
 * Fix bug with QueryFirst/Single and multiple result sets.
