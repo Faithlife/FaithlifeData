@@ -22,6 +22,18 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public async Task OpenConnectionTests()
+		{
+			await using var connector = DbConnector.Create(
+				new SQLiteConnection("Data Source=:memory:"),
+				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
+			using (connector.OpenConnection())
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			using (await connector.OpenConnectionAsync())
+				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+		}
+
+		[Test]
 		public void CommandTests()
 		{
 			using var connector = CreateConnector();
