@@ -45,34 +45,34 @@ namespace Faithlife.Data
 		/// Opens the connection.
 		/// </summary>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
-		public abstract IDisposable OpenConnection();
+		public abstract DbConnectionCloser OpenConnection();
 
 		/// <summary>
 		/// Opens the connection.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
-		public abstract ValueTask<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask<DbConnectionCloser> OpenConnectionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
-		public abstract IDisposable BeginTransaction();
+		public abstract DbTransactionDisposer BeginTransaction();
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
-		public abstract IDisposable BeginTransaction(IsolationLevel isolationLevel);
+		public abstract DbTransactionDisposer BeginTransaction(IsolationLevel isolationLevel);
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
-		public abstract ValueTask<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Begins a transaction.
@@ -80,7 +80,7 @@ namespace Faithlife.Data
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
-		public abstract ValueTask<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
+		public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Commits the current transaction.

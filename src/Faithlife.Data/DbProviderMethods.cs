@@ -28,6 +28,20 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Closes a connection asynchronously.
+		/// </summary>
+		public virtual ValueTask CloseConnectionAsync(IDbConnection connection)
+		{
+#if NETSTANDARD2_1
+			if (connection is DbConnection dbConnection)
+				return new ValueTask(dbConnection.CloseAsync());
+#endif
+
+			connection.Close();
+			return new ValueTask();
+		}
+
+		/// <summary>
 		/// Disposes a connection asynchronously.
 		/// </summary>
 		public virtual ValueTask DisposeConnectionAsync(IDbConnection connection)

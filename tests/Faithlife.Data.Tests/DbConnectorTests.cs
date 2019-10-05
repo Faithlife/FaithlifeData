@@ -22,15 +22,27 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
-		public async Task OpenConnectionTests()
+		public void OpenConnectionTwice()
+		{
+			using var connector = DbConnector.Create(
+				new SQLiteConnection("Data Source=:memory:"),
+				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
+			using (connector.OpenConnection())
+				connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			using (connector.OpenConnection())
+				connector.Command("create table Items2 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+		}
+
+		[Test]
+		public async Task OpenConnectionTwiceAsync()
 		{
 			await using var connector = DbConnector.Create(
 				new SQLiteConnection("Data Source=:memory:"),
 				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
-			using (connector.OpenConnection())
-				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
-			using (await connector.OpenConnectionAsync())
-				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			await using (connector.OpenConnection())
+				connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			await using (await connector.OpenConnectionAsync())
+				connector.Command("create table Items2 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 		}
 
 		[Test]
@@ -145,7 +157,7 @@ namespace Faithlife.Data.Tests
 			await using var connector = CreateConnector();
 			await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 
-			using (await connector.BeginTransactionAsync())
+			await using (await connector.BeginTransactionAsync())
 			{
 				await connector.Command("insert into Items (Name) values ('item1');").ExecuteAsync();
 				if (commit == true)
@@ -158,9 +170,9 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
-		public async Task IsolationLevelTests()
+		public void IsolationLevelTests()
 		{
-			await using var connector = CreateConnector();
+			using var connector = CreateConnector();
 			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 
 			using (connector.BeginTransaction(IsolationLevel.ReadCommitted))
@@ -169,13 +181,22 @@ namespace Faithlife.Data.Tests
 				connector.CommitTransaction();
 			}
 
-			using (await connector.BeginTransactionAsync(IsolationLevel.ReadCommitted))
+			connector.Command("select count(*) from Items;").QueryFirst<long>().Should().Be(1);
+		}
+
+		[Test]
+		public async Task IsolationLevelAsyncTests()
+		{
+			await using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+
+			await using (await connector.BeginTransactionAsync(IsolationLevel.ReadCommitted))
 			{
 				await connector.Command("insert into Items (Name) values ('item2');").ExecuteAsync();
 				await connector.CommitTransactionAsync();
 			}
 
-			connector.Command("select count(*) from Items;").QueryFirst<long>().Should().Be(2);
+			connector.Command("select count(*) from Items;").QueryFirst<long>().Should().Be(1);
 		}
 
 		[Test]

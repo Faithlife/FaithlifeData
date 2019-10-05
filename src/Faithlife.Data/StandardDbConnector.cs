@@ -43,7 +43,7 @@ namespace Faithlife.Data
 			return m_pendingLazyOpen ? LazyOpenConnectionAsync(cancellationToken) : new ValueTask<IDbConnection>(m_connection);
 		}
 
-		public override IDisposable OpenConnection()
+		public override DbConnectionCloser OpenConnection()
 		{
 			VerifyCanOpenConnection();
 
@@ -56,7 +56,7 @@ namespace Faithlife.Data
 			return new ConnectionCloser(this);
 		}
 
-		public override async ValueTask<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default)
+		public override async ValueTask<DbConnectionCloser> OpenConnectionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyCanOpenConnection();
 
@@ -69,28 +69,28 @@ namespace Faithlife.Data
 			return new ConnectionCloser(this);
 		}
 
-		public override IDisposable BeginTransaction()
+		public override DbTransactionDisposer BeginTransaction()
 		{
 			VerifyCanBeginTransaction();
 			m_transaction = Connection.BeginTransaction();
 			return new TransactionDisposer(this);
 		}
 
-		public override IDisposable BeginTransaction(IsolationLevel isolationLevel)
+		public override DbTransactionDisposer BeginTransaction(IsolationLevel isolationLevel)
 		{
 			VerifyCanBeginTransaction();
 			m_transaction = Connection.BeginTransaction(isolationLevel);
 			return new TransactionDisposer(this);
 		}
 
-		public override async ValueTask<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default)
+		public override async ValueTask<DbTransactionDisposer> BeginTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyCanBeginTransaction();
 			m_transaction = await m_providerMethods.BeginTransactionAsync(Connection, cancellationToken).ConfigureAwait(false);
 			return new TransactionDisposer(this);
 		}
 
-		public override async ValueTask<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+		public override async ValueTask<DbTransactionDisposer> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
 		{
 			VerifyCanBeginTransaction();
 			m_transaction = await m_providerMethods.BeginTransactionAsync(Connection, isolationLevel, cancellationToken).ConfigureAwait(false);
@@ -180,6 +180,21 @@ namespace Faithlife.Data
 			m_isConnectionOpen = false;
 		}
 
+		private async ValueTask CloseConnectionAsync()
+		{
+			VerifyNotDisposed();
+
+			if (!m_isConnectionOpen)
+				throw new InvalidOperationException("Connection must be open.");
+
+			if (m_pendingLazyOpen)
+				m_pendingLazyOpen = false;
+			else if (!m_noCloseConnection)
+				await m_providerMethods.CloseConnectionAsync(m_connection);
+
+			m_isConnectionOpen = false;
+		}
+
 		private void DisposeTransaction()
 		{
 			VerifyNotDisposed();
@@ -232,27 +247,51 @@ namespace Faithlife.Data
 			return m_transaction;
 		}
 
-		private sealed class ConnectionCloser : IDisposable
+		private sealed class ConnectionCloser : DbConnectionCloser
 		{
 			public ConnectionCloser(StandardDbConnector connector) => m_connector = connector;
 
-			public void Dispose()
+			public override void Dispose()
 			{
-				m_connector?.CloseConnection();
-				m_connector = null;
+				if (m_connector != null)
+				{
+					m_connector?.CloseConnection();
+					m_connector = null;
+				}
+			}
+
+			public override async ValueTask DisposeAsync()
+			{
+				if (m_connector != null)
+				{
+					await m_connector.CloseConnectionAsync().ConfigureAwait(false);
+					m_connector = null;
+				}
 			}
 
 			private StandardDbConnector? m_connector;
 		}
 
-		private sealed class TransactionDisposer : IDisposable
+		private sealed class TransactionDisposer : DbTransactionDisposer
 		{
 			public TransactionDisposer(StandardDbConnector connector) => m_connector = connector;
 
-			public void Dispose()
+			public override void Dispose()
 			{
-				m_connector?.DisposeTransaction();
-				m_connector = null;
+				if (m_connector != null)
+				{
+					m_connector.DisposeTransaction();
+					m_connector = null;
+				}
+			}
+
+			public override async ValueTask DisposeAsync()
+			{
+				if (m_connector != null)
+				{
+					await m_connector.DisposeTransactionAsync().ConfigureAwait(false);
+					m_connector = null;
+				}
 			}
 
 			private StandardDbConnector? m_connector;
