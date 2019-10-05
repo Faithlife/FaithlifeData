@@ -28,7 +28,7 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Disposes a transaction asynchronously.
+		/// Disposes a connection asynchronously.
 		/// </summary>
 		public virtual ValueTask DisposeConnectionAsync(IDbConnection connection)
 		{
@@ -159,6 +159,20 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Disposes a command asynchronously.
+		/// </summary>
+		public virtual ValueTask DisposeCommandAsync(IDbCommand command)
+		{
+#if NETSTANDARD2_1
+			if (command is DbCommand dbCommand)
+				return dbCommand.DisposeAsync();
+#endif
+
+			command.Dispose();
+			return new ValueTask();
+		}
+
+		/// <summary>
 		/// Reads the next record asynchronously.
 		/// </summary>
 		public virtual ValueTask<bool> ReadAsync(IDataReader reader, CancellationToken cancellationToken)
@@ -178,6 +192,20 @@ namespace Faithlife.Data
 				return new ValueTask<bool>(dbReader.NextResultAsync(cancellationToken));
 
 			return new ValueTask<bool>(reader.NextResult());
+		}
+
+		/// <summary>
+		/// Disposes a reader asynchronously.
+		/// </summary>
+		public virtual ValueTask DisposeReaderAsync(IDataReader reader)
+		{
+#if NETSTANDARD2_1
+			if (reader is DbDataReader dbReader)
+				return dbReader.DisposeAsync();
+#endif
+
+			reader.Dispose();
+			return new ValueTask();
 		}
 
 		/// <summary>

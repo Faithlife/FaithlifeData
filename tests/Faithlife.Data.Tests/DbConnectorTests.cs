@@ -205,7 +205,7 @@ namespace Faithlife.Data.Tests
 				select ItemId from Items order by Name;
 				select ItemId from Items where Name = 'item2';";
 
-			using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
+			await using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
 			{
 				long id1 = (await resultSet.ReadAsync<long>()).First();
 				long id2 = (await resultSet.ReadAsync<long>()).Single();
@@ -213,7 +213,7 @@ namespace Faithlife.Data.Tests
 				Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
 			}
 
-			using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
+			await using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
 			{
 				long id1 = await FirstAsync(resultSet.EnumerateAsync<long>());
 				long id2 = await FirstAsync(resultSet.EnumerateAsync<long>());

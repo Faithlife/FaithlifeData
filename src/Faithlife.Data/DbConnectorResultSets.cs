@@ -10,7 +10,7 @@ namespace Faithlife.Data
 	/// <summary>
 	/// Encapsulates multiple result sets.
 	/// </summary>
-	public sealed class DbConnectorResultSets : IDisposable
+	public sealed class DbConnectorResultSets : IDisposable, IAsyncDisposable
 	{
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type.
@@ -67,6 +67,15 @@ namespace Faithlife.Data
 		{
 			m_reader.Dispose();
 			m_command.Dispose();
+		}
+
+		/// <summary>
+		/// Disposes resources used by the result sets.
+		/// </summary>
+		public async ValueTask DisposeAsync()
+		{
+			await m_methods.DisposeReaderAsync(m_reader).ConfigureAwait(false);
+			await m_methods.DisposeCommandAsync(m_command).ConfigureAwait(false);
 		}
 
 		internal DbConnectorResultSets(IDbCommand command, IDataReader reader, DbProviderMethods methods)
