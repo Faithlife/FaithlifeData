@@ -25,7 +25,6 @@ namespace Faithlife.Data.Tests
 		public void CommandTests()
 		{
 			using (var connector = CreateConnector())
-			using (connector.OpenConnection())
 			{
 				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 				connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").Execute().Should().Be(2);
@@ -55,7 +54,6 @@ namespace Faithlife.Data.Tests
 		public async Task CommandAsyncTests()
 		{
 			using (var connector = CreateConnector())
-			using (await connector.OpenConnectionAsync())
 			{
 				(await connector.Command("create table Items (ItemId bigint primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
 				(await connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").ExecuteAsync()).Should().Be(2);
@@ -87,7 +85,6 @@ namespace Faithlife.Data.Tests
 		public void ParametersTests()
 		{
 			using (var connector = CreateConnector())
-			using (connector.OpenConnection())
 			{
 				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 				connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
@@ -101,7 +98,6 @@ namespace Faithlife.Data.Tests
 		public async Task ParametersAsyncTests()
 		{
 			using (var connector = CreateConnector())
-			using (await connector.OpenConnectionAsync())
 			{
 				(await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
 				(await connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
@@ -115,7 +111,6 @@ namespace Faithlife.Data.Tests
 		public void ParametersFromDtoTests()
 		{
 			using (var connector = CreateConnector())
-			using (connector.OpenConnection())
 			{
 				const string item1 = "one";
 				const string item2 = "two";
@@ -130,7 +125,6 @@ namespace Faithlife.Data.Tests
 		public void TransactionTests([Values] bool? commit)
 		{
 			using (var connector = CreateConnector())
-			using (connector.OpenConnection())
 			{
 				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 
@@ -151,7 +145,6 @@ namespace Faithlife.Data.Tests
 		public async Task TransactionAsyncTests([Values] bool? commit)
 		{
 			using (var connector = CreateConnector())
-			using (await connector.OpenConnectionAsync())
 			{
 				await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 
@@ -172,7 +165,6 @@ namespace Faithlife.Data.Tests
 		public async Task IsolationLevelTests()
 		{
 			using (var connector = CreateConnector())
-			using (connector.OpenConnection())
 			{
 				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 
@@ -196,7 +188,6 @@ namespace Faithlife.Data.Tests
 		public void QueryMultipleTests()
 		{
 			using (var connector = CreateConnector())
-			using (connector.OpenConnection())
 			{
 				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 				connector.Command("insert into Items (Name) values ('item1'), ('item2');").Execute();
@@ -218,7 +209,6 @@ namespace Faithlife.Data.Tests
 		public async Task QueryMultipleAsyncTests()
 		{
 			using (var connector = CreateConnector())
-			using (await connector.OpenConnectionAsync())
 			{
 				await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 				await connector.Command("insert into Items (Name) values ('item1'), ('item2');").ExecuteAsync();
@@ -254,7 +244,7 @@ namespace Faithlife.Data.Tests
 
 		private DbConnector CreateConnector() => DbConnector.Create(
 			new SQLiteConnection("Data Source=:memory:"),
-			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
+			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods(), AutoOpen = true, LazyOpen = true });
 
 		private string ToUpper(IDataRecord x) => x.Get<string>().ToUpperInvariant();
 	}
