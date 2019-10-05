@@ -39,7 +39,7 @@ namespace Faithlife.Data
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The database connection, or null if the connector is disposed.</returns>
 		/// <remarks>Allows a lazy-open connector to asynchronously open the connection.</remarks>
-		public abstract Task<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Opens the connection.
@@ -52,7 +52,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
-		public abstract Task<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Begins a transaction.
@@ -72,7 +72,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
-		public abstract Task<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Begins a transaction.
@@ -80,7 +80,7 @@ namespace Faithlife.Data
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
-		public abstract Task<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
+		public abstract ValueTask<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Commits the current transaction.
@@ -91,7 +91,7 @@ namespace Faithlife.Data
 		/// Commits the current transaction.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		public abstract Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Rolls back the current transaction.
@@ -102,7 +102,7 @@ namespace Faithlife.Data
 		/// Rolls back the current transaction.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		public abstract Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+		public abstract ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Creates a new command.

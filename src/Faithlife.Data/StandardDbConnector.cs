@@ -29,14 +29,7 @@ namespace Faithlife.Data
 			get
 			{
 				VerifyNotDisposed();
-
-				if (m_pendingLazyOpen)
-				{
-					m_pendingLazyOpen = false;
-					m_connection.Open();
-				}
-
-				return m_connection;
+				return m_pendingLazyOpen ? LazyOpenConnection() : m_connection;
 			}
 		}
 
@@ -44,17 +37,10 @@ namespace Faithlife.Data
 
 		public override DbProviderMethods ProviderMethods => m_providerMethods;
 
-		public override async Task<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
+		public override ValueTask<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyNotDisposed();
-
-			if (m_pendingLazyOpen)
-			{
-				m_pendingLazyOpen = false;
-				await m_providerMethods.OpenConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
-			}
-
-			return m_connection;
+			return m_pendingLazyOpen ? LazyOpenConnectionAsync(cancellationToken) : new ValueTask<IDbConnection>(m_connection);
 		}
 
 		public override IDisposable OpenConnection()
@@ -70,7 +56,7 @@ namespace Faithlife.Data
 			return new ConnectionCloser(this);
 		}
 
-		public override async Task<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default)
+		public override async ValueTask<IDisposable> OpenConnectionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyCanOpenConnection();
 
@@ -97,14 +83,14 @@ namespace Faithlife.Data
 			return new TransactionDisposer(this);
 		}
 
-		public override async Task<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default)
+		public override async ValueTask<IDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyCanBeginTransaction();
 			m_transaction = await m_providerMethods.BeginTransactionAsync(Connection, cancellationToken).ConfigureAwait(false);
 			return new TransactionDisposer(this);
 		}
 
-		public override async Task<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+		public override async ValueTask<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
 		{
 			VerifyCanBeginTransaction();
 			m_transaction = await m_providerMethods.BeginTransactionAsync(Connection, isolationLevel, cancellationToken).ConfigureAwait(false);
@@ -117,7 +103,7 @@ namespace Faithlife.Data
 			DisposeTransaction();
 		}
 
-		public override async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+		public override async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			await m_providerMethods.CommitTransactionAsync(VerifyGetTransaction(), cancellationToken).ConfigureAwait(false);
 			DisposeTransaction();
@@ -129,7 +115,7 @@ namespace Faithlife.Data
 			DisposeTransaction();
 		}
 
-		public override async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+		public override async ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			await m_providerMethods.RollbackTransactionAsync(VerifyGetTransaction(), cancellationToken).ConfigureAwait(false);
 			DisposeTransaction();
@@ -148,6 +134,20 @@ namespace Faithlife.Data
 
 				m_isDisposed = true;
 			}
+		}
+
+		private IDbConnection LazyOpenConnection()
+		{
+			m_pendingLazyOpen = false;
+			m_connection.Open();
+			return m_connection;
+		}
+
+		private async ValueTask<IDbConnection> LazyOpenConnectionAsync(CancellationToken cancellationToken)
+		{
+			m_pendingLazyOpen = false;
+			await m_providerMethods.OpenConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
+			return m_connection;
 		}
 
 		private void CloseConnection()

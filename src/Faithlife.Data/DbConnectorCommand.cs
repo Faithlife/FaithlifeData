@@ -35,7 +35,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
-		public async Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
+		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			return await m_connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
@@ -118,55 +118,55 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, converting each record to the specified type.
 		/// </summary>
-		public Task<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
+		public ValueTask<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting each record to the specified type with the specified delegate.
 		/// </summary>
-		public Task<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+		public ValueTask<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoQueryAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
-		public Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: false, orDefault: false, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
-		public Task<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
-		public Task<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: false, orDefault: true, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
-		public Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
-		public Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: true, orDefault: false, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
-		public Task<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false, cancellationToken);
 
 		/// <summary>
@@ -174,7 +174,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
-		public Task<T> QuerySingleOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QuerySingleOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: true, orDefault: true, cancellationToken);
 
 		/// <summary>
@@ -182,7 +182,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
-		public Task<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+		public ValueTask<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true, cancellationToken);
 
 		/// <summary>
@@ -221,7 +221,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
-		public async Task<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
+		public async ValueTask<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
 		{
 			var methods = m_connector.ProviderMethods;
 			var command = Create();
@@ -241,7 +241,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
 		/// </summary>
-		public async Task<IDbCommand> CreateAsync(CancellationToken cancellationToken = default)
+		public async ValueTask<IDbCommand> CreateAsync(CancellationToken cancellationToken = default)
 		{
 			Validate();
 			var connection = await m_connector.GetConnectionAsync(cancellationToken).ConfigureAwait(false);
@@ -328,7 +328,7 @@ namespace Faithlife.Data
 			return value;
 		}
 
-		private async Task<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
+		private async ValueTask<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 
@@ -346,7 +346,7 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private async Task<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
+		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;

@@ -6,6 +6,10 @@ namespace Faithlife.Data.Tests
 {
 	public sealed class SqliteProviderMethods : DbProviderMethods
 	{
-		public override async Task OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken) => connection.Open();
+		public override ValueTask OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken)
+		{
+			connection.Open();
+			return new ValueTask();
+		}
 	}
 }

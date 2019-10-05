@@ -26,13 +26,13 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type.
 		/// </summary>
-		public Task<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default) =>
+		public ValueTask<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default) =>
 			DoReadAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type with the specified delegate.
 		/// </summary>
-		public Task<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
+		public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoReadAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		private async Task<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
+		private async ValueTask<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
 		{
 			if (m_done)
 				throw new InvalidOperationException("No more results.");
