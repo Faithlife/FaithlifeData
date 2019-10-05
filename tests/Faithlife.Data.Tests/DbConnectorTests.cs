@@ -59,10 +59,8 @@ namespace Faithlife.Data.Tests
 				(await connector.Command("insert into Items (Name) values ('item1'); insert into Items (Name) values ('item2');").ExecuteAsync()).Should().Be(2);
 				(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("item1", "item2");
 				(await connector.Command("select Name from Items order by ItemId;").QueryAsync(ToUpper)).Should().Equal("ITEM1", "ITEM2");
-#if NETCOREAPP3_0
 				(await ToListAsync(connector.Command("select Name from Items order by ItemId;").EnumerateAsync<string>())).Should().Equal("item1", "item2");
 				(await ToListAsync(connector.Command("select Name from Items order by ItemId;").EnumerateAsync(ToUpper))).Should().Equal("ITEM1", "ITEM2");
-#endif
 				(await connector.Command("select Name from Items order by ItemId;").QueryFirstAsync<string>()).Should().Be("item1");
 				(await connector.Command("select Name from Items order by ItemId;").QueryFirstAsync(ToUpper)).Should().Be("ITEM1");
 				(await connector.Command("select Name from Items order by ItemId;").QueryFirstOrDefaultAsync<string>()).Should().Be("item1");
@@ -232,7 +230,6 @@ namespace Faithlife.Data.Tests
 			Invoking(() => default(DbConnectorCommand).Create()).Should().Throw<InvalidOperationException>();
 		}
 
-#if NETCOREAPP3_0
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
@@ -240,7 +237,6 @@ namespace Faithlife.Data.Tests
 				list.Add(item);
 			return list;
 		}
-#endif
 
 		private DbConnector CreateConnector() => DbConnector.Create(
 			new SQLiteConnection("Data Source=:memory:"),

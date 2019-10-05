@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-#if NETSTANDARD2_1
 using System.Runtime.CompilerServices;
-#endif
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -199,7 +197,6 @@ namespace Faithlife.Data
 		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
 			DoEnumerate(read ?? throw new ArgumentNullException(nameof(read)));
 
-#if NETSTANDARD2_1
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type.
 		/// </summary>
@@ -211,7 +208,6 @@ namespace Faithlife.Data
 		/// </summary>
 		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
 			DoEnumerateAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
-#endif
 
 		/// <summary>
 		/// Executes the query, preparing to read multiple result sets.
@@ -387,7 +383,6 @@ namespace Faithlife.Data
 			} while (reader.NextResult());
 		}
 
-#if NETSTANDARD2_1
 		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? read, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
@@ -401,7 +396,6 @@ namespace Faithlife.Data
 					yield return read != null ? read(reader) : reader.Get<T>();
 			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 		}
-#endif
 
 		private readonly DbConnector m_connector;
 	}

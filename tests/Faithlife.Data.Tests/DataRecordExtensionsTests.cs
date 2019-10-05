@@ -185,20 +185,16 @@ namespace Faithlife.Data.Tests
 
 			reader.Get<(string?, int, long, bool, float, double)>(0, 6)
 				.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
-#if NETCOREAPP3_0
 			reader.Get<(string?, int, long, bool, float, double)>(..^1)
 				.Should().Be((s_record.TheString, s_record.TheInt32, s_record.TheInt64, s_record.TheBool, s_record.TheSingle, s_record.TheDouble));
-#endif
 
 			// get nulls
 			reader.Read().Should().BeTrue();
 
 			reader.Get<(string?, int?, long?, bool?, float?, double?)>(0, 6)
 				.Should().Be((null, null, null, null, null, null));
-#if NETCOREAPP3_0
 			reader.Get<(string?, int?, long?, bool?, float?, double?)>(..6)
 				.Should().Be((null, null, null, null, null, null));
-#endif
 		}
 
 		[Test]
@@ -412,9 +408,7 @@ namespace Faithlife.Data.Tests
 			reader.Read().Should().BeTrue();
 			reader.Get<long>(2).Should().Be(s_record.TheInt64);
 			reader.Get<long>("TheInt64").Should().Be(s_record.TheInt64);
-#if NETCOREAPP3_0
 			reader.Get<long>(^5).Should().Be(s_record.TheInt64);
-#endif
 		}
 
 		[Test]
@@ -427,9 +421,7 @@ namespace Faithlife.Data.Tests
 
 			reader.Read().Should().BeTrue();
 			reader.Get<(long, bool)>(2, 2).Should().Be((s_record.TheInt64, s_record.TheBool));
-#if NETCOREAPP3_0
 			reader.Get<(long, bool)>(2..4).Should().Be((s_record.TheInt64, s_record.TheBool));
-#endif
 			reader.Get<(long, bool)>("TheInt64", 2).Should().Be((s_record.TheInt64, s_record.TheBool));
 			reader.Get<(long, bool)>("TheInt64", "TheBool").Should().Be((s_record.TheInt64, s_record.TheBool));
 		}

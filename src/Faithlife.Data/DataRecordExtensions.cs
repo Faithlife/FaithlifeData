@@ -56,7 +56,6 @@ namespace Faithlife.Data
 			return Get<T>(record, fromIndex, toIndex - fromIndex + 1);
 		}
 
-#if NETSTANDARD2_1
 		/// <summary>
 		/// Converts the specified record field to the specified type.
 		/// </summary>
@@ -74,6 +73,5 @@ namespace Faithlife.Data
 			var (index, count) = range.GetOffsetAndLength(record.FieldCount);
 			return Get<T>(record, index, count);
 		}
-#endif
 	}
 }
