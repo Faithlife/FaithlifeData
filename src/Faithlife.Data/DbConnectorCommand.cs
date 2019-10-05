@@ -303,6 +303,24 @@ namespace Faithlife.Data
 			return list;
 		}
 
+		private async ValueTask<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
+		{
+			var methods = m_connector.ProviderMethods;
+
+			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+
+			var list = new List<T>();
+
+			do
+			{
+				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
+					list.Add(read != null ? read(reader) : reader.Get<T>());
+			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+
+			return list;
+		}
+
 		[return: MaybeNull]
 		private T DoQueryFirst<T>(Func<IDataRecord, T>? read, bool single, bool orDefault)
 		{
@@ -326,24 +344,6 @@ namespace Faithlife.Data
 				throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
 
 			return value;
-		}
-
-		private async ValueTask<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
-		{
-			var methods = m_connector.ProviderMethods;
-
-			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
-
-			var list = new List<T>();
-
-			do
-			{
-				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-					list.Add(read != null ? read(reader) : reader.Get<T>());
-			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
-
-			return list;
 		}
 
 		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
