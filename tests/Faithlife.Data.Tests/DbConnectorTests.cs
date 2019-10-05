@@ -190,13 +190,22 @@ namespace Faithlife.Data.Tests
 				connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 				connector.Command("insert into Items (Name) values ('item1'), ('item2');").Execute();
 
-				using (var resultSet = connector.Command(@"
-					select ItemId from Items where Name = 'item1';
-					select ItemId from Items where Name = 'item2';
-					").QueryMultiple())
+				const string sql = @"
+					select ItemId from Items order by Name;
+					select ItemId from Items where Name = 'item2';";
+
+				using (var resultSet = connector.Command(sql).QueryMultiple())
 				{
-					long id1 = resultSet.Read<long>().Single();
+					long id1 = resultSet.Read<long>().First();
 					long id2 = resultSet.Read<long>().Single();
+					id1.Should().BeLessThan(id2);
+					Invoking(() => resultSet.Read(x => 0)).Should().Throw<InvalidOperationException>();
+				}
+
+				using (var resultSet = connector.Command(sql).QueryMultiple())
+				{
+					long id1 = resultSet.Enumerate<long>().First();
+					long id2 = resultSet.Enumerate<long>().Single();
 					id1.Should().BeLessThan(id2);
 					Invoking(() => resultSet.Read(x => 0)).Should().Throw<InvalidOperationException>();
 				}
@@ -211,13 +220,22 @@ namespace Faithlife.Data.Tests
 				await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 				await connector.Command("insert into Items (Name) values ('item1'), ('item2');").ExecuteAsync();
 
-				using (var resultSet = await connector.Command(@"
-					select ItemId from Items where Name = 'item1';
-					select ItemId from Items where Name = 'item2';
-					").QueryMultipleAsync())
+				const string sql = @"
+					select ItemId from Items order by Name;
+					select ItemId from Items where Name = 'item2';";
+
+				using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
 				{
-					long id1 = (await resultSet.ReadAsync<long>()).Single();
+					long id1 = (await resultSet.ReadAsync<long>()).First();
 					long id2 = (await resultSet.ReadAsync<long>()).Single();
+					id1.Should().BeLessThan(id2);
+					Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
+				}
+
+				using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
+				{
+					long id1 = await FirstAsync(resultSet.EnumerateAsync<long>());
+					long id2 = await FirstAsync(resultSet.EnumerateAsync<long>());
 					id1.Should().BeLessThan(id2);
 					Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
 				}
@@ -236,6 +254,13 @@ namespace Faithlife.Data.Tests
 			await foreach (var item in items)
 				list.Add(item);
 			return list;
+		}
+
+		private static async Task<T> FirstAsync<T>(IAsyncEnumerable<T> items)
+		{
+			await foreach (var item in items)
+				return item;
+			throw new InvalidOperationException();
 		}
 
 		private DbConnector CreateConnector() => DbConnector.Create(
