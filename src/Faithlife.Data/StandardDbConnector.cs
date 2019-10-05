@@ -106,7 +106,7 @@ namespace Faithlife.Data
 		public override async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			await m_providerMethods.CommitTransactionAsync(VerifyGetTransaction(), cancellationToken).ConfigureAwait(false);
-			DisposeTransaction();
+			await DisposeTransactionAsync().ConfigureAwait(false);
 		}
 
 		public override void RollbackTransaction()
@@ -118,7 +118,7 @@ namespace Faithlife.Data
 		public override async ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			await m_providerMethods.RollbackTransactionAsync(VerifyGetTransaction(), cancellationToken).ConfigureAwait(false);
-			DisposeTransaction();
+			await DisposeTransactionAsync().ConfigureAwait(false);
 		}
 
 		public override void Dispose()
@@ -129,6 +129,21 @@ namespace Faithlife.Data
 
 				if (!m_noDisposeConnection)
 					m_connection.Dispose();
+
+				m_whenDisposed?.Invoke();
+
+				m_isDisposed = true;
+			}
+		}
+
+		public override async ValueTask DisposeAsync()
+		{
+			if (!m_isDisposed)
+			{
+				await DisposeTransactionAsync().ConfigureAwait(false);
+
+				if (!m_noDisposeConnection)
+					await m_providerMethods.DisposeConnectionAsync(m_connection).ConfigureAwait(false);
 
 				m_whenDisposed?.Invoke();
 
@@ -169,8 +184,17 @@ namespace Faithlife.Data
 		{
 			VerifyNotDisposed();
 
-			if (!m_noDisposeTransaction)
-				m_transaction?.Dispose();
+			if (!m_noDisposeTransaction && m_transaction != null)
+				m_transaction.Dispose();
+			m_transaction = null;
+		}
+
+		private async ValueTask DisposeTransactionAsync()
+		{
+			VerifyNotDisposed();
+
+			if (!m_noDisposeTransaction && m_transaction != null)
+				await m_providerMethods.DisposeTransactionAsync(m_transaction).ConfigureAwait(false);
 			m_transaction = null;
 		}
 

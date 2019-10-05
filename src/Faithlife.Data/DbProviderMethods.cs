@@ -28,6 +28,20 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Disposes a transaction asynchronously.
+		/// </summary>
+		public virtual ValueTask DisposeConnectionAsync(IDbConnection connection)
+		{
+#if NETSTANDARD2_1
+			if (connection is DbConnection dbConnection)
+				return dbConnection.DisposeAsync();
+#endif
+
+			connection.Dispose();
+			return new ValueTask();
+		}
+
+		/// <summary>
 		/// Begins a transaction asynchronously.
 		/// </summary>
 		public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken)
@@ -86,6 +100,20 @@ namespace Faithlife.Data
 #endif
 
 			transaction.Rollback();
+			return new ValueTask();
+		}
+
+		/// <summary>
+		/// Disposes a transaction asynchronously.
+		/// </summary>
+		public virtual ValueTask DisposeTransactionAsync(IDbTransaction transaction)
+		{
+#if NETSTANDARD2_1
+			if (transaction is DbTransaction dbTransaction)
+				return dbTransaction.DisposeAsync();
+#endif
+
+			transaction.Dispose();
 			return new ValueTask();
 		}
 

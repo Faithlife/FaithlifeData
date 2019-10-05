@@ -8,7 +8,7 @@ namespace Faithlife.Data
 	/// <summary>
 	/// Encapsulates a database connection and any current transaction.
 	/// </summary>
-	public abstract class DbConnector : IDisposable
+	public abstract class DbConnector : IDisposable, IAsyncDisposable
 	{
 		/// <summary>
 		/// Creates a new DbConnector.
@@ -128,6 +128,11 @@ namespace Faithlife.Data
 		/// Disposes the connector.
 		/// </summary>
 		public abstract void Dispose();
+
+		/// <summary>
+		/// Disposes the connector.
+		/// </summary>
+		public abstract ValueTask DisposeAsync();
 
 		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 	}
