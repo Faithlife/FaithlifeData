@@ -306,7 +306,7 @@ namespace Faithlife.Data
 		[return: MaybeNull]
 		private T DoQueryFirst<T>(Func<IDataRecord, T>? read, bool single, bool orDefault)
 		{
-			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
+			var commandBehavior = single ? CommandBehavior.SingleResult : CommandBehavior.SingleResult | CommandBehavior.SingleRow;
 
 			using var command = Create();
 			using var reader = command.ExecuteReader(commandBehavior);
@@ -349,7 +349,7 @@ namespace Faithlife.Data
 		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
-			var commandBehavior = single ? CommandBehavior.SingleResult | CommandBehavior.SingleRow : CommandBehavior.SingleResult;
+			var commandBehavior = single ? CommandBehavior.SingleResult : CommandBehavior.SingleResult | CommandBehavior.SingleRow;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			using var reader = await methods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false);
