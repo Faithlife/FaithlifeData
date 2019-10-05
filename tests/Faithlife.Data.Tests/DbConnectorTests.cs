@@ -22,27 +22,23 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
-		public void OpenConnectionTwice()
+		public void OpenConnection()
 		{
 			using var connector = DbConnector.Create(
 				new SQLiteConnection("Data Source=:memory:"),
 				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
 			using (connector.OpenConnection())
 				connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
-			using (connector.OpenConnection())
-				connector.Command("create table Items2 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 		}
 
 		[Test]
-		public async Task OpenConnectionTwiceAsync()
+		public async Task OpenConnectionAsync()
 		{
 			await using var connector = DbConnector.Create(
 				new SQLiteConnection("Data Source=:memory:"),
 				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
 			await using (connector.OpenConnection())
-				connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
-			await using (await connector.OpenConnectionAsync())
-				connector.Command("create table Items2 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+				(await connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
 		}
 
 		[Test]

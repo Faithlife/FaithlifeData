@@ -19,7 +19,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="SQLite" Version="3.13.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.111" />
+    <PackageReference Include="Faithlife.System.Data.SQLite" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
