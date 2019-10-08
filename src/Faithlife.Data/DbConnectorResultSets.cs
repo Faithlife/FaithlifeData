@@ -21,8 +21,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type with the specified delegate.
 		/// </summary>
-		public IReadOnlyList<T> Read<T>(Func<IDataRecord, T> read) =>
-			DoRead(read ?? throw new ArgumentNullException(nameof(read)));
+		public IReadOnlyList<T> Read<T>(Func<IDataRecord, T> map) =>
+			DoRead(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type.
@@ -33,8 +33,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type with the specified delegate.
 		/// </summary>
-		public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoReadAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
+		public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoReadAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type.
@@ -45,8 +45,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
-		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
-			DoEnumerate(read ?? throw new ArgumentNullException(nameof(read)));
+		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> map) =>
+			DoEnumerate(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type.
@@ -57,8 +57,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
-		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoEnumerateAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
+		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoEnumerateAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
 		/// Disposes resources used by the result sets.
@@ -85,7 +85,7 @@ namespace Faithlife.Data
 			m_methods = methods;
 		}
 
-		private IReadOnlyList<T> DoRead<T>(Func<IDataRecord, T>? read)
+		private IReadOnlyList<T> DoRead<T>(Func<IDataRecord, T>? map)
 		{
 			if (m_next && !m_reader.NextResult())
 				throw CreateNoMoreResultsException();
@@ -93,11 +93,11 @@ namespace Faithlife.Data
 
 			var list = new List<T>();
 			while (m_reader.Read())
-				list.Add(read != null ? read(m_reader) : m_reader.Get<T>());
+				list.Add(map != null ? map(m_reader) : m_reader.Get<T>());
 			return list;
 		}
 
-		private async ValueTask<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
+		private async ValueTask<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T>? map, CancellationToken cancellationToken)
 		{
 			if (m_next && !await m_methods.NextResultAsync(m_reader, cancellationToken).ConfigureAwait(false))
 				throw CreateNoMoreResultsException();
@@ -105,28 +105,28 @@ namespace Faithlife.Data
 
 			var list = new List<T>();
 			while (await m_methods.ReadAsync(m_reader, cancellationToken).ConfigureAwait(false))
-				list.Add(read != null ? read(m_reader) : m_reader.Get<T>());
+				list.Add(map != null ? map(m_reader) : m_reader.Get<T>());
 			return list;
 		}
 
-		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? read)
+		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? map)
 		{
 			if (m_next && !m_reader.NextResult())
 				throw CreateNoMoreResultsException();
 			m_next = true;
 
 			while (m_reader.Read())
-				yield return read != null ? read(m_reader) : m_reader.Get<T>();
+				yield return map != null ? map(m_reader) : m_reader.Get<T>();
 		}
 
-		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? read, [EnumeratorCancellation] CancellationToken cancellationToken)
+		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? map, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
 			if (m_next && !await m_methods.NextResultAsync(m_reader, cancellationToken).ConfigureAwait(false))
 				throw CreateNoMoreResultsException();
 			m_next = true;
 
 			while (m_reader.Read())
-				yield return read != null ? read(m_reader) : m_reader.Get<T>();
+				yield return map != null ? map(m_reader) : m_reader.Get<T>();
 		}
 
 		private static InvalidOperationException CreateNoMoreResultsException() =>

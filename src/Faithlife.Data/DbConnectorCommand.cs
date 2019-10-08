@@ -50,8 +50,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, reading every record and converting it to the specified type with the specified delegate.
 		/// </summary>
-		public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> read) =>
-			DoQuery(read ?? throw new ArgumentNullException(nameof(read)));
+		public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> map) =>
+			DoQuery(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -64,8 +64,8 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
-		public T QueryFirst<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false);
+		public T QueryFirst<T>(Func<IDataRecord, T> map) =>
+			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -80,8 +80,8 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		[return: MaybeNull]
-		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true);
+		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> map) =>
+			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: true);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -94,8 +94,8 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
-		public T QuerySingle<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false);
+		public T QuerySingle<T>(Func<IDataRecord, T> map) =>
+			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: false);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -112,8 +112,8 @@ namespace Faithlife.Data
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
 		[return: MaybeNull]
-		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> read) =>
-			DoQueryFirst(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true);
+		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> map) =>
+			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: true);
 
 		/// <summary>
 		/// Executes the query, converting each record to the specified type.
@@ -124,8 +124,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, converting each record to the specified type with the specified delegate.
 		/// </summary>
-		public ValueTask<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoQueryAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
+		public ValueTask<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoQueryAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -138,8 +138,8 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
-		public ValueTask<T> QueryFirstAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: false, cancellationToken);
+		public ValueTask<T> QueryFirstAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: false, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -152,8 +152,8 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
-		public ValueTask<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: false, orDefault: true, cancellationToken);
+		public ValueTask<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: true, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -166,8 +166,8 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
-		public ValueTask<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: false, cancellationToken);
+		public ValueTask<T> QuerySingleAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: false, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting the first record to the specified type.
@@ -182,8 +182,8 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
-		public ValueTask<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoQueryFirstAsync(read ?? throw new ArgumentNullException(nameof(read)), single: true, orDefault: true, cancellationToken);
+		public ValueTask<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: true, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type.
@@ -194,8 +194,8 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
-		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> read) =>
-			DoEnumerate(read ?? throw new ArgumentNullException(nameof(read)));
+		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> map) =>
+			DoEnumerate(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type.
@@ -206,11 +206,11 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
-		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> read, CancellationToken cancellationToken = default) =>
-			DoEnumerateAsync(read ?? throw new ArgumentNullException(nameof(read)), cancellationToken);
+		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
+			DoEnumerateAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
-		/// Executes the query, preparing to read multiple result sets.
+		/// Executes the query, preparing to map multiple result sets.
 		/// </summary>
 		public DbConnectorResultSets QueryMultiple()
 		{
@@ -219,7 +219,7 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Executes the query, preparing to read multiple result sets.
+		/// Executes the query, preparing to map multiple result sets.
 		/// </summary>
 		public async ValueTask<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
 		{
@@ -287,7 +287,7 @@ namespace Faithlife.Data
 			return command;
 		}
 
-		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T>? read)
+		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T>? map)
 		{
 			using var command = Create();
 			using var reader = command.ExecuteReader();
@@ -297,13 +297,13 @@ namespace Faithlife.Data
 			do
 			{
 				while (reader.Read())
-					list.Add(read != null ? read(reader) : reader.Get<T>());
+					list.Add(map != null ? map(reader) : reader.Get<T>());
 			} while (reader.NextResult());
 
 			return list;
 		}
 
-		private async ValueTask<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
+		private async ValueTask<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? map, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 
@@ -315,14 +315,14 @@ namespace Faithlife.Data
 			do
 			{
 				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-					list.Add(read != null ? read(reader) : reader.Get<T>());
+					list.Add(map != null ? map(reader) : reader.Get<T>());
 			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 
 			return list;
 		}
 
 		[return: MaybeNull]
-		private T DoQueryFirst<T>(Func<IDataRecord, T>? read, bool single, bool orDefault)
+		private T DoQueryFirst<T>(Func<IDataRecord, T>? map, bool single, bool orDefault)
 		{
 			using var command = Create();
 			using var reader = single ? command.ExecuteReader() : command.ExecuteReader(CommandBehavior.SingleRow);
@@ -333,7 +333,7 @@ namespace Faithlife.Data
 					return orDefault ? default(T)! : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 			}
 
-			var value = read != null ? read(reader) : reader.Get<T>();
+			var value = map != null ? map(reader) : reader.Get<T>();
 
 			if (single && reader.Read())
 				throw CreateTooManyRecordsException();
@@ -344,7 +344,7 @@ namespace Faithlife.Data
 			return value;
 		}
 
-		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
+		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? map, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 
@@ -357,7 +357,7 @@ namespace Faithlife.Data
 					return orDefault ? default(T)! : throw CreateNoRecordsException();
 			}
 
-			var value = read != null ? read(reader) : reader.Get<T>();
+			var value = map != null ? map(reader) : reader.Get<T>();
 
 			if (single && await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 				throw CreateTooManyRecordsException();
@@ -374,7 +374,7 @@ namespace Faithlife.Data
 		private static InvalidOperationException CreateTooManyRecordsException() =>
 			new InvalidOperationException("Additional records were found; use 'First' to permit this.");
 
-		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? read)
+		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? map)
 		{
 			using var command = Create();
 			using var reader = command.ExecuteReader();
@@ -382,11 +382,11 @@ namespace Faithlife.Data
 			do
 			{
 				while (reader.Read())
-					yield return read != null ? read(reader) : reader.Get<T>();
+					yield return map != null ? map(reader) : reader.Get<T>();
 			} while (reader.NextResult());
 		}
 
-		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? read, [EnumeratorCancellation] CancellationToken cancellationToken)
+		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? map, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
 
@@ -396,7 +396,7 @@ namespace Faithlife.Data
 			do
 			{
 				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-					yield return read != null ? read(reader) : reader.Get<T>();
+					yield return map != null ? map(reader) : reader.Get<T>();
 			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 		}
 
