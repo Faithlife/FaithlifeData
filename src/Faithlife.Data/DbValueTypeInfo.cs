@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -55,6 +56,10 @@ namespace Faithlife.Data
 			[typeof(TimeSpan)] = DbValueTypeStrategy.CastValue,
 			[typeof(byte[])] = DbValueTypeStrategy.ByteArray,
 			[typeof(object)] = DbValueTypeStrategy.Dynamic,
+			[typeof(Dictionary<string, object?>)] = DbValueTypeStrategy.Dictionary,
+			[typeof(IDictionary<string, object?>)] = DbValueTypeStrategy.Dictionary,
+			[typeof(IReadOnlyDictionary<string, object?>)] = DbValueTypeStrategy.Dictionary,
+			[typeof(IDictionary)] = DbValueTypeStrategy.Dictionary,
 		};
 	}
 
@@ -203,6 +208,25 @@ namespace Faithlife.Data
 					throw new InvalidOperationException($"Failed to cast {value?.GetType().FullName} to {Type.FullName}.", exception);
 				}
 			}
+			else if (m_strategy == DbValueTypeStrategy.Dictionary)
+			{
+				var dictionary = new Dictionary<string, object?>();
+				bool notNull = false;
+				for (int i = index; i < index + count; i++)
+				{
+					string name = record.GetName(i);
+					if (!record.IsDBNull(i))
+					{
+						dictionary[name] = record.GetValue(i);
+						notNull = true;
+					}
+					else
+					{
+						dictionary[name] = null;
+					}
+				}
+				return notNull ? (T) (object) dictionary : default;
+			}
 			else
 			{
 				throw new InvalidOperationException($"Unknown strategy: {m_strategy}");
@@ -240,7 +264,7 @@ namespace Faithlife.Data
 				m_tupleTypeInfos = m_tupleInfo.ItemTypes.Select(DbValueTypeInfo.GetInfo).ToList();
 				FieldCount = m_tupleTypeInfos.Aggregate((int?) 0, (x, y) => x + y.FieldCount);
 			}
-			else if (m_strategy != DbValueTypeStrategy.Dynamic)
+			else if (m_strategy != DbValueTypeStrategy.Dynamic && m_strategy != DbValueTypeStrategy.Dictionary)
 			{
 				FieldCount = 1;
 			}

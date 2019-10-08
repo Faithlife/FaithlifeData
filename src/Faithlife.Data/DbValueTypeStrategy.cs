@@ -8,5 +8,6 @@ namespace Faithlife.Data
 		Tuple,
 		Enum,
 		Dynamic,
+		Dictionary,
 	}
 }

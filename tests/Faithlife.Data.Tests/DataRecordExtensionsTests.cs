@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using FluentAssertions;
@@ -348,6 +350,30 @@ namespace Faithlife.Data.Tests
 			// all nulls returns null dynamic
 			((object) reader.Get<dynamic>(0, 7)).Should().BeNull();
 			reader.Get<object>(0, 7).Should().BeNull();
+		}
+
+		[Test]
+		public void DictionaryTests()
+		{
+			using var connection = GetOpenConnection();
+			using var command = connection.CreateCommand();
+			command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
+			using var reader = command.ExecuteReader();
+
+			// get non-nulls
+			reader.Read().Should().BeTrue();
+
+			// dictionary
+			((string) reader.Get<Dictionary<string, object?>>(0, 7)["TheString"]!).Should().Be(s_record.TheString);
+			((int) reader.Get<IDictionary<string, object?>>(0, 7)["TheInt32"]!).Should().Be(s_record.TheInt32);
+			((long) reader.Get<IReadOnlyDictionary<string, object?>>(0, 7)["TheInt64"]!).Should().Be(s_record.TheInt64);
+			((bool) reader.Get<IDictionary>(0, 7)["TheBool"]!).Should().Be(s_record.TheBool);
+
+			// get nulls
+			reader.Read().Should().BeTrue();
+
+			// all nulls returns null dictionary
+			reader.Get<IDictionary>(0, 7).Should().BeNull();
 		}
 
 		[Test]
