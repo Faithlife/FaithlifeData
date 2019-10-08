@@ -37,7 +37,7 @@ namespace Faithlife.Data.Tests
 			await using var connector = DbConnector.Create(
 				new SQLiteConnection("Data Source=:memory:"),
 				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
-			await using (connector.OpenConnection())
+			await using (await connector.OpenConnectionAsync())
 				(await connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
 		}
 
