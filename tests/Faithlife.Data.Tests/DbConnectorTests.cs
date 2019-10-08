@@ -219,7 +219,7 @@ namespace Faithlife.Data.Tests
 				long id1 = resultSet.Enumerate<long>().First();
 				long id2 = resultSet.Enumerate(x => x.Get<long>()).Single();
 				id1.Should().BeLessThan(id2);
-				Invoking(() => resultSet.Read(x => 0)).Should().Throw<InvalidOperationException>();
+				Invoking(() => resultSet.Enumerate(x => 0).Count()).Should().Throw<InvalidOperationException>();
 			}
 		}
 
@@ -247,7 +247,7 @@ namespace Faithlife.Data.Tests
 				long id1 = await FirstAsync(resultSet.EnumerateAsync<long>());
 				long id2 = await FirstAsync(resultSet.EnumerateAsync(x => x.Get<long>()));
 				id1.Should().BeLessThan(id2);
-				Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
+				Awaiting(async () => await ToListAsync(resultSet.EnumerateAsync(x => 0))).Should().Throw<InvalidOperationException>();
 			}
 		}
 
