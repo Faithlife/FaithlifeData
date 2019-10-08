@@ -258,7 +258,7 @@ namespace Faithlife.Data
 		private void Validate()
 		{
 			if (m_connector == null)
-				throw new InvalidOperationException("Use DbConnector.Command() to create commands.");
+				throw new InvalidOperationException("Use DbConnector to create commands.");
 		}
 
 		private IDbCommand DoCreate(IDbConnection connection)
