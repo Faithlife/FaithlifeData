@@ -69,9 +69,9 @@ Note that asynchronous methods in this library return `ValueTask`, not `Task`, s
 Calling `OpenConnection` every time you use a connector can get tiresome. You could move the `OpenConnection` call to your connector creation method, or you can use the [`AutoOpen`](Faithlife.Data/DbConnectorSettings/AutoOpen.md) setting.
 
 ```csharp
-DbConnector OpenConnector() =>
-    DbConnector.Create(new SQLiteConnection("Data Source=:memory:"),
-        new DbConnectorSettings { AutoOpen = true });
+DbConnector OpenConnector() => DbConnector.Create(
+    new SQLiteConnection("Data Source=:memory:"),
+    new DbConnectorSettings { AutoOpen = true });
 ```
 
 If you want to wait to actually open the database connection until just before it is first used, also set the [`LazyOpen`](Faithlife.Data/DbConnectorSettings/LazyOpen.md) setting.
@@ -84,13 +84,18 @@ To leverage a database transaction, call [`BeginTransaction()`](Faithlife.Data/D
 using (var connector = OpenConnector())
 using (await connector.BeginTransactionAsync())
 {
-    await connector.Command(@"create table widgets (
-        id integer primary key autoincrement,
-        name text not null,
-        height real not null);").ExecuteAsync();
     await connector.Command(@"
-        insert into widgets (name, height) values ('First', 6.875);
-        insert into widgets (name, height) values ('Second', 3.1415);").ExecuteAsync();
+create table widgets (
+    id integer primary key autoincrement,
+    name text not null,
+    height real not null);").ExecuteAsync();
+
+    await connector.Command(@"
+insert into widgets (name, height)
+values ('First', 6.875);
+insert into widgets (name, height)
+values ('Second', 3.1415);").ExecuteAsync();
+
     await connector.CommitTransactionAsync();
 }
 ```
@@ -107,21 +112,24 @@ For full control over the mapping, the client can specify the `map` parameter, w
 
 ```csharp
 IReadOnlyList<string> GetWidgetNames(DbConnector connector) =>
-    connector.Command("select name from widgets;").Query(x => x.GetString(0));
+    connector.Command("select name from widgets;")
+        .Query(x => x.GetString(0));
 ```
 
 The [`DataRecordExtensions`](Faithlife.Data/DataRecordExtensions.md) static class provides [`Get<T>()`](Faithlife.Data/DataRecordExtensions/Get.md) extension methods on `IDataRecord` for mapping all or part of a record into the specified type.
 
 ```csharp
 IReadOnlyList<double> GetWidgetHeights(DbConnector connector) =>
-    connector.Command("select name, height from widgets;").Query(x => x.Get<double>(1));
+    connector.Command("select name, height from widgets;")
+        .Query(x => x.Get<double>(1));
 ```
 
 Fields can also be accessed by name, though that uses [`IDataRecord.GetOrdinal`](https://docs.microsoft.com/dotnet/api/system.data.idatarecord.getordinal) and is thus slightly less efficient.
 
 ```csharp
 IReadOnlyList<double> GetWidgetHeights(DbConnector connector) =>
-    connector.Command("select name, height from widgets;").Query(x => x.Get<double>("height"));
+    connector.Command("select name, height from widgets;")
+        .Query(x => x.Get<double>("height"));
 ```
 
 ### Simple types
@@ -137,29 +145,33 @@ Use `byte[]` to return the bytes from a "blob" column.
 Use tuples to map multiple record fields at once. Each tuple item is read from the record in order; the tuple item names, if any, are ignored.
 
 ```csharp
-IReadOnlyList<(string Name, double Height)> GetWidgetTuple(DbConnector connector) =>
-    connector.Command("select name, height from widgets;").Query(x => x.Get<(string, double)>(index: 0, count: 2));
+IReadOnlyList<(string Name, double Height)> GetWidgetInfo(DbConnector connector) =>
+    connector.Command("select name, height from widgets;")
+        .Query(x => x.Get<(string, double)>(index: 0, count: 2));
 ```
 
 C# 8 range syntax can also be used:
 
 ```csharp
-IReadOnlyList<(string Name, double Height)> GetWidgetTuple(DbConnector connector) =>
-    connector.Command("select name, height from widgets;").Query(x => x.Get<(string, double)>(0..2));
+IReadOnlyList<(string Name, double Height)> GetWidgetInfo(DbConnector connector) =>
+    connector.Command("select name, height from widgets;")
+        .Query(x => x.Get<(string, double)>(0..2));
 ```
 
 If every field of the record is being mapped, the field range can be omitted altogether:
 
 ```csharp
-IReadOnlyList<(string Name, double Height)> GetWidgetTuple(DbConnector connector) =>
-    connector.Command("select name, height from widgets;").Query(x => x.Get<(string, double)>());
+IReadOnlyList<(string Name, double Height)> GetWidgetInfo(DbConnector connector) =>
+    connector.Command("select name, height from widgets;")
+        .Query(x => x.Get<(string, double)>());
 ```
 
 And since callers usually want to map every field, that is the behavior of the method if the `map` parameter is omitted:
 
 ```csharp
-IReadOnlyList<(string Name, double Height)> GetWidgetTuple(DbConnector connector) =>
-    connector.Command("select name, height from widgets;").Query<(string, double)>();
+IReadOnlyList<(string Name, double Height)> GetWidgetInfo(DbConnector connector) =>
+    connector.Command("select name, height from widgets;")
+        .Query<(string, double)>();
 ```
 
 ### DTOs
@@ -187,13 +199,15 @@ IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector) =>
 Record fields can also be mapped to `object` or `dynamic`. If a single field is mapped to `object` or `dynamic`, the object from `IDataRecord.GetValue()` is returned directly.
 
 ```csharp
-connector.Command("select height from widgets;").Query<object>(); // returns boxed doubles
+var heights = connector.Command("select height from widgets;")
+    .Query<object>(); // returns boxed doubles
 ```
 
 If multiple fields are mapped to `object` or `dynamic`, an [`ExpandoObject`](https://docs.microsoft.com/dotnet/api/system.dynamic.expandoobject) is returned where each property corresponds to the name and value of a mapped field.
 
 ```csharp
-dynamic widget = connector.Command("select name, height from widgets;").Query<dynamic>()[0];
+dynamic widget = connector.Command("select name, height from widgets;")
+    .Query<dynamic>()[0];
 string name = widget.name;
 ```
 
@@ -204,7 +218,8 @@ Unfortunately, `object` and `dynamic` cannot have different algorithms. The impl
 Record fields can also be mapped to a dictionary of strings to objects, in which case each field gets a key/value pair in the dictionary. The supported dictionary types are `Dictionary<string, object>`, `IDictionary<string, object>`, `IReadOnlyDictionary<string, object>`, and `IDictionary`.
 
 ```csharp
-var dictionary = connector.Command("select name, height from widgets;").Query<Dictionary<string, object>>();
+var dictionary = connector.Command("select name, height from widgets;")
+    .Query<Dictionary<string, object>>();
 double height = (double) dictionary["height"];
 ```
 
@@ -214,7 +229,8 @@ Tuples can also include variable-field types like DTOs and `dynamic`. (Sorry, th
 
 ```csharp
 IReadOnlyList<(WidgetDto Widget, long NameLength)> GetWidgetAndNumber(DbConnector connector) =>
-    connector.Command("select id, height, length(name) from widgets;").Query<(WidgetDto, long)>();
+    connector.Command("select id, height, length(name) from widgets;")
+        .Query<(WidgetDto, long)>();
 ```
 
 If the tuple has two or more variable-field types, all but the last must be terminated by a `null` record value whose name is `null`.
@@ -238,17 +254,21 @@ IReadOnlyList<(WidgetDto Widget, dynamic Etc)> GetWidgetAndDynamic2(DbConnector 
 When executing parameterized queries, the parameter values are specified with the [`DbConnector.Command()`](Faithlife.Data/DbConnector/Command.md) method. The simplest way to specify command parameters is via one or more string/object tuples after the command SQL.
 
 ```csharp
-var tallWidgets = connector.Command("select id from widgets where height >= @minHeight;",
+var tallWidgets = connector.Command(
+    "select id from widgets where height >= @minHeight;",
     ("minHeight", 1.0)).Query<long>();
 ```
 
 The `DbParameters` class can be used to build lists of parameters. `DbParameters.FromDto` creates parameters from the names and values of public properties and fields, e.g. of anonymous types.
 
 ```csharp
-connector.Command("insert into widgets (name, height) values (@Name, @Height);",
-    DbParameters.FromDto(new WidgetDto { Name = "Third", Height = 1.414 })).Execute();
+var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
+connector.Command(
+    "insert into widgets (name, height) values (@Name, @Height);",
+    DbParameters.FromDto(newWidget)).Execute();
 
-var tallWidgets = connector.Command("select id from widgets where height >= @minHeight;",
+var tallWidgets = connector.Command(
+    "select id from widgets where height >= @minHeight;",
     DbParameters.FromDto(new { minHeight = 1.0 })).Query<long>();
 ```
 
@@ -257,14 +277,16 @@ var tallWidgets = connector.Command("select id from widgets where height >= @min
 If your query is for a single record, call [`QuerySingle()`](Faithlife.Data/DbConnectorCommand/QuerySingle.md), which throws an exception if the query returns multiple records, or [`QueryFirst()`](Faithlife.Data/DbConnectorCommand/QueryFirst.md), which does not check for additional records and therefore may be more efficient.
 
 ```csharp
-double height = connector.Command("select height from widgets where name = @name;",
+double height = connector.Command(
+    "select height from widgets where name = @name;",
     ("name", "First")).QuerySingle<double>();
 ```
 
 If your single-record query might also return no records, call [`QuerySingleOrDefault()`](Faithlife.Data/DbConnectorCommand/QuerySingleOrDefault.md) or [`QueryFirstOrDefault()`](Faithlife.Data/DbConnectorCommand/QueryFirstOrDefault.md), which return `default(T)` if no records were found.
 
 ```csharp
-double? height = connector.Command("select height from widgets where name = @name;",
+double? height = connector.Command(
+    "select height from widgets where name = @name;",
     ("name", "First")).QueryFirstOrDefault<double?>();
 ```
 
@@ -275,7 +297,8 @@ If your query has multiple result sets, all of the records from all of the resul
 If you want to map each result set to its own type, call [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md) and then call [`Read()`](Faithlife.Data/DbConnectorResultSets/Read.md) for each result set.
 
 ```
-using (var sets = connector.Command("select name from widgets; select height from widgets;").QueryMultiple())
+using (var sets = connector.Command(
+    "select name from widgets; select height from widgets;").QueryMultiple())
 {
     names = sets.Read<string>();
     heights = sets.Read<double>();
@@ -287,7 +310,8 @@ using (var sets = connector.Command("select name from widgets; select height fro
 The `Query` and `Read` methods read all of the records into an `IReadOnlyList<T>`. Reading all of the data as quickly as possible is often best for performance, but you can read the records one at a time by calling [`Enumerate()`](Faithlife.Data/DbConnectorCommand/Enumerate.md) instead.
 
 ```
-var averageHeight = connector.Command("select height from widgets;").Enumerate<double>().Average();
+var averageHeight = connector.Command("select height from widgets;")
+    .Enumerate<double>().Average();
 ```
 
 ## Enhancing the API
@@ -297,8 +321,10 @@ To avoid defining too many method overloads, [starting a command](Faithlife.Data
 For example, this extension method can be used to execute a query with parameters from a DTO in one method call:
 
 ```csharp
-public static IReadOnlyList<T> Query<T>(this DbConnector connector, string sql, object param) =>
-    connector.Command(sql, DbParameters.FromDto(param)).Query<T>();
+public static IReadOnlyList<T> Query<T>(this DbConnector connector,
+    string sql, object param) =>
+        connector.Command(sql, DbParameters.FromDto(param))
+            .Query<T>();
 ```
 
 ### Use with Dapper
@@ -306,6 +332,8 @@ public static IReadOnlyList<T> Query<T>(this DbConnector connector, string sql, 
 If you like the Dapper query API but want to use `DbConnector` to track the current transaction, use extension methods to call Dapper, accessing the [`Connection`](Faithlife.Data/DbConnector/Connection.md) and [`Transaction`](Faithlife.Data/DbConnector/Transaction.md) properties as needed.
 
 ```csharp
-public static IEnumerable<T> Query<T>(this DbConnector connector, string sql, object param = null, bool buffered = true) =>
-    connector.Connection.Query<T>(sql, param, transaction: connector.Transaction, buffered: buffered);
+public static IEnumerable<T> Query<T>(this DbConnector connector,
+    string sql, object param = null, bool buffered = true) =>
+        connector.Connection
+            .Query<T>(sql, param, connector.Transaction, buffered: buffered);
 ```
