@@ -190,7 +190,7 @@ namespace Faithlife.Data
 			if (m_pendingLazyOpen)
 				m_pendingLazyOpen = false;
 			else if (!m_noCloseConnection)
-				await m_providerMethods.CloseConnectionAsync(m_connection);
+				await m_providerMethods.CloseConnectionAsync(m_connection).ConfigureAwait(false);
 
 			m_isConnectionOpen = false;
 		}
