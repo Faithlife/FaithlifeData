@@ -210,7 +210,7 @@ namespace Faithlife.Data
 			DoEnumerateAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
-		/// Executes the query, preparing to map multiple result sets.
+		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
 		public DbConnectorResultSets QueryMultiple()
 		{
@@ -219,7 +219,7 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Executes the query, preparing to map multiple result sets.
+		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
 		public async ValueTask<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
 		{
