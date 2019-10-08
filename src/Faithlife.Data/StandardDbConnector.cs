@@ -255,7 +255,7 @@ namespace Faithlife.Data
 			{
 				if (m_connector != null)
 				{
-					m_connector?.CloseConnection();
+					m_connector.CloseConnection();
 					m_connector = null;
 				}
 			}
