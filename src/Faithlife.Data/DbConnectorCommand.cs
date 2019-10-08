@@ -26,6 +26,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
+		/// <seealso cref="ExecuteAsync" />
 		public int Execute()
 		{
 			using var command = Create();
@@ -35,6 +36,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
+		/// <seealso cref="Execute" />
 		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
@@ -44,12 +46,14 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, reading every record and converting it to the specified type.
 		/// </summary>
+		/// <seealso cref="QueryAsync{T}(CancellationToken)" />
 		public IReadOnlyList<T> Query<T>() =>
 			DoQuery<T>(null);
 
 		/// <summary>
 		/// Executes the query, reading every record and converting it to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="QueryAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> map) =>
 			DoQuery(map ?? throw new ArgumentNullException(nameof(map)));
 
@@ -57,6 +61,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirstAsync{T}(CancellationToken)" />
 		public T QueryFirst<T>() =>
 			DoQueryFirst<T>(null, single: false, orDefault: false);
 
@@ -64,6 +69,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirstAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		public T QueryFirst<T>(Func<IDataRecord, T> map) =>
 			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: false);
 
@@ -71,6 +77,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirstOrDefaultAsync{T}(CancellationToken)" />
 		[return: MaybeNull]
 		public T QueryFirstOrDefault<T>() =>
 			DoQueryFirst<T>(null, single: false, orDefault: true);
@@ -79,6 +86,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirstOrDefaultAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		[return: MaybeNull]
 		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> map) =>
 			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: true);
@@ -87,6 +95,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingleAsync{T}(CancellationToken)" />
 		public T QuerySingle<T>() =>
 			DoQueryFirst<T>(null, single: true, orDefault: false);
 
@@ -94,6 +103,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingleAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		public T QuerySingle<T>(Func<IDataRecord, T> map) =>
 			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: false);
 
@@ -102,6 +112,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingleOrDefaultAsync{T}(CancellationToken)" />
 		[return: MaybeNull]
 		public T QuerySingleOrDefault<T>() =>
 			DoQueryFirst<T>(null, single: true, orDefault: true);
@@ -111,6 +122,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingleOrDefaultAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		[return: MaybeNull]
 		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> map) =>
 			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: true);
@@ -118,12 +130,14 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, converting each record to the specified type.
 		/// </summary>
+		/// <seealso cref="Query{T}()" />
 		public ValueTask<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, converting each record to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="Query{T}(Func{IDataRecord, T})" />
 		public ValueTask<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoQueryAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
@@ -131,6 +145,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirst{T}()" />
 		public ValueTask<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: false, orDefault: false, cancellationToken);
 
@@ -138,6 +153,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirst{T}(Func{IDataRecord, T})" />
 		public ValueTask<T> QueryFirstAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: false, cancellationToken);
 
@@ -145,6 +161,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirstOrDefault{T}()" />
 		public ValueTask<T> QueryFirstOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: false, orDefault: true, cancellationToken);
 
@@ -152,6 +169,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
+		/// <seealso cref="QueryFirstOrDefault{T}(Func{IDataRecord, T})" />
 		public ValueTask<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: true, cancellationToken);
 
@@ -159,6 +177,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingle{T}()" />
 		public ValueTask<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: true, orDefault: false, cancellationToken);
 
@@ -166,6 +185,7 @@ namespace Faithlife.Data
 		/// Executes the query, converting the first record to the specified type with the specified delegate.
 		/// </summary>
 		/// <remarks>Throws <see cref="InvalidOperationException"/> if no records are returned, or if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingle{T}(Func{IDataRecord, T})" />
 		public ValueTask<T> QuerySingleAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: false, cancellationToken);
 
@@ -174,6 +194,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingleOrDefault{T}()" />
 		public ValueTask<T> QuerySingleOrDefaultAsync<T>(CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync<T>(null, single: true, orDefault: true, cancellationToken);
 
@@ -182,36 +203,42 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
+		/// <seealso cref="QuerySingleOrDefault{T}(Func{IDataRecord, T})" />
 		public ValueTask<T> QuerySingleOrDefaultAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoQueryFirstAsync(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: true, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type.
 		/// </summary>
+		/// <seealso cref="EnumerateAsync{T}(CancellationToken)" />
 		public IEnumerable<T> Enumerate<T>() =>
 			DoEnumerate<T>(null);
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="EnumerateAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> map) =>
 			DoEnumerate(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type.
 		/// </summary>
+		/// <seealso cref="Enumerate{T}()" />
 		public IAsyncEnumerable<T> EnumerateAsync<T>(CancellationToken cancellationToken = default) =>
 			DoEnumerateAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="Enumerate{T}(Func{IDataRecord, T})" />
 		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoEnumerateAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
 		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
+		/// <seealso cref="QueryMultipleAsync" />
 		public DbConnectorResultSets QueryMultiple()
 		{
 			var command = Create();
@@ -221,6 +248,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Executes the query, preparing to read multiple result sets.
 		/// </summary>
+		/// <seealso cref="QueryMultiple" />
 		public async ValueTask<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
 		{
 			var methods = m_connector.ProviderMethods;
@@ -231,6 +259,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
 		/// </summary>
+		/// <seealso cref="CreateAsync" />
 		public IDbCommand Create()
 		{
 			Validate();
@@ -241,6 +270,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
 		/// </summary>
+		/// <seealso cref="Create" />
 		public async ValueTask<IDbCommand> CreateAsync(CancellationToken cancellationToken = default)
 		{
 			Validate();

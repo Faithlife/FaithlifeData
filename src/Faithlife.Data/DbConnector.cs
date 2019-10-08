@@ -21,6 +21,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// The database connection.
 		/// </summary>
+		/// <seealso cref="GetConnectionAsync" />
 		public abstract IDbConnection Connection { get; }
 
 		/// <summary>
@@ -34,12 +35,14 @@ namespace Faithlife.Data
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The database connection, or null if the connector is disposed.</returns>
 		/// <remarks>Allows a lazy-open connector to asynchronously open the connection.</remarks>
+		/// <seealso cref="Connection" />
 		public abstract ValueTask<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Opens the connection.
 		/// </summary>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
+		/// <seealso cref="OpenConnectionAsync" />
 		public abstract DbConnectionCloser OpenConnection();
 
 		/// <summary>
@@ -47,12 +50,14 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the connection should be closed.</returns>
+		/// <seealso cref="OpenConnection" />
 		public abstract ValueTask<DbConnectionCloser> OpenConnectionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Begins a transaction.
 		/// </summary>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <seealso cref="BeginTransactionAsync(CancellationToken)" />
 		public abstract DbTransactionDisposer BeginTransaction();
 
 		/// <summary>
@@ -60,6 +65,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <seealso cref="BeginTransactionAsync(IsolationLevel, CancellationToken)" />
 		public abstract DbTransactionDisposer BeginTransaction(IsolationLevel isolationLevel);
 
 		/// <summary>
@@ -67,6 +73,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <seealso cref="BeginTransaction()" />
 		public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -75,28 +82,33 @@ namespace Faithlife.Data
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		/// <seealso cref="BeginTransaction(IsolationLevel)" />
 		public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Commits the current transaction.
 		/// </summary>
+		/// <seealso cref="CommitTransactionAsync" />
 		public abstract void CommitTransaction();
 
 		/// <summary>
 		/// Commits the current transaction.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <seealso cref="CommitTransaction" />
 		public abstract ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Rolls back the current transaction.
 		/// </summary>
+		/// <seealso cref="RollbackTransactionAsync" />
 		public abstract void RollbackTransaction();
 
 		/// <summary>
 		/// Rolls back the current transaction.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <seealso cref="RollbackTransaction" />
 		public abstract ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -122,11 +134,13 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Disposes the connector.
 		/// </summary>
+		/// <seealso cref="DisposeAsync" />
 		public abstract void Dispose();
 
 		/// <summary>
 		/// Disposes the connector.
 		/// </summary>
+		/// <seealso cref="Dispose" />
 		public abstract ValueTask DisposeAsync();
 
 		/// <summary>

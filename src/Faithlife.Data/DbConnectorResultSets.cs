@@ -15,54 +15,63 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type.
 		/// </summary>
+		/// <seealso cref="ReadAsync{T}(CancellationToken)" />
 		public IReadOnlyList<T> Read<T>() =>
 			DoRead<T>(null);
 
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="ReadAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		public IReadOnlyList<T> Read<T>(Func<IDataRecord, T> map) =>
 			DoRead(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type.
 		/// </summary>
+		/// <seealso cref="Read{T}()" />
 		public ValueTask<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default) =>
 			DoReadAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Reads a result set, converting each record to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="Read{T}(Func{IDataRecord, T})" />
 		public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoReadAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type.
 		/// </summary>
+		/// <seealso cref="EnumerateAsync{T}(CancellationToken)" />
 		public IEnumerable<T> Enumerate<T>() =>
 			DoEnumerate<T>(null);
 
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="EnumerateAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
 		public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> map) =>
 			DoEnumerate(map ?? throw new ArgumentNullException(nameof(map)));
 
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type.
 		/// </summary>
+		/// <seealso cref="Enumerate{T}()" />
 		public IAsyncEnumerable<T> EnumerateAsync<T>(CancellationToken cancellationToken = default) =>
 			DoEnumerateAsync<T>(null, cancellationToken);
 
 		/// <summary>
 		/// Reads a result set, reading one record at a time and converting it to the specified type with the specified delegate.
 		/// </summary>
+		/// <seealso cref="Enumerate{T}(Func{IDataRecord, T})" />
 		public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, CancellationToken cancellationToken = default) =>
 			DoEnumerateAsync(map ?? throw new ArgumentNullException(nameof(map)), cancellationToken);
 
 		/// <summary>
 		/// Disposes resources used by the result sets.
 		/// </summary>
+		/// <seealso cref="DisposeAsync" />
 		public void Dispose()
 		{
 			m_reader.Dispose();
@@ -72,6 +81,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Disposes resources used by the result sets.
 		/// </summary>
+		/// <seealso cref="Dispose" />
 		public async ValueTask DisposeAsync()
 		{
 			await m_methods.DisposeReaderAsync(m_reader).ConfigureAwait(false);
