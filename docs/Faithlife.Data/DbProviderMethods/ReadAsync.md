@@ -3,7 +3,7 @@
 Reads the next record asynchronously.
 
 ```csharp
-public virtual Task<bool> ReadAsync(IDataReader reader, CancellationToken cancellationToken)
+public virtual ValueTask<bool> ReadAsync(IDataReader reader, CancellationToken cancellationToken)
 ```
 
 ## See Also

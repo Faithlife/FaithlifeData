@@ -22,7 +22,7 @@ Returns `default(T)` if no records are returned. Throws InvalidOperationExceptio
 Executes the query, converting the first record to the specified type with the specified delegate.
 
 ```csharp
-public T QuerySingleOrDefault<T>(Func<IDataRecord, T> read)
+public T QuerySingleOrDefault<T>(Func<IDataRecord, T> map)
 ```
 
 ## Remarks

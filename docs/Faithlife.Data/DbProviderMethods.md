@@ -12,7 +12,12 @@ public class DbProviderMethods
 | --- | --- |
 | static readonly [Default](DbProviderMethods/Default.md) | The default database access methods. |
 | virtual [BeginTransactionAsync](DbProviderMethods/BeginTransactionAsync.md)(…) | Begins a transaction asynchronously. (2 methods) |
+| virtual [CloseConnectionAsync](DbProviderMethods/CloseConnectionAsync.md)(…) | Closes a connection asynchronously. |
 | virtual [CommitTransactionAsync](DbProviderMethods/CommitTransactionAsync.md)(…) | Commits a transaction asynchronously. |
+| virtual [DisposeCommandAsync](DbProviderMethods/DisposeCommandAsync.md)(…) | Disposes a command asynchronously. |
+| virtual [DisposeConnectionAsync](DbProviderMethods/DisposeConnectionAsync.md)(…) | Disposes a connection asynchronously. |
+| virtual [DisposeReaderAsync](DbProviderMethods/DisposeReaderAsync.md)(…) | Disposes a reader asynchronously. |
+| virtual [DisposeTransactionAsync](DbProviderMethods/DisposeTransactionAsync.md)(…) | Disposes a transaction asynchronously. |
 | virtual [ExecuteNonQueryAsync](DbProviderMethods/ExecuteNonQueryAsync.md)(…) | Executes a non-query command asynchronously. |
 | virtual [ExecuteReaderAsync](DbProviderMethods/ExecuteReaderAsync.md)(…) | Executes a command query asynchronously. (2 methods) |
 | virtual [NextResultAsync](DbProviderMethods/NextResultAsync.md)(…) | Reads the next result asynchronously. |

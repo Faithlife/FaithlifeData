@@ -16,6 +16,7 @@ public struct DbConnectorCommand
 | [CreateAsync](DbConnectorCommand/CreateAsync.md)(…) | Creates an IDbCommand from the text and parameters. |
 | [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)() | Executes the query, reading one record at a time and converting it to the specified type. |
 | [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)(…) | Executes the query, reading one record at a time and converting it to the specified type with the specified delegate. |
+| [EnumerateAsync&lt;T&gt;](DbConnectorCommand/EnumerateAsync.md)(…) | Executes the query, reading one record at a time and converting it to the specified type. (2 methods) |
 | [Execute](DbConnectorCommand/Execute.md)() | Executes the command, returning the number of rows affected. |
 | [ExecuteAsync](DbConnectorCommand/ExecuteAsync.md)(…) | Executes the command, returning the number of rows affected. |
 | [Query&lt;T&gt;](DbConnectorCommand/Query.md)() | Executes the query, reading every record and converting it to the specified type. |

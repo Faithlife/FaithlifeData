@@ -3,7 +3,7 @@
 Executes the query, converting the first record to the specified type.
 
 ```csharp
-public Task<T> QueryFirstOrDefaultAsync<T>(
+public ValueTask<T> QueryFirstOrDefaultAsync<T>(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 
@@ -23,7 +23,7 @@ Returns `default(T)` if no records are returned.
 Executes the query, converting the first record to the specified type with the specified delegate.
 
 ```csharp
-public Task<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> read, 
+public ValueTask<T> QueryFirstOrDefaultAsync<T>(Func<IDataRecord, T> map, 
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

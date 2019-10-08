@@ -3,7 +3,7 @@
 Special methods provided by the database provider.
 
 ```csharp
-public abstract DbProviderMethods ProviderMethods { get; }
+protected abstract DbProviderMethods ProviderMethods { get; }
 ```
 
 ## See Also

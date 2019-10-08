@@ -22,7 +22,7 @@ Throws InvalidOperationException if no records are returned, or if more than one
 Executes the query, converting the first record to the specified type with the specified delegate.
 
 ```csharp
-public T QuerySingle<T>(Func<IDataRecord, T> read)
+public T QuerySingle<T>(Func<IDataRecord, T> map)
 ```
 
 ## Remarks

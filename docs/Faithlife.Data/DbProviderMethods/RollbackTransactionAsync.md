@@ -3,7 +3,7 @@
 Rolls back a transaction asynchronously.
 
 ```csharp
-public virtual Task RollbackTransactionAsync(IDbTransaction transaction, 
+public virtual ValueTask RollbackTransactionAsync(IDbTransaction transaction, 
     CancellationToken cancellationToken)
 ```
 

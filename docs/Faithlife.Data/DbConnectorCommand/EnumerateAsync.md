@@ -1,9 +1,10 @@
-# DbConnectorCommand.Enumerate&lt;T&gt; method (1 of 2)
+# DbConnectorCommand.EnumerateAsync&lt;T&gt; method (1 of 2)
 
 Executes the query, reading one record at a time and converting it to the specified type.
 
 ```csharp
-public IEnumerable<T> Enumerate<T>()
+public IAsyncEnumerable<T> EnumerateAsync<T>(
+    CancellationToken cancellationToken = default(CancellationToken))
 ```
 
 ## See Also
@@ -13,12 +14,13 @@ public IEnumerable<T> Enumerate<T>()
 
 ---
 
-# DbConnectorCommand.Enumerate&lt;T&gt; method (2 of 2)
+# DbConnectorCommand.EnumerateAsync&lt;T&gt; method (2 of 2)
 
 Executes the query, reading one record at a time and converting it to the specified type with the specified delegate.
 
 ```csharp
-public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> map)
+public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, 
+    CancellationToken cancellationToken = default(CancellationToken))
 ```
 
 ## See Also

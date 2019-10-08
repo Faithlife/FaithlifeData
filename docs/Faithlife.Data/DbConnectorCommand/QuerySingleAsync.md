@@ -3,7 +3,8 @@
 Executes the query, converting the first record to the specified type.
 
 ```csharp
-public Task<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
+public ValueTask<T> QuerySingleAsync<T>(
+    CancellationToken cancellationToken = default(CancellationToken))
 ```
 
 ## Remarks
@@ -22,7 +23,7 @@ Throws InvalidOperationException if no records are returned, or if more than one
 Executes the query, converting the first record to the specified type with the specified delegate.
 
 ```csharp
-public Task<T> QuerySingleAsync<T>(Func<IDataRecord, T> read, 
+public ValueTask<T> QuerySingleAsync<T>(Func<IDataRecord, T> map, 
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

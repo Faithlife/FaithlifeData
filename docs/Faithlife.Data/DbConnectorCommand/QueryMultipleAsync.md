@@ -3,7 +3,7 @@
 Executes the query, preparing to read multiple result sets.
 
 ```csharp
-public Task<DbConnectorResultSets> QueryMultipleAsync(
+public ValueTask<DbConnectorResultSets> QueryMultipleAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

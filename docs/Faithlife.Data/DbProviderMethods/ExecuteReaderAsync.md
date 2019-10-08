@@ -3,7 +3,7 @@
 Executes a command query asynchronously.
 
 ```csharp
-public virtual Task<IDataReader> ExecuteReaderAsync(IDbCommand command, 
+public virtual ValueTask<IDataReader> ExecuteReaderAsync(IDbCommand command, 
     CancellationToken cancellationToken)
 ```
 
@@ -19,7 +19,7 @@ public virtual Task<IDataReader> ExecuteReaderAsync(IDbCommand command,
 Executes a command query asynchronously.
 
 ```csharp
-public virtual Task<IDataReader> ExecuteReaderAsync(IDbCommand command, 
+public virtual ValueTask<IDataReader> ExecuteReaderAsync(IDbCommand command, 
     CommandBehavior commandBehavior, CancellationToken cancellationToken)
 ```
 

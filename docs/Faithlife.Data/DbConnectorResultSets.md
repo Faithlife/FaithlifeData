@@ -3,7 +3,7 @@
 Encapsulates multiple result sets.
 
 ```csharp
-public sealed class DbConnectorResultSets : IDisposable
+public sealed class DbConnectorResultSets : IAsyncDisposable, IDisposable
 ```
 
 ## Public Members
@@ -11,6 +11,10 @@ public sealed class DbConnectorResultSets : IDisposable
 | name | description |
 | --- | --- |
 | [Dispose](DbConnectorResultSets/Dispose.md)() | Disposes resources used by the result sets. |
+| [DisposeAsync](DbConnectorResultSets/DisposeAsync.md)() | Disposes resources used by the result sets. |
+| [Enumerate&lt;T&gt;](DbConnectorResultSets/Enumerate.md)() | Reads a result set, reading one record at a time and converting it to the specified type. |
+| [Enumerate&lt;T&gt;](DbConnectorResultSets/Enumerate.md)(…) | Reads a result set, reading one record at a time and converting it to the specified type with the specified delegate. |
+| [EnumerateAsync&lt;T&gt;](DbConnectorResultSets/EnumerateAsync.md)(…) | Reads a result set, reading one record at a time and converting it to the specified type. (2 methods) |
 | [Read&lt;T&gt;](DbConnectorResultSets/Read.md)() | Reads a result set, converting each record to the specified type. |
 | [Read&lt;T&gt;](DbConnectorResultSets/Read.md)(…) | Reads a result set, converting each record to the specified type with the specified delegate. |
 | [ReadAsync&lt;T&gt;](DbConnectorResultSets/ReadAsync.md)(…) | Reads a result set, converting each record to the specified type. (2 methods) |

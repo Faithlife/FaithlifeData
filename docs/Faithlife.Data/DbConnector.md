@@ -3,7 +3,7 @@
 Encapsulates a database connection and any current transaction.
 
 ```csharp
-public abstract class DbConnector : IDisposable
+public abstract class DbConnector : IAsyncDisposable, IDisposable
 ```
 
 ## Public Members
@@ -12,7 +12,6 @@ public abstract class DbConnector : IDisposable
 | --- | --- |
 | static [Create](DbConnector/Create.md)(…) | Creates a new DbConnector. |
 | abstract [Connection](DbConnector/Connection.md) { get; } | The database connection. |
-| abstract [ProviderMethods](DbConnector/ProviderMethods.md) { get; } | Special methods provided by the database provider. |
 | abstract [Transaction](DbConnector/Transaction.md) { get; } | The current transaction, if any. |
 | abstract [BeginTransaction](DbConnector/BeginTransaction.md)() | Begins a transaction. |
 | abstract [BeginTransaction](DbConnector/BeginTransaction.md)(…) | Begins a transaction. |
@@ -21,6 +20,7 @@ public abstract class DbConnector : IDisposable
 | abstract [CommitTransaction](DbConnector/CommitTransaction.md)() | Commits the current transaction. |
 | abstract [CommitTransactionAsync](DbConnector/CommitTransactionAsync.md)(…) | Commits the current transaction. |
 | abstract [Dispose](DbConnector/Dispose.md)() | Disposes the connector. |
+| abstract [DisposeAsync](DbConnector/DisposeAsync.md)() | Disposes the connector. |
 | abstract [GetConnectionAsync](DbConnector/GetConnectionAsync.md)(…) | Returns the database connection. |
 | abstract [OpenConnection](DbConnector/OpenConnection.md)() | Opens the connection. |
 | abstract [OpenConnectionAsync](DbConnector/OpenConnectionAsync.md)(…) | Opens the connection. |
@@ -32,6 +32,7 @@ public abstract class DbConnector : IDisposable
 | name | description |
 | --- | --- |
 | [DbConnector](DbConnector/DbConnector.md)() | The default constructor. |
+| abstract [ProviderMethods](DbConnector/ProviderMethods.md) { get; } | Special methods provided by the database provider. |
 
 ## See Also
 

@@ -1,4 +1,4 @@
-# DataRecordExtensions.Get&lt;T&gt; method (1 of 6)
+# DataRecordExtensions.Get&lt;T&gt; method (1 of 8)
 
 Converts all record fields to the specified type.
 
@@ -13,7 +13,22 @@ public static T Get<T>(this IDataRecord record)
 
 ---
 
-# DataRecordExtensions.Get&lt;T&gt; method (2 of 6)
+# DataRecordExtensions.Get&lt;T&gt; method (2 of 8)
+
+Converts the specified record field to the specified type.
+
+```csharp
+public static T Get<T>(this IDataRecord record, Index index)
+```
+
+## See Also
+
+* class [DataRecordExtensions](../DataRecordExtensions.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DataRecordExtensions.Get&lt;T&gt; method (3 of 8)
 
 Converts the specified record field to the specified type.
 
@@ -28,7 +43,22 @@ public static T Get<T>(this IDataRecord record, int index)
 
 ---
 
-# DataRecordExtensions.Get&lt;T&gt; method (3 of 6)
+# DataRecordExtensions.Get&lt;T&gt; method (4 of 8)
+
+Converts the specified record fields to the specified type.
+
+```csharp
+public static T Get<T>(this IDataRecord record, Range range)
+```
+
+## See Also
+
+* class [DataRecordExtensions](../DataRecordExtensions.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DataRecordExtensions.Get&lt;T&gt; method (5 of 8)
 
 Converts the specified record field to the specified type.
 
@@ -43,7 +73,7 @@ public static T Get<T>(this IDataRecord record, string name)
 
 ---
 
-# DataRecordExtensions.Get&lt;T&gt; method (4 of 6)
+# DataRecordExtensions.Get&lt;T&gt; method (6 of 8)
 
 Converts the specified record fields to the specified type.
 
@@ -58,7 +88,7 @@ public static T Get<T>(this IDataRecord record, int index, int count)
 
 ---
 
-# DataRecordExtensions.Get&lt;T&gt; method (5 of 6)
+# DataRecordExtensions.Get&lt;T&gt; method (7 of 8)
 
 Converts the specified record fields to the specified type.
 
@@ -73,7 +103,7 @@ public static T Get<T>(this IDataRecord record, string name, int count)
 
 ---
 
-# DataRecordExtensions.Get&lt;T&gt; method (6 of 6)
+# DataRecordExtensions.Get&lt;T&gt; method (8 of 8)
 
 Converts the specified record fields to the specified type.
 

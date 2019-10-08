@@ -3,7 +3,7 @@
 Executes the query, converting each record to the specified type.
 
 ```csharp
-public Task<IReadOnlyList<T>> QueryAsync<T>(
+public ValueTask<IReadOnlyList<T>> QueryAsync<T>(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 
@@ -19,7 +19,7 @@ public Task<IReadOnlyList<T>> QueryAsync<T>(
 Executes the query, converting each record to the specified type with the specified delegate.
 
 ```csharp
-public Task<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> read, 
+public ValueTask<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> map, 
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

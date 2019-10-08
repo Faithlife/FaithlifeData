@@ -3,7 +3,7 @@
 Executes a non-query command asynchronously.
 
 ```csharp
-public virtual Task<int> ExecuteNonQueryAsync(IDbCommand command, 
+public virtual ValueTask<int> ExecuteNonQueryAsync(IDbCommand command, 
     CancellationToken cancellationToken)
 ```
 

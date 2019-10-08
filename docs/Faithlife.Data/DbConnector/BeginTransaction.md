@@ -3,7 +3,7 @@
 Begins a transaction.
 
 ```csharp
-public abstract IDisposable BeginTransaction()
+public abstract DbTransactionDisposer BeginTransaction()
 ```
 
 ## Return Value
@@ -12,6 +12,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 
 ## See Also
 
+* class [DbTransactionDisposer](../DbTransactionDisposer.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -22,7 +23,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 Begins a transaction.
 
 ```csharp
-public abstract IDisposable BeginTransaction(IsolationLevel isolationLevel)
+public abstract DbTransactionDisposer BeginTransaction(IsolationLevel isolationLevel)
 ```
 
 | parameter | description |
@@ -35,6 +36,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 
 ## See Also
 
+* class [DbTransactionDisposer](../DbTransactionDisposer.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

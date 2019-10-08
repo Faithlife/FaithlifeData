@@ -3,7 +3,8 @@
 Reads the next result asynchronously.
 
 ```csharp
-public virtual Task<bool> NextResultAsync(IDataReader reader, CancellationToken cancellationToken)
+public virtual ValueTask<bool> NextResultAsync(IDataReader reader, 
+    CancellationToken cancellationToken)
 ```
 
 ## See Also

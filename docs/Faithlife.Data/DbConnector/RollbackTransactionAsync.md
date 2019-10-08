@@ -3,7 +3,7 @@
 Rolls back the current transaction.
 
 ```csharp
-public abstract Task RollbackTransactionAsync(
+public abstract ValueTask RollbackTransactionAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

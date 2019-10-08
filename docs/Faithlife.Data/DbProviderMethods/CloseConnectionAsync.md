@@ -1,10 +1,9 @@
-# DbProviderMethods.OpenConnectionAsync method
+# DbProviderMethods.CloseConnectionAsync method
 
-Opens the connection asynchronously.
+Closes a connection asynchronously.
 
 ```csharp
-public virtual ValueTask OpenConnectionAsync(IDbConnection connection, 
-    CancellationToken cancellationToken)
+public virtual ValueTask CloseConnectionAsync(IDbConnection connection)
 ```
 
 ## See Also

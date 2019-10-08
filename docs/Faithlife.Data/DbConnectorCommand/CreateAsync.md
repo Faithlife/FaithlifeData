@@ -3,7 +3,7 @@
 Creates an IDbCommand from the text and parameters.
 
 ```csharp
-public Task<IDbCommand> CreateAsync(
+public ValueTask<IDbCommand> CreateAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

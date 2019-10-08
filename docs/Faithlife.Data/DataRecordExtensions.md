@@ -10,7 +10,7 @@ public static class DataRecordExtensions
 
 | name | description |
 | --- | --- |
-| static [Get&lt;T&gt;](DataRecordExtensions/Get.md)(…) | Converts all record fields to the specified type. (6 methods) |
+| static [Get&lt;T&gt;](DataRecordExtensions/Get.md)(…) | Converts all record fields to the specified type. (8 methods) |
 
 ## See Also
 

@@ -3,7 +3,7 @@
 Commits a transaction asynchronously.
 
 ```csharp
-public virtual Task CommitTransactionAsync(IDbTransaction transaction, 
+public virtual ValueTask CommitTransactionAsync(IDbTransaction transaction, 
     CancellationToken cancellationToken)
 ```
 

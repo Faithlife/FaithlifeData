@@ -3,7 +3,7 @@
 Opens the connection.
 
 ```csharp
-public abstract Task<IDisposable> OpenConnectionAsync(
+public abstract ValueTask<DbConnectionCloser> OpenConnectionAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 
@@ -17,6 +17,7 @@ An IDisposable that should be disposed when the connection should be closed.
 
 ## See Also
 
+* class [DbConnectionCloser](../DbConnectionCloser.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

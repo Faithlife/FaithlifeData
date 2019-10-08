@@ -18,7 +18,7 @@ public IReadOnlyList<T> Read<T>()
 Reads a result set, converting each record to the specified type with the specified delegate.
 
 ```csharp
-public IReadOnlyList<T> Read<T>(Func<IDataRecord, T> read)
+public IReadOnlyList<T> Read<T>(Func<IDataRecord, T> map)
 ```
 
 ## See Also

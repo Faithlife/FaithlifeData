@@ -3,7 +3,7 @@
 Begins a transaction.
 
 ```csharp
-public abstract Task<IDisposable> BeginTransactionAsync(
+public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 
@@ -17,6 +17,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 
 ## See Also
 
+* class [DbTransactionDisposer](../DbTransactionDisposer.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -27,8 +28,8 @@ An IDisposable that should be disposed when the transaction has been committed o
 Begins a transaction.
 
 ```csharp
-public abstract Task<IDisposable> BeginTransactionAsync(IsolationLevel isolationLevel, 
-    CancellationToken cancellationToken = default(CancellationToken))
+public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(
+    IsolationLevel isolationLevel, CancellationToken cancellationToken = default(CancellationToken))
 ```
 
 | parameter | description |
@@ -42,6 +43,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 
 ## See Also
 
+* class [DbTransactionDisposer](../DbTransactionDisposer.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

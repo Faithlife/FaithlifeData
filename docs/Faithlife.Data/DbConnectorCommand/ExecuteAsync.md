@@ -3,7 +3,7 @@
 Executes the command, returning the number of rows affected.
 
 ```csharp
-public Task<int> ExecuteAsync(CancellationToken cancellationToken = default(CancellationToken))
+public ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default(CancellationToken))
 ```
 
 ## See Also

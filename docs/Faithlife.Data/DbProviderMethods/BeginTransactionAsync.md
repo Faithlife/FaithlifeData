@@ -3,7 +3,7 @@
 Begins a transaction asynchronously.
 
 ```csharp
-public virtual Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, 
+public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, 
     CancellationToken cancellationToken)
 ```
 
@@ -19,7 +19,7 @@ public virtual Task<IDbTransaction> BeginTransactionAsync(IDbConnection connecti
 Begins a transaction asynchronously.
 
 ```csharp
-public virtual Task<IDbTransaction> BeginTransactionAsync(IDbConnection connection, 
+public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, 
     IsolationLevel isolationLevel, CancellationToken cancellationToken)
 ```
 

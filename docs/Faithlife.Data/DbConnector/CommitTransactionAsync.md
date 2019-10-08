@@ -3,7 +3,7 @@
 Commits the current transaction.
 
 ```csharp
-public abstract Task CommitTransactionAsync(
+public abstract ValueTask CommitTransactionAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

@@ -3,7 +3,7 @@
 Opens the connection.
 
 ```csharp
-public abstract IDisposable OpenConnection()
+public abstract DbConnectionCloser OpenConnection()
 ```
 
 ## Return Value
@@ -12,6 +12,7 @@ An IDisposable that should be disposed when the connection should be closed.
 
 ## See Also
 
+* class [DbConnectionCloser](../DbConnectionCloser.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

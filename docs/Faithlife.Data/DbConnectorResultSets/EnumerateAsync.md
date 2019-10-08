@@ -1,9 +1,9 @@
-# DbConnectorResultSets.ReadAsync&lt;T&gt; method (1 of 2)
+# DbConnectorResultSets.EnumerateAsync&lt;T&gt; method (1 of 2)
 
-Reads a result set, converting each record to the specified type.
+Reads a result set, reading one record at a time and converting it to the specified type.
 
 ```csharp
-public ValueTask<IReadOnlyList<T>> ReadAsync<T>(
+public IAsyncEnumerable<T> EnumerateAsync<T>(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 
@@ -14,12 +14,12 @@ public ValueTask<IReadOnlyList<T>> ReadAsync<T>(
 
 ---
 
-# DbConnectorResultSets.ReadAsync&lt;T&gt; method (2 of 2)
+# DbConnectorResultSets.EnumerateAsync&lt;T&gt; method (2 of 2)
 
-Reads a result set, converting each record to the specified type with the specified delegate.
+Reads a result set, reading one record at a time and converting it to the specified type with the specified delegate.
 
 ```csharp
-public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> map, 
+public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, 
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

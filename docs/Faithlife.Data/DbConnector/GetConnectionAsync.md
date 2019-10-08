@@ -3,7 +3,7 @@
 Returns the database connection.
 
 ```csharp
-public abstract Task<IDbConnection> GetConnectionAsync(
+public abstract ValueTask<IDbConnection> GetConnectionAsync(
     CancellationToken cancellationToken = default(CancellationToken))
 ```
 

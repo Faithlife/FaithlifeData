@@ -18,7 +18,7 @@ public IReadOnlyList<T> Query<T>()
 Executes the query, reading every record and converting it to the specified type with the specified delegate.
 
 ```csharp
-public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> read)
+public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> map)
 ```
 
 ## See Also
