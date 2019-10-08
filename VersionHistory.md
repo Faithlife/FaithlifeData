@@ -8,10 +8,18 @@ Prefix the description of the change with `[major]`, `[minor]`, or `[patch]` in 
 
 ## Released
 
-### 0.201.0
+### 0.300.0
 
 * [major] Allow `object` to return a single field as-is instead of building a dynamic object with one property.
 * [minor] Ignore underscores when mapping fields to DTO properties.
+* [minor] Support index/range and `IAsyncEnumerable` on .NET Standard 2.0.
+* [minor] Support `IAsyncDisposable`.
+* [major] Make `ProviderMethods` property internal (otherwise it seems important to the API).
+* [major] Use `ValueTask` instead of `Task`.
+* [major] Rename `read` parameter to `map`.
+* [minor] Add `Enumerate` to `DbConnectorResultSets`.
+* [minor] Support mapping records to dictionaries.
+* [patch] Add null record fields when mapping to dynamic.
 
 ### 0.200.0
 
