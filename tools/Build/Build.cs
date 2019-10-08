@@ -14,6 +14,7 @@ internal static class Build
 					GitLogin = new GitLoginInfo("faithlifebuildbot", Environment.GetEnvironmentVariable("BUILD_BOT_PASSWORD") ?? ""),
 					GitAuthor = new GitAuthorInfo("Faithlife Build Bot", "faithlifebuildbot@users.noreply.github.com"),
 					SourceCodeUrl = "https://github.com/Faithlife/FaithlifeData/tree/master/src",
+					ToolVersion = "2.0.1",
 				},
 				SourceLinkSettings = SourceLinkSettings.Default,
 			});
