@@ -125,7 +125,7 @@ namespace Faithlife.Data
 				throw CreateNoMoreResultsException();
 			m_next = true;
 
-			while (m_reader.Read())
+			while (await m_methods.ReadAsync(m_reader, cancellationToken).ConfigureAwait(false))
 				yield return map != null ? map(m_reader) : m_reader.Get<T>();
 		}
 
