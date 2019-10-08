@@ -42,9 +42,10 @@ Once you have a connector, you can open the connection with [`OpenConnection()`]
 using (var connector = CreateConnector())
 using (connector.OpenConnection())
 {
-    connector.Command(@"create table widgets (
-        id integer primary key autoincrement,
-        name text not null);").Execute();
+    connector.Command(@"
+create table widgets (
+  id integer primary key autoincrement,
+  name text not null);").Execute();
 }
 ```
 
@@ -56,9 +57,10 @@ Every method that has communicates with the database has an asynchronous equival
 using (var connector = CreateConnector())
 using (await connector.OpenConnectionAsync())
 {
-    await connector.Command(@"create table widgets (
-        id integer primary key autoincrement,
-        name text not null);").ExecuteAsync();
+    await connector.Command(@"
+create table widgets (
+  id integer primary key autoincrement,
+  name text not null);").ExecuteAsync();
 }
 ```
 
@@ -86,15 +88,15 @@ using (await connector.BeginTransactionAsync())
 {
     await connector.Command(@"
 create table widgets (
-    id integer primary key autoincrement,
-    name text not null,
-    height real not null);").ExecuteAsync();
+  id integer primary key autoincrement,
+  name text not null,
+  height real not null);").ExecuteAsync();
 
     await connector.Command(@"
 insert into widgets (name, height)
-values ('First', 6.875);
+  values ('First', 6.875);
 insert into widgets (name, height)
-values ('Second', 3.1415);").ExecuteAsync();
+  values ('Second', 3.1415);").ExecuteAsync();
 
     await connector.CommitTransactionAsync();
 }
@@ -296,7 +298,7 @@ If your query has multiple result sets, all of the records from all of the resul
 
 If you want to map each result set to its own type, call [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md) and then call [`Read()`](Faithlife.Data/DbConnectorResultSets/Read.md) for each result set.
 
-```
+```csharp
 using (var sets = connector.Command(
     "select name from widgets; select height from widgets;").QueryMultiple())
 {
@@ -309,7 +311,7 @@ using (var sets = connector.Command(
 
 The `Query` and `Read` methods read all of the records into an `IReadOnlyList<T>`. Reading all of the data as quickly as possible is often best for performance, but you can read the records one at a time by calling [`Enumerate()`](Faithlife.Data/DbConnectorCommand/Enumerate.md) instead.
 
-```
+```csharp
 var averageHeight = connector.Command("select height from widgets;")
     .Enumerate<double>().Average();
 ```
