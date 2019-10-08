@@ -93,7 +93,7 @@ namespace Faithlife.Data
 			}
 			else if (m_strategy == DbValueTypeStrategy.Dynamic && count > 1)
 			{
-				IDictionary<string, object> obj = new ExpandoObject();
+				IDictionary<string, object?> obj = new ExpandoObject();
 				bool notNull = false;
 				for (int i = index; i < index + count; i++)
 				{
@@ -102,6 +102,10 @@ namespace Faithlife.Data
 					{
 						obj[name] = record.GetValue(i);
 						notNull = true;
+					}
+					else
+					{
+						obj[name] = null;
 					}
 				}
 				return notNull ? (T) obj : default;
