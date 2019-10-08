@@ -88,7 +88,7 @@ namespace Faithlife.Data
 		private IReadOnlyList<T> DoRead<T>(Func<IDataRecord, T>? read)
 		{
 			if (m_next && !m_reader.NextResult())
-				throw new InvalidOperationException("No more results.");
+				throw CreateNoMoreResultsException();
 			m_next = true;
 
 			var list = new List<T>();
@@ -100,7 +100,7 @@ namespace Faithlife.Data
 		private async ValueTask<IReadOnlyList<T>> DoReadAsync<T>(Func<IDataRecord, T>? read, CancellationToken cancellationToken)
 		{
 			if (m_next && !await m_methods.NextResultAsync(m_reader, cancellationToken).ConfigureAwait(false))
-				throw new InvalidOperationException("No more results.");
+				throw CreateNoMoreResultsException();
 			m_next = true;
 
 			var list = new List<T>();
@@ -112,7 +112,7 @@ namespace Faithlife.Data
 		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? read)
 		{
 			if (m_next && !m_reader.NextResult())
-				throw new InvalidOperationException("No more results.");
+				throw CreateNoMoreResultsException();
 			m_next = true;
 
 			while (m_reader.Read())
@@ -122,12 +122,15 @@ namespace Faithlife.Data
 		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? read, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
 			if (m_next && !await m_methods.NextResultAsync(m_reader, cancellationToken).ConfigureAwait(false))
-				throw new InvalidOperationException("No more results.");
+				throw CreateNoMoreResultsException();
 			m_next = true;
 
 			while (m_reader.Read())
 				yield return read != null ? read(m_reader) : m_reader.Get<T>();
 		}
+
+		private static InvalidOperationException CreateNoMoreResultsException() =>
+			new InvalidOperationException("No more results.");
 
 		private readonly IDbCommand m_command;
 		private readonly IDataReader m_reader;
