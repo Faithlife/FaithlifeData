@@ -35,8 +35,6 @@ namespace Faithlife.Data
 
 		public override IDbTransaction? Transaction => m_transaction;
 
-		public override DbProviderMethods ProviderMethods => m_providerMethods;
-
 		public override ValueTask<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyNotDisposed();
@@ -150,6 +148,8 @@ namespace Faithlife.Data
 				m_isDisposed = true;
 			}
 		}
+
+		protected internal override DbProviderMethods ProviderMethods => m_providerMethods;
 
 		private IDbConnection LazyOpenConnection()
 		{

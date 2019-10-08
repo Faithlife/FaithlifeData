@@ -29,11 +29,6 @@ namespace Faithlife.Data
 		public abstract IDbTransaction? Transaction { get; }
 
 		/// <summary>
-		/// Special methods provided by the database provider.
-		/// </summary>
-		public abstract DbProviderMethods ProviderMethods { get; }
-
-		/// <summary>
 		/// Returns the database connection.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
@@ -133,6 +128,11 @@ namespace Faithlife.Data
 		/// Disposes the connector.
 		/// </summary>
 		public abstract ValueTask DisposeAsync();
+
+		/// <summary>
+		/// Special methods provided by the database provider.
+		/// </summary>
+		protected internal abstract DbProviderMethods ProviderMethods { get; }
 
 		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 	}
