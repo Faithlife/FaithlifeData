@@ -324,10 +324,8 @@ namespace Faithlife.Data
 		[return: MaybeNull]
 		private T DoQueryFirst<T>(Func<IDataRecord, T>? read, bool single, bool orDefault)
 		{
-			var commandBehavior = single ? CommandBehavior.SingleResult : CommandBehavior.SingleResult | CommandBehavior.SingleRow;
-
 			using var command = Create();
-			using var reader = command.ExecuteReader(commandBehavior);
+			using var reader = single ? command.ExecuteReader() : command.ExecuteReader(CommandBehavior.SingleRow);
 
 			while (!reader.Read())
 			{
@@ -338,10 +336,10 @@ namespace Faithlife.Data
 			var value = read != null ? read(reader) : reader.Get<T>();
 
 			if (single && reader.Read())
-				throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
+				throw CreateTooManyRecordsException();
 
 			if (single && reader.NextResult())
-				throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
+				throw CreateTooManyRecordsException();
 
 			return value;
 		}
@@ -349,27 +347,32 @@ namespace Faithlife.Data
 		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? read, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
 			var methods = m_connector.ProviderMethods;
-			var commandBehavior = single ? CommandBehavior.SingleResult : CommandBehavior.SingleResult | CommandBehavior.SingleRow;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(command, commandBehavior, cancellationToken).ConfigureAwait(false);
+			using var reader = single ? await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(command, CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
 
 			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
 				if (!await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
-					return orDefault ? default(T)! : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+					return orDefault ? default(T)! : throw CreateNoRecordsException();
 			}
 
 			var value = read != null ? read(reader) : reader.Get<T>();
 
 			if (single && await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-				throw new InvalidOperationException("Additional records were found; use 'First' to permit this.");
+				throw CreateTooManyRecordsException();
 
 			if (single && await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false))
-				throw new InvalidOperationException("Additional results were found; use 'First' to permit this.");
+				throw CreateTooManyRecordsException();
 
 			return value;
 		}
+
+		private static InvalidOperationException CreateNoRecordsException() =>
+			new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
+
+		private static InvalidOperationException CreateTooManyRecordsException() =>
+			new InvalidOperationException("Additional records were found; use 'First' to permit this.");
 
 		private IEnumerable<T> DoEnumerate<T>(Func<IDataRecord, T>? read)
 		{
