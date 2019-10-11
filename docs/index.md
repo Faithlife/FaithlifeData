@@ -12,18 +12,32 @@ To use this library, call [`DbConnector.Create()`](Faithlife.Data/DbConnector/Cr
 
 With a `DbConnector`, you can:
 
-* Automatically open the connection, via [`DbConnectorSettings.AutoOpen`](Faithlife.Data/DbConnectorSettings/AutoOpen.md).
-* Wait to open the connection until it is needed, via [`DbConnectorSettings.LazyOpen`](Faithlife.Data/DbConnectorSettings/LazyOpen.md).
-* Begin, commit, and rollback transactions, via [`DbConnector.BeginTransaction()`](Faithlife.Data/DbConnector/BeginTransaction.md), [`DbConnector.CommitTransaction()`](Faithlife.Data/DbConnector/CommitTransaction.md), etc.
-* Create and execute database commands, automatically setting the transaction as needed, via [`DbConnector.Command()`](Faithlife.Data/DbConnector/Command.md) followed by [`Execute()`](Faithlife.Data/DbConnectorCommand/Execute.md), [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md), etc.
-* Provide named command parameters from name/value tuples and/or DTO properties, via [`DbParameters`](Faithlife.Data/DbParameters.md).
+* Automatically open the connection and/or wait to open the connection until it is needed with [`DbConnectorSettings`](Faithlife.Data/DbConnectorSettings.md).
+* Begin, commit, and rollback transactions with [`DbConnector.BeginTransaction()`](Faithlife.Data/DbConnector/BeginTransaction.md), [`DbConnector.CommitTransaction()`](Faithlife.Data/DbConnector/CommitTransaction.md), etc.
+* Create and execute database commands, automatically using any current transaction, with  [`DbConnector.Command()`](Faithlife.Data/DbConnector/Command.md) followed by [`Execute()`](Faithlife.Data/DbConnectorCommand/Execute.md), [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md), etc.
+* Provide named command parameters from name/value tuples and/or DTO properties with  [`DbParameters`](Faithlife.Data/DbParameters.md).
 * Efficiently map database records into simple data types, DTOs, and/or tuples ([details below](#mapping-database-records)).
-* Read all records at once (via [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md)), or read records one at a time (via [`Enumerate()`](Faithlife.Data/DbConnectorCommand/Enumerate.md)).
-* Efficiently access only the first record of the query result, via [`QueryFirst()`](Faithlife.Data/DbConnectorCommand/QueryFirst.md), [`QuerySingleOrDefault()`](Faithlife.Data/DbConnectorCommand/QuerySingleOrDefault.md), etc.
+* Read all records at once with [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md), or read records one at a time with [`Enumerate()`](Faithlife.Data/DbConnectorCommand/Enumerate.md).
+* Efficiently access only the first record of the query result with [`QueryFirst()`](Faithlife.Data/DbConnectorCommand/QueryFirst.md), [`QuerySingleOrDefault()`](Faithlife.Data/DbConnectorCommand/QuerySingleOrDefault.md), etc.
 * Access the database synchronously or asynchronously with cancellation support, e.g. [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md) vs. [`QueryAsync()`](Faithlife.Data/DbConnectorCommand/QueryAsync.md).
-* Read multiple result sets from multi-statement commands, via [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md).
+* Read multiple result sets from multi-statement commands with [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md).
 
 Consult the [reference documentation](Faithlife.Data.md) for additional details.
+
+### What about Dapper?
+
+If you are familiar with [Dapper](https://github.com/StackExchange/Dapper), you will note many similarities between it and this library. So why use Faithlife.Data? Here are a few key differences:
+
+* `DbConnector` **wraps the connection**, whereas Dapper primarly provides extension methods on `IDbConnection`.
+* With Dapper, you must remember to set the `transaction` parameter when there is an active transaction. Since Faithlife.Data **tracks the current transaction**, it attaches it to database commands automatically.
+* Faithlife.Data has direct support for **modern C# and .NET**, including tuples, `IAsyncEnumerable`, and the new index/range syntax.
+* The **multi-mapping support** of Faithlife.Data is simpler and more flexible than the `map` and `splitOn` parameters of Dapper.
+* Faithlife.Data **avoids type conversion**, requiring that the requested type exactly match the provided type, whereas Dapper will try to convert the value with [`Convert.ChangeType()`](https://docs.microsoft.com/dotnet/api/system.convert.changetype). This is sometimes aggravating, but we feel it is better to know what the database is returning and avoid the surprises that type conversion can bring.
+* The **async methods** of Faithlife.Data call the async methods of the database provider more consistently than Dapper.
+* Faithlife.Data makes the choice between **buffered and unbuffered queries** more explicit by providing separate methods. This makes it more likely that clients will keep the difference in mind, and allows `Query()` to return an `IReadOnlyList<T>` instead of an `IEnumerable<T>`.
+* Dapper will edit the SQL in some scenarios, e.g. when it substitutes a collection parameter for a list of dynamically named parameters for easier `IN` support. This is convenient, but Faithlife.Data **avoids editing the SQL** for simplicity and predictability.
+* Faithlife.Data has an easy **alternative to using anonymous objects** for specifying parameters, which may have better performance for some clients and uses stronger types than Dapper's `param` parameter of type `object`.
+* Faithlife.Data does **less caching** than Dapper. This may or may not be an advantage, depending on usage.
 
 ## Creating a connector
 
