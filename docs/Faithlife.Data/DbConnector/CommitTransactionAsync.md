@@ -13,6 +13,7 @@ public abstract ValueTask CommitTransactionAsync(
 
 ## See Also
 
+* method [CommitTransaction](CommitTransaction.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

@@ -8,6 +8,7 @@ public abstract void CommitTransaction()
 
 ## See Also
 
+* method [CommitTransactionAsync](CommitTransactionAsync.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

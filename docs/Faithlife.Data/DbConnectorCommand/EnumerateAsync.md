@@ -9,6 +9,7 @@ public IAsyncEnumerable<T> EnumerateAsync<T>(
 
 ## See Also
 
+* method [Enumerate&lt;T&gt;](Enumerate.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -25,6 +26,7 @@ public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map,
 
 ## See Also
 
+* method [Enumerate&lt;T&gt;](Enumerate.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

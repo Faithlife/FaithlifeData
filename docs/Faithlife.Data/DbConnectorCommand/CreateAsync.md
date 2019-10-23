@@ -9,6 +9,7 @@ public ValueTask<IDbCommand> CreateAsync(
 
 ## See Also
 
+* method [Create](Create.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

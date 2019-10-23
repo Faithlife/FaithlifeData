@@ -8,6 +8,7 @@ public IReadOnlyList<T> Query<T>()
 
 ## See Also
 
+* method [QueryAsync&lt;T&gt;](QueryAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -23,6 +24,7 @@ public IReadOnlyList<T> Query<T>(Func<IDataRecord, T> map)
 
 ## See Also
 
+* method [QueryAsync&lt;T&gt;](QueryAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

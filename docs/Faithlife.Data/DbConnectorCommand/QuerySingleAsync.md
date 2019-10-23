@@ -13,6 +13,7 @@ Throws InvalidOperationException if no records are returned, or if more than one
 
 ## See Also
 
+* method [QuerySingle&lt;T&gt;](QuerySingle.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -33,6 +34,7 @@ Throws InvalidOperationException if no records are returned, or if more than one
 
 ## See Also
 
+* method [QuerySingle&lt;T&gt;](QuerySingle.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

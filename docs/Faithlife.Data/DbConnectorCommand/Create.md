@@ -8,6 +8,7 @@ public IDbCommand Create()
 
 ## See Also
 
+* method [CreateAsync](CreateAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

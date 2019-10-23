@@ -9,6 +9,7 @@ public ValueTask<DbConnectorResultSets> QueryMultipleAsync(
 
 ## See Also
 
+* method [QueryMultiple](QueryMultiple.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)

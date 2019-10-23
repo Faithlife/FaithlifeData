@@ -8,6 +8,7 @@ public IEnumerable<T> Enumerate<T>()
 
 ## See Also
 
+* method [EnumerateAsync&lt;T&gt;](EnumerateAsync.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -23,6 +24,7 @@ public IEnumerable<T> Enumerate<T>(Func<IDataRecord, T> map)
 
 ## See Also
 
+* method [EnumerateAsync&lt;T&gt;](EnumerateAsync.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

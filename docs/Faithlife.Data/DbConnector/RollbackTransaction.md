@@ -8,6 +8,7 @@ public abstract void RollbackTransaction()
 
 ## See Also
 
+* method [RollbackTransactionAsync](RollbackTransactionAsync.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

@@ -8,6 +8,7 @@ public DbConnectorResultSets QueryMultiple()
 
 ## See Also
 
+* method [QueryMultipleAsync](QueryMultipleAsync.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)

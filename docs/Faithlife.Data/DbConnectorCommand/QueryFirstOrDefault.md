@@ -12,6 +12,7 @@ Returns `default(T)` if no records are returned.
 
 ## See Also
 
+* method [QueryFirstOrDefaultAsync&lt;T&gt;](QueryFirstOrDefaultAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -31,6 +32,7 @@ Returns `default(T)` if no records are returned.
 
 ## See Also
 
+* method [QueryFirstOrDefaultAsync&lt;T&gt;](QueryFirstOrDefaultAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

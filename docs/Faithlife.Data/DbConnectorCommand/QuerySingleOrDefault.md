@@ -12,6 +12,7 @@ Returns `default(T)` if no records are returned. Throws InvalidOperationExceptio
 
 ## See Also
 
+* method [QuerySingleOrDefaultAsync&lt;T&gt;](QuerySingleOrDefaultAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -31,6 +32,7 @@ Returns `default(T)` if no records are returned. Throws InvalidOperationExceptio
 
 ## See Also
 
+* method [QuerySingleOrDefaultAsync&lt;T&gt;](QuerySingleOrDefaultAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

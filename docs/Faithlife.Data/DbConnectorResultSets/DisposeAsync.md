@@ -8,6 +8,7 @@ public ValueTask DisposeAsync()
 
 ## See Also
 
+* method [Dispose](Dispose.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

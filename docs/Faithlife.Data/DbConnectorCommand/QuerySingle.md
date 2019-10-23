@@ -12,6 +12,7 @@ Throws InvalidOperationException if no records are returned, or if more than one
 
 ## See Also
 
+* method [QuerySingleAsync&lt;T&gt;](QuerySingleAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -31,6 +32,7 @@ Throws InvalidOperationException if no records are returned, or if more than one
 
 ## See Also
 
+* method [QuerySingleAsync&lt;T&gt;](QuerySingleAsync.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

@@ -17,6 +17,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 
 ## See Also
 
+* method [BeginTransaction](BeginTransaction.md)
 * class [DbTransactionDisposer](../DbTransactionDisposer.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
@@ -43,6 +44,7 @@ An IDisposable that should be disposed when the transaction has been committed o
 
 ## See Also
 
+* method [BeginTransaction](BeginTransaction.md)
 * class [DbTransactionDisposer](../DbTransactionDisposer.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)

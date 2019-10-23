@@ -13,6 +13,7 @@ public abstract ValueTask RollbackTransactionAsync(
 
 ## See Also
 
+* method [RollbackTransaction](RollbackTransaction.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
