@@ -1,5 +1,9 @@
 # Version History
 
+### 1.0.0
+
+* Official release.
+
 ### 0.300.1
 
 * Try to avoid assembly binding errors from downstream dependencies.
