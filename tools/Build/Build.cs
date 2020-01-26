@@ -16,7 +16,6 @@ internal static class Build
 					SourceCodeUrl = "https://github.com/Faithlife/FaithlifeData/tree/master/src",
 					ToolVersion = "2.0.1",
 				},
-				SourceLinkSettings = SourceLinkSettings.Default,
 			});
 	});
 }
