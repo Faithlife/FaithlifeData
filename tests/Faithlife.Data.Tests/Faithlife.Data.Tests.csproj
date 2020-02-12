@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <AutoGenerateBindingRedirects Condition=" '$(TargetFramework)' == 'net472' ">true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType Condition=" '$(TargetFramework)' == 'net472' ">true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' and '$(MONO_ROOT)' != '' ">
