@@ -17,19 +17,34 @@ namespace Faithlife.Data
 		public static readonly DbParameters Empty = new DbParameters();
 
 		/// <summary>
-		/// Creates a list of parameters.
+		/// Creates a list of parameters from tuples.
 		/// </summary>
-		public static DbParameters Create(params (string Name, object? Value)[] parameters) => new DbParameters(parameters);
+		public static DbParameters Create(params (string Name, object? Value)[] parameters) =>
+			new DbParameters(parameters ?? throw new ArgumentNullException(nameof(parameters)));
 
 		/// <summary>
-		/// Creates a list of parameters.
+		/// Creates a list of parameters from a sequence of tuples.
 		/// </summary>
-		public static DbParameters Create(IEnumerable<(string Name, object? Value)> parameters) => new DbParameters(parameters);
+		public static DbParameters Create(IEnumerable<(string Name, object? Value)> parameters) =>
+			new DbParameters(parameters ?? throw new ArgumentNullException(nameof(parameters)));
+
+		/// <summary>
+		/// Creates a list of parameters from a sequence of tuples.
+		/// </summary>
+		public static DbParameters Create<T>(IEnumerable<(string Name, T Value)> parameters) =>
+			new DbParameters((parameters ?? throw new ArgumentNullException(nameof(parameters))).Select(x => (x.Name, (object?) x.Value)));
+
+		/// <summary>
+		/// Creates a list of parameters from a dictionary.
+		/// </summary>
+		public static DbParameters Create<T>(IEnumerable<KeyValuePair<string, T>> parameters) =>
+			new DbParameters((parameters ?? throw new ArgumentNullException(nameof(parameters))).Select(x => (x.Key, (object?) x.Value)));
 
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
 		/// </summary>
-		public static DbParameters FromDto(object dto) => new DbParameters(DtoInfo.GetInfo(dto.GetType()).Properties.Select(x => (x.Name, x.GetValue(dto))));
+		public static DbParameters FromDto(object dto) =>
+			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (x.Name, x.GetValue(dto))));
 
 		/// <summary>
 		/// The number of parameters.
@@ -47,20 +62,34 @@ namespace Faithlife.Data
 		public DbParameters Add(string name, object? value) => new DbParameters(Parameters.Append((name, value)));
 
 		/// <summary>
-		/// Adds parameters.
+		/// Adds parameters from another instance.
 		/// </summary>
-		public DbParameters Add(params (string Name, object? Value)[] parameters) => new DbParameters(Parameters.Concat(parameters));
+		public DbParameters Add(DbParameters parameters) => new DbParameters(Parameters.Concat(parameters));
 
 		/// <summary>
-		/// Adds parameters.
+		/// Adds parameters from tuples.
 		/// </summary>
-		public DbParameters Add(IEnumerable<(string Name, object? Value)> parameters) => new DbParameters(Parameters.Concat(parameters));
+		public DbParameters Add(params (string Name, object? Value)[] parameters) => Add(Create(parameters));
 
 		/// <summary>
-		/// Adds the properties of a DTO as parameters.
+		/// Adds parameters from a sequence of tuples.
 		/// </summary>
-		/// <remarks>Adds no parameters if <paramref name="dto"/> is <c>null</c>.</remarks>
-		public DbParameters AddDto(object dto) => Add(FromDto(dto).Parameters);
+		public DbParameters Add(IEnumerable<(string Name, object? Value)> parameters) => Add(Create(parameters));
+
+		/// <summary>
+		/// Adds parameters from a sequence of tuples.
+		/// </summary>
+		public DbParameters Add<T>(IEnumerable<(string Name, T Value)> parameters) => Add(Create(parameters));
+
+		/// <summary>
+		/// Adds parameters from a dictionary.
+		/// </summary>
+		public DbParameters Add<T>(IEnumerable<KeyValuePair<string, T>> parameters) => Add(Create(parameters));
+
+		/// <summary>
+		/// Adds parameters from the properties of a DTO.
+		/// </summary>
+		public DbParameters AddDto(object dto) => Add(FromDto(dto));
 
 		/// <summary>
 		/// Used to enumerate the parameters.
@@ -72,8 +101,7 @@ namespace Faithlife.Data
 		/// </summary>
 		IEnumerator IEnumerable.GetEnumerator() => Parameters.GetEnumerator();
 
-		private DbParameters(IEnumerable<(string Name, object? Value)> parameters) =>
-			m_parameters = (parameters ?? throw new ArgumentNullException(nameof(parameters))).ToList();
+		private DbParameters(IEnumerable<(string Name, object? Value)> parameters) => m_parameters = parameters.ToList();
 
 		private IReadOnlyList<(string Name, object? Value)> Parameters => m_parameters ?? Array.Empty<(string Name, object? Value)>();
 
