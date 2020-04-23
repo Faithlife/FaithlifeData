@@ -1,6 +1,6 @@
 # Version History
 
-### 1.0.1
+### 1.1.0
 
 * Create/add parameters from sequences of parameter tuples with non-`object` value types.
 * Create/add parameters from dictionaries.
