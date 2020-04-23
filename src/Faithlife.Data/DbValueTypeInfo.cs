@@ -89,7 +89,7 @@ namespace Faithlife.Data
 						notNull = true;
 					}
 				}
-				return notNull ? dto : default;
+				return notNull ? dto : default!;
 			}
 			else if (m_strategy == DbValueTypeStrategy.Dynamic && count > 1)
 			{
@@ -108,7 +108,7 @@ namespace Faithlife.Data
 						obj[name] = null;
 					}
 				}
-				return notNull ? (T) obj : default;
+				return notNull ? (T) obj : default!;
 			}
 			else if (m_strategy == DbValueTypeStrategy.ByteArray)
 			{
@@ -229,7 +229,7 @@ namespace Faithlife.Data
 						dictionary[name] = null;
 					}
 				}
-				return notNull ? (T) (object) dictionary : default;
+				return notNull ? (T) (object) dictionary : default!;
 			}
 			else
 			{
