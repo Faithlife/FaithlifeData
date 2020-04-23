@@ -4,6 +4,7 @@
 
 * Create/add parameters from sequences of parameter tuples with non-`object` value types.
 * Create/add parameters from dictionaries.
+* Drop `MaybeNull` attribute from `QueryFirstOrDefault` and `QuerySingleOrDefault`.
 
 ### 1.0.0
 

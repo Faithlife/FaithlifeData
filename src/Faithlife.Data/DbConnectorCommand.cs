@@ -78,7 +78,6 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		/// <seealso cref="QueryFirstOrDefaultAsync{T}(CancellationToken)" />
-		[return: MaybeNull]
 		public T QueryFirstOrDefault<T>() =>
 			DoQueryFirst<T>(null, single: false, orDefault: true);
 
@@ -87,7 +86,6 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.</remarks>
 		/// <seealso cref="QueryFirstOrDefaultAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
-		[return: MaybeNull]
 		public T QueryFirstOrDefault<T>(Func<IDataRecord, T> map) =>
 			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: false, orDefault: true);
 
@@ -113,7 +111,6 @@ namespace Faithlife.Data
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
 		/// <seealso cref="QuerySingleOrDefaultAsync{T}(CancellationToken)" />
-		[return: MaybeNull]
 		public T QuerySingleOrDefault<T>() =>
 			DoQueryFirst<T>(null, single: true, orDefault: true);
 
@@ -123,7 +120,6 @@ namespace Faithlife.Data
 		/// <remarks>Returns <c>default(T)</c> if no records are returned.
 		/// Throws <see cref="InvalidOperationException"/> if more than one record is returned.</remarks>
 		/// <seealso cref="QuerySingleOrDefaultAsync{T}(Func{IDataRecord, T}, CancellationToken)" />
-		[return: MaybeNull]
 		public T QuerySingleOrDefault<T>(Func<IDataRecord, T> map) =>
 			DoQueryFirst(map ?? throw new ArgumentNullException(nameof(map)), single: true, orDefault: true);
 
@@ -351,7 +347,6 @@ namespace Faithlife.Data
 			return list;
 		}
 
-		[return: MaybeNull]
 		private T DoQueryFirst<T>(Func<IDataRecord, T>? map, bool single, bool orDefault)
 		{
 			using var command = Create();
