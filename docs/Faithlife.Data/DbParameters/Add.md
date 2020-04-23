@@ -1,6 +1,21 @@
-# DbParameters.Add method (1 of 3)
+# DbParameters.Add method (1 of 6)
 
-Adds parameters.
+Adds parameters from another instance.
+
+```csharp
+public DbParameters Add(DbParameters parameters)
+```
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.Add method (2 of 6)
+
+Adds parameters from a sequence of tuples.
 
 ```csharp
 public DbParameters Add(IEnumerable<ValueTuple<string, object>> parameters)
@@ -13,9 +28,9 @@ public DbParameters Add(IEnumerable<ValueTuple<string, object>> parameters)
 
 ---
 
-# DbParameters.Add method (2 of 3)
+# DbParameters.Add method (3 of 6)
 
-Adds parameters.
+Adds parameters from tuples.
 
 ```csharp
 public DbParameters Add(params ValueTuple<string, object>[] parameters)
@@ -28,12 +43,42 @@ public DbParameters Add(params ValueTuple<string, object>[] parameters)
 
 ---
 
-# DbParameters.Add method (3 of 3)
+# DbParameters.Add method (4 of 6)
 
 Adds a parameter.
 
 ```csharp
 public DbParameters Add(string name, object value)
+```
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.Add&lt;T&gt; method (5 of 6)
+
+Adds parameters from a dictionary.
+
+```csharp
+public DbParameters Add<T>(IEnumerable<KeyValuePair<string, T>> parameters)
+```
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.Add&lt;T&gt; method (6 of 6)
+
+Adds parameters from a sequence of tuples.
+
+```csharp
+public DbParameters Add<T>(IEnumerable<ValueTuple<string, T>> parameters)
 ```
 
 ## See Also

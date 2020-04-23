@@ -11,12 +11,14 @@ public struct DbParameters : IReadOnlyList<ValueTuple<string, object>>
 | name | description |
 | --- | --- |
 | static readonly [Empty](DbParameters/Empty.md) | An empty list of parameters. |
-| static [Create](DbParameters/Create.md)(…) | Creates a list of parameters. (2 methods) |
+| static [Create](DbParameters/Create.md)(…) | Creates a list of parameters from tuples. (2 methods) |
+| static [Create&lt;T&gt;](DbParameters/Create.md)(…) | Creates a list of parameters from a sequence of tuples. (2 methods) |
 | static [FromDto](DbParameters/FromDto.md)(…) | Creates a list of parameters from the properties of a DTO. |
 | [Count](DbParameters/Count.md) { get; } | The number of parameters. |
 | [Item](DbParameters/Item.md) { get; } | The parameter at the specified index. |
-| [Add](DbParameters/Add.md)(…) | Adds a parameter. (3 methods) |
-| [AddDto](DbParameters/AddDto.md)(…) | Adds the properties of a DTO as parameters. |
+| [Add](DbParameters/Add.md)(…) | Adds a parameter. (4 methods) |
+| [Add&lt;T&gt;](DbParameters/Add.md)(…) | Adds parameters from a sequence of tuples. (2 methods) |
+| [AddDto](DbParameters/AddDto.md)(…) | Adds parameters from the properties of a DTO. |
 | [GetEnumerator](DbParameters/GetEnumerator.md)() | Used to enumerate the parameters. |
 
 ## See Also

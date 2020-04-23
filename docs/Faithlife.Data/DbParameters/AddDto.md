@@ -1,14 +1,10 @@
 # DbParameters.AddDto method
 
-Adds the properties of a DTO as parameters.
+Adds parameters from the properties of a DTO.
 
 ```csharp
 public DbParameters AddDto(object dto)
 ```
-
-## Remarks
-
-Adds no parameters if *dto* is `null`.
 
 ## See Also
 
