@@ -21,6 +21,7 @@ With a `DbConnector`, you can:
 * Efficiently access only the first record of the query result with [`QueryFirst()`](Faithlife.Data/DbConnectorCommand/QueryFirst.md), [`QuerySingleOrDefault()`](Faithlife.Data/DbConnectorCommand/QuerySingleOrDefault.md), etc.
 * Access the database synchronously or asynchronously with cancellation support, e.g. [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md) vs. [`QueryAsync()`](Faithlife.Data/DbConnectorCommand/QueryAsync.md).
 * Read multiple result sets from multi-statement commands with [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md).
+* Expand [collection parameters](#parameters-from-collections) to a list of numbered parameters for easier `IN` support.
 
 Consult the [reference documentation](Faithlife.Data.md) for additional details.
 
@@ -35,9 +36,9 @@ If you are familiar with [Dapper](https://github.com/StackExchange/Dapper), you 
 * Faithlife.Data **avoids type conversion**, requiring that the requested type exactly match the provided type, whereas Dapper will try to convert the value with [`Convert.ChangeType()`](https://docs.microsoft.com/dotnet/api/system.convert.changetype). This is sometimes aggravating, but we feel it is better to know what the database is returning and avoid the surprises that type conversion can bring.
 * The **async methods** of Faithlife.Data call the async methods of the database provider more consistently than Dapper.
 * Faithlife.Data makes the choice between **buffered and unbuffered queries** more explicit by providing separate methods. This makes it more likely that clients will keep the difference in mind, and allows `Query()` to return an `IReadOnlyList<T>` instead of an `IEnumerable<T>`.
-* Dapper will edit the SQL in some scenarios, e.g. when it substitutes a collection parameter for a list of dynamically named parameters for easier `IN` support. This is convenient, but Faithlife.Data **avoids editing the SQL** for simplicity and predictability.
 * Faithlife.Data has an easy **alternative to using anonymous objects** for specifying parameters, which may have better performance for some clients and uses stronger types than Dapper's `param` parameter of type `object`.
 * Faithlife.Data does **less caching** than Dapper. This may or may not be an advantage, depending on usage.
+* Both Faithlife.Data and Dapper will edit the SQL when substituting a collection parameter for a list of dynamically named parameters. The syntax used by Faithlife.Data is more explicit, so scenarios where the SQL is edited are **more predictable**.
 
 ## Creating a connector
 
@@ -271,11 +272,23 @@ When executing parameterized queries, the parameter values are specified with th
 
 ```csharp
 var tallWidgets = connector.Command(
-    "select id from widgets where height >= @minHeight;",
-    ("minHeight", 1.0)).Query<long>();
+    "select id from widgets where height >= @minHeight and height <= @maxHeight;",
+    ("minHeight", 1.0), ("maxHeight", 100.0)).Query<long>();
 ```
 
-The `DbParameters` class can be used to build lists of parameters. `DbParameters.FromDto` creates parameters from the names and values of public properties and fields, e.g. of anonymous types.
+The [`DbParameters`](Faithlife.Data/DbParameters.md) structure can be used to build a list of parameters by calling one of the [`Create`](Faithlife.Data/DbParameters/Create.md) methods.
+
+You can add additional parameters by calling the [`Add`](Faithlife.Data/DbParameters/Add.md) methods, but note that `DbParameters` is an *immutable* collection, so you will need to use the return value of the `Add` method.
+
+```csharp
+var tallWidgets = connector.Command(
+    "select id from widgets where height >= @minHeight and height <= @maxHeight;",
+    DbParameters.Create("minHeight", 1.0).Add("maxHeight", 100.0)).Query<long>();
+```
+
+### Parameters from DTOs
+
+Use [`DbParameters.FromDto`](Faithlife.Data/DbParameters/FromDto.md) or [`DbParameters.AddDto`](Faithlife.Data/DbParameters/AddDto.md) to create parameters from the names and values of public properties and fields, e.g. of anonymous types.
 
 ```csharp
 var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
@@ -284,9 +297,31 @@ connector.Command(
     DbParameters.FromDto(newWidget)).Execute();
 
 var tallWidgets = connector.Command(
-    "select id from widgets where height >= @minHeight;",
-    DbParameters.FromDto(new { minHeight = 1.0 })).Query<long>();
+    "select id from widgets where height >= @minHeight and height <= @maxHeight;",
+    DbParameters.FromDto(new { minHeight = 1.0, maxHeight - 100.0 })).Query<long>();
 ```
+
+### Parameters from collections
+
+Database providers do not typically support collections as parameter values, which makes it difficult to run queries that use the `IN` operator. To expand a collection into a set of numbered parameters, use `...` after the parameter name in the SQL and Faithlife.Data will make the necessary substitutions.
+
+```csharp
+var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
+connector.Command(
+    "select id from widgets where name in (@names...);",
+    ("names", new[] { "one", "two", "three" })).Execute();
+```
+
+This is equivalent to:
+
+```csharp
+var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
+connector.Command(
+    "select id from widgets where name in (@names_0, @names_1, @names_2);",
+    ("names_0", "one"), ("names_1", "two"), ("names_2", "three")).Execute();
+```
+
+**Important note:** If the collection is empty, an `InvalidOperationException` will be thrown, since omitting the parameter entirely may not be valid (or intended) SQL.
 
 ## Single-record queries
 

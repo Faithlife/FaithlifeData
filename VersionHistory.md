@@ -3,6 +3,7 @@
 ### Pending
 
 * Add single parameter `DbParameters.Create` like `DbParameters.Add`.
+* Add special syntax for collection parameters.
 
 ### 1.1.0
 

@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -290,13 +292,13 @@ namespace Faithlife.Data
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
 			var command = connection.CreateCommand();
-			command.CommandText = Text;
+			var commandText = Text;
 
 			var transaction = m_connector.Transaction;
 			if (transaction != null)
 				command.Transaction = transaction;
 
-			foreach (var (name, value) in Parameters)
+			void addCommandParameter(string name, object? value)
 			{
 				if (!(value is IDbDataParameter dbParameter))
 				{
@@ -310,6 +312,46 @@ namespace Faithlife.Data
 				command.Parameters.Add(dbParameter);
 			}
 
+			foreach (var (name, value) in Parameters)
+			{
+				// look for @name... in SQL for collection parameters
+				if (!string.IsNullOrEmpty(name) && !(value is string) && !(value is byte[]) && value is IEnumerable list)
+				{
+					var itemCount = -1;
+
+					string replacement(Match match)
+					{
+						if (itemCount == -1)
+						{
+							itemCount = 0;
+
+							foreach (var item in list)
+							{
+								addCommandParameter($"{name}_{itemCount}", item);
+								itemCount++;
+							}
+
+							if (itemCount == 0)
+								throw new InvalidOperationException("Collection parameter '{name}' must not be empty.");
+						}
+
+						return string.Join(",", Enumerable.Range(0, itemCount).Select(x => $"{match.Groups[1]}_{x}"));
+					}
+
+					commandText = Regex.Replace(commandText, $@"([?@:]{Regex.Escape(name)})\.\.\.",
+						replacement, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+					// if special syntax wasn't found, just add the parameter, for databases that support collections directly
+					if (itemCount == -1)
+						addCommandParameter(name, value);
+				}
+				else
+				{
+					addCommandParameter(name, value);
+				}
+			}
+
+			command.CommandText = commandText;
 			return command;
 		}
 

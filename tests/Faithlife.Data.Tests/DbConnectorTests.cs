@@ -257,6 +257,30 @@ namespace Faithlife.Data.Tests
 			Invoking(() => default(DbConnectorCommand).Create()).Should().Throw<InvalidOperationException>();
 		}
 
+		[Test]
+		public void ParameterCollectionTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			connector.Command("insert into Items (Name) values ('one'), ('two'), ('three');").Execute().Should().Be(3);
+			var resultSets = connector.Command(@"
+				select Name from Items where Name in (@names...);
+				select Name from Items where Name not in (@names...);
+				", ("names", new[] { "one", "three", "five" })).QueryMultiple();
+			resultSets.Read<string>().Should().BeEquivalentTo("one", "three");
+			resultSets.Read<string>().Should().BeEquivalentTo("two");
+		}
+
+		[Test]
+		public void BadParameterCollectionTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			connector.Command("insert into Items (Name) values ('one'), ('two'), ('three');").Execute().Should().Be(3);
+			Invoking(() => connector.Command("select Name from Items where Name in (@names...);", ("names", new string[0]))
+				.Query<string>()).Should().Throw<InvalidOperationException>();
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
