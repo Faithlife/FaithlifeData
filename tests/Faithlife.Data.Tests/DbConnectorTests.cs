@@ -103,7 +103,7 @@ namespace Faithlife.Data.Tests
 			connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 				("item1", "one"), ("item2", "two")).Execute().Should().Be(2);
 			connector.Command("select Name from Items where Name like @like;",
-				DbParameters.Empty.Add("like", "t%")).QueryFirst<string>().Should().Be("two");
+				DbParameters.Create("like", "t%")).QueryFirst<string>().Should().Be("two");
 		}
 
 		[Test]
@@ -114,7 +114,7 @@ namespace Faithlife.Data.Tests
 			(await connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 				("item1", "one"), ("item2", "two")).ExecuteAsync()).Should().Be(2);
 			(await connector.Command("select Name from Items where Name like @like;",
-				DbParameters.Empty.Add("like", "t%")).QueryFirstAsync<string>()).Should().Be("two");
+				DbParameters.Create("like", "t%")).QueryFirstAsync<string>()).Should().Be("two");
 		}
 
 		[Test]

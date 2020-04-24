@@ -18,6 +18,12 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void CreateSingle()
+		{
+			DbParameters.Create("one", 1).Should().Equal(("one", 1));
+		}
+
+		[Test]
 		public void CreateFromPairParams()
 		{
 			DbParameters.Create().Should().BeEmpty();

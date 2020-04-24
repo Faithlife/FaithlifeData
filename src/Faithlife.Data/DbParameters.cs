@@ -17,6 +17,12 @@ namespace Faithlife.Data
 		public static readonly DbParameters Empty = new DbParameters();
 
 		/// <summary>
+		/// Creates a list of parameters with one parameter.
+		/// </summary>
+		public static DbParameters Create(string name, object? value) =>
+			new DbParameters(new[] { (name, value) });
+
+		/// <summary>
 		/// Creates a list of parameters from tuples.
 		/// </summary>
 		public static DbParameters Create(params (string Name, object? Value)[] parameters) =>
