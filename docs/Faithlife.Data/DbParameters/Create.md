@@ -1,4 +1,4 @@
-# DbParameters.Create method (1 of 4)
+# DbParameters.Create method (1 of 5)
 
 Creates a list of parameters from a sequence of tuples.
 
@@ -13,7 +13,7 @@ public static DbParameters Create(IEnumerable<ValueTuple<string, object>> parame
 
 ---
 
-# DbParameters.Create method (2 of 4)
+# DbParameters.Create method (2 of 5)
 
 Creates a list of parameters from tuples.
 
@@ -28,7 +28,22 @@ public static DbParameters Create(params ValueTuple<string, object>[] parameters
 
 ---
 
-# DbParameters.Create&lt;T&gt; method (3 of 4)
+# DbParameters.Create method (3 of 5)
+
+Creates a list of parameters with one parameter.
+
+```csharp
+public static DbParameters Create(string name, object value)
+```
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.Create&lt;T&gt; method (4 of 5)
 
 Creates a list of parameters from a dictionary.
 
@@ -43,7 +58,7 @@ public static DbParameters Create<T>(IEnumerable<KeyValuePair<string, T>> parame
 
 ---
 
-# DbParameters.Create&lt;T&gt; method (4 of 4)
+# DbParameters.Create&lt;T&gt; method (5 of 5)
 
 Creates a list of parameters from a sequence of tuples.
 

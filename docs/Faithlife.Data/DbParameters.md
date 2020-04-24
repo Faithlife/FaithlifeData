@@ -11,7 +11,7 @@ public struct DbParameters : IReadOnlyList<ValueTuple<string, object>>
 | name | description |
 | --- | --- |
 | static readonly [Empty](DbParameters/Empty.md) | An empty list of parameters. |
-| static [Create](DbParameters/Create.md)(…) | Creates a list of parameters from tuples. (2 methods) |
+| static [Create](DbParameters/Create.md)(…) | Creates a list of parameters with one parameter. (3 methods) |
 | static [Create&lt;T&gt;](DbParameters/Create.md)(…) | Creates a list of parameters from a sequence of tuples. (2 methods) |
 | static [FromDto](DbParameters/FromDto.md)(…) | Creates a list of parameters from the properties of a DTO. |
 | [Count](DbParameters/Count.md) { get; } | The number of parameters. |
