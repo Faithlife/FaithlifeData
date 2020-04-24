@@ -1,6 +1,6 @@
 # Version History
 
-### Pending
+### 1.2.0
 
 * Add single parameter `DbParameters.Create` like `DbParameters.Add`.
 * Add special syntax for collection parameters.
