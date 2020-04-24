@@ -248,7 +248,7 @@ namespace Faithlife.Data
 		public async ValueTask<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
 		{
 			var methods = m_connector.ProviderMethods;
-			var command = Create();
+			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false), methods);
 		}
 
