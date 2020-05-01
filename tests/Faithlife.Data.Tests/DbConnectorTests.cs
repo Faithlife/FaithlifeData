@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Faithlife.Data.BulkInsert;
 using FluentAssertions;
 using NUnit.Framework;
 using static FluentAssertions.FluentActions;
@@ -249,6 +250,26 @@ namespace Faithlife.Data.Tests
 				id1.Should().BeLessThan(id2);
 				Awaiting(async () => await ToListAsync(resultSet.EnumerateAsync(x => 0))).Should().Throw<InvalidOperationException>();
 			}
+		}
+
+		[Test]
+		public void BulkInsertTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+			connector.Command("insert into Items (Name) values (@name)...;")
+				.BulkInsert(Enumerable.Range(1, 100).Select(x => DbParameters.Create("name", $"item{x}")));
+			connector.Command("select count(*) from Items;").QuerySingle<long>().Should().Be(100);
+		}
+
+		[Test]
+		public async Task BulkInsertAsyncTests()
+		{
+			await using var connector = CreateConnector();
+			await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
+			await connector.Command("insert into Items (Name) values (@name)...;")
+				.BulkInsertAsync(Enumerable.Range(1, 100).Select(x => DbParameters.Create("name", $"item{x}")));
+			(await connector.Command("select count(*) from Items;").QuerySingleAsync<long>()).Should().Be(100);
 		}
 
 		[Test]

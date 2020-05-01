@@ -26,6 +26,11 @@ namespace Faithlife.Data
 		public DbParameters Parameters { get; }
 
 		/// <summary>
+		/// The connector of the command.
+		/// </summary>
+		public DbConnector Connector { get; }
+
+		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
 		/// <seealso cref="ExecuteAsync" />
@@ -42,7 +47,7 @@ namespace Faithlife.Data
 		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return await m_connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
+			return await Connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -240,7 +245,7 @@ namespace Faithlife.Data
 		public DbConnectorResultSets QueryMultiple()
 		{
 			var command = Create();
-			return new DbConnectorResultSets(command, command.ExecuteReader(), m_connector.ProviderMethods);
+			return new DbConnectorResultSets(command, command.ExecuteReader(), Connector.ProviderMethods);
 		}
 
 		/// <summary>
@@ -249,7 +254,7 @@ namespace Faithlife.Data
 		/// <seealso cref="QueryMultiple" />
 		public async ValueTask<DbConnectorResultSets> QueryMultipleAsync(CancellationToken cancellationToken = default)
 		{
-			var methods = m_connector.ProviderMethods;
+			var methods = Connector.ProviderMethods;
 			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false), methods);
 		}
@@ -261,7 +266,7 @@ namespace Faithlife.Data
 		public IDbCommand Create()
 		{
 			Validate();
-			var connection = m_connector.Connection;
+			var connection = Connector.Connection;
 			return DoCreate(connection);
 		}
 
@@ -272,20 +277,20 @@ namespace Faithlife.Data
 		public async ValueTask<IDbCommand> CreateAsync(CancellationToken cancellationToken = default)
 		{
 			Validate();
-			var connection = await m_connector.GetConnectionAsync(cancellationToken).ConfigureAwait(false);
+			var connection = await Connector.GetConnectionAsync(cancellationToken).ConfigureAwait(false);
 			return DoCreate(connection);
 		}
 
 		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters)
 		{
-			m_connector = connector;
+			Connector = connector;
 			Text = text;
 			Parameters = parameters;
 		}
 
 		private void Validate()
 		{
-			if (m_connector == null)
+			if (Connector == null)
 				throw new InvalidOperationException("Use DbConnector to create commands.");
 		}
 
@@ -294,7 +299,7 @@ namespace Faithlife.Data
 			var command = connection.CreateCommand();
 			var commandText = Text;
 
-			var transaction = m_connector.Transaction;
+			var transaction = Connector.Transaction;
 			if (transaction != null)
 				command.Transaction = transaction;
 
@@ -373,7 +378,7 @@ namespace Faithlife.Data
 
 		private async ValueTask<IReadOnlyList<T>> DoQueryAsync<T>(Func<IDataRecord, T>? map, CancellationToken cancellationToken)
 		{
-			var methods = m_connector.ProviderMethods;
+			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
@@ -413,7 +418,7 @@ namespace Faithlife.Data
 
 		private async ValueTask<T> DoQueryFirstAsync<T>(Func<IDataRecord, T>? map, bool single, bool orDefault, CancellationToken cancellationToken)
 		{
-			var methods = m_connector.ProviderMethods;
+			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			using var reader = single ? await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(command, CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
@@ -455,7 +460,7 @@ namespace Faithlife.Data
 
 		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? map, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
-			var methods = m_connector.ProviderMethods;
+			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
 			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
@@ -466,7 +471,5 @@ namespace Faithlife.Data
 					yield return map != null ? map(reader) : reader.Get<T>();
 			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 		}
-
-		private readonly DbConnector m_connector;
 	}
 }

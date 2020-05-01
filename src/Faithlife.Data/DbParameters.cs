@@ -98,6 +98,17 @@ namespace Faithlife.Data
 		public DbParameters AddDto(object dto) => Add(FromDto(dto));
 
 		/// <summary>
+		/// Creates a dictionary of parameters.
+		/// </summary>
+		public Dictionary<string, object?> ToDictionary()
+		{
+			var dictionary = new Dictionary<string, object?>();
+			foreach (var parameter in Parameters)
+				dictionary[parameter.Name] = parameter.Value;
+			return dictionary;
+		}
+
+		/// <summary>
 		/// Used to enumerate the parameters.
 		/// </summary>
 		public IEnumerator<(string Name, object? Value)> GetEnumerator() => Parameters.GetEnumerator();
