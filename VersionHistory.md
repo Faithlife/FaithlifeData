@@ -1,6 +1,6 @@
 # Version History
 
-### 1.3.0
+### 1.3.1
 
 * Add `BulkInsert` and `BulkInsertAsync` extension methods to `DbConnectorCommand`.
 * Add `ToDictionary` to `DbParameters`.

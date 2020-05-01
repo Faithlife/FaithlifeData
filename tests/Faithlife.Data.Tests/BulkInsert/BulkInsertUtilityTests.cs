@@ -52,7 +52,7 @@ namespace Faithlife.Data.Tests.BulkInsert
 		public void ZeroBatchSize_Throws()
 		{
 			Invoking(() => BulkInsertUtility.GetBulkInsertCommands("VALUES (@foo)...",
-					DbParameters.Empty, new[] { DbParameters.FromDto(new { foo = 1 }) }, new BulkInsertSettings { MaxRecordsPerBatch = 0 }).ToList())
+					DbParameters.Empty, new[] { DbParameters.FromDto(new { foo = 1 }) }, new BulkInsertSettings { MaxRowsPerBatch = 0 }).ToList())
 				.Should().Throw<ArgumentException>();
 		}
 
@@ -60,7 +60,7 @@ namespace Faithlife.Data.Tests.BulkInsert
 		public void NegativeBatchSize_Throws()
 		{
 			Invoking(() => BulkInsertUtility.GetBulkInsertCommands("VALUES (@foo)...",
-					DbParameters.Empty, new[] { DbParameters.FromDto(new { foo = 1 }) }, new BulkInsertSettings { MaxRecordsPerBatch = -1 }).ToList())
+					DbParameters.Empty, new[] { DbParameters.FromDto(new { foo = 1 }) }, new BulkInsertSettings { MaxRowsPerBatch = -1 }).ToList())
 				.Should().Throw<ArgumentException>();
 		}
 
@@ -121,7 +121,7 @@ namespace Faithlife.Data.Tests.BulkInsert
 		{
 			var settings = new BulkInsertSettings
 			{
-				MaxRecordsPerBatch = maxRecordsPerBatch,
+				MaxRowsPerBatch = maxRecordsPerBatch,
 				MaxParametersPerBatch = maxParametersPerBatch,
 			};
 			var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo,@bar)...",

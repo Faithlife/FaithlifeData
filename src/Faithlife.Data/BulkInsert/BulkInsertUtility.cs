@@ -61,13 +61,13 @@ namespace Faithlife.Data.BulkInsert
 				tupleParameters[name] = tupleParameters.TryGetValue(name, out indices) ? indices.Append(index).ToArray() : new[] { index };
 			}
 
-			var maxParametersPerBatch = settings?.MaxParametersPerBatch ?? (settings?.MaxRecordsPerBatch is null ? c_defaultMaxParametersPerBatch : int.MaxValue);
+			var maxParametersPerBatch = settings?.MaxParametersPerBatch ?? (settings?.MaxRowsPerBatch is null ? c_defaultMaxParametersPerBatch : int.MaxValue);
 			if (maxParametersPerBatch < 1)
 				throw new ArgumentException($"{nameof(settings.MaxParametersPerBatch)} setting must be positive.");
 
-			var maxRecordsPerBatch = settings?.MaxRecordsPerBatch ?? int.MaxValue;
-			if (maxRecordsPerBatch < 1)
-				throw new ArgumentException($"{nameof(settings.MaxRecordsPerBatch)} setting must be positive.");
+			var maxRowsPerBatch = settings?.MaxRowsPerBatch ?? int.MaxValue;
+			if (maxRowsPerBatch < 1)
+				throw new ArgumentException($"{nameof(settings.MaxRowsPerBatch)} setting must be positive.");
 
 			var batchSqls = new List<string>();
 			Dictionary<string, object?>? batchParameters = null;
@@ -95,7 +95,7 @@ namespace Faithlife.Data.BulkInsert
 
 				batchSqls.Add(string.Concat(rowParts));
 
-				if (batchSqls.Count == maxRecordsPerBatch || batchParameters.Count + tupleParts.Length / 2 > maxParametersPerBatch)
+				if (batchSqls.Count == maxRowsPerBatch || batchParameters.Count + tupleParts.Length / 2 > maxParametersPerBatch)
 				{
 					yield return (getBatchSql(), DbParameters.Create(batchParameters));
 					batchSqls.Clear();
