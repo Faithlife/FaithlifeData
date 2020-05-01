@@ -11,7 +11,7 @@ public static class BulkInsertUtility
 | name | description |
 | --- | --- |
 | static [BulkInsert](BulkInsertUtility/BulkInsert.md)(…) | Efficiently inserts multiple rows, in batches as necessary. |
-| static [BulkInsertAsync](BulkInsertUtility/BulkInsertAsync.md)(…) | Efficiently inserts multiple rows, in batches as necessary. |
+| static [BulkInsertAsync](BulkInsertUtility/BulkInsertAsync.md)(…) | Efficiently inserts multiple rows, in batches as necessary. (2 methods) |
 
 ## See Also
 

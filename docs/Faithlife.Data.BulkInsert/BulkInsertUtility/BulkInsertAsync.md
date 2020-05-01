@@ -1,4 +1,22 @@
-# BulkInsertUtility.BulkInsertAsync method
+# BulkInsertUtility.BulkInsertAsync method (1 of 2)
+
+Efficiently inserts multiple rows, in batches as necessary.
+
+```csharp
+public static Task<int> BulkInsertAsync(this DbConnectorCommand command, 
+    IEnumerable<DbParameters> rows, CancellationToken cancellationToken)
+```
+
+## See Also
+
+* struct [DbConnectorCommand](../../Faithlife.Data/DbConnectorCommand.md)
+* struct [DbParameters](../../Faithlife.Data/DbParameters.md)
+* class [BulkInsertUtility](../BulkInsertUtility.md)
+* namespace [Faithlife.Data.BulkInsert](../../Faithlife.Data.md)
+
+---
+
+# BulkInsertUtility.BulkInsertAsync method (2 of 2)
 
 Efficiently inserts multiple rows, in batches as necessary.
 
