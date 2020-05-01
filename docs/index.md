@@ -22,6 +22,7 @@ With a `DbConnector`, you can:
 * Access the database synchronously or asynchronously with cancellation support, e.g. [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md) vs. [`QueryAsync()`](Faithlife.Data/DbConnectorCommand/QueryAsync.md).
 * Read multiple result sets from multi-statement commands with [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md).
 * Expand [collection parameters](#parameters-from-collections) to a list of numbered parameters for easier `IN` support.
+* Use [bulk insert](#bulk-insert) to easily and efficiently insert multiple rows into a table.
 
 Consult the [reference documentation](Faithlife.Data.md) for additional details.
 
@@ -141,7 +142,7 @@ IReadOnlyList<double> GetWidgetHeights(DbConnector connector) =>
         .Query(x => x.Get<double>(1));
 ```
 
-Fields can also be accessed by name, though that uses [`IDataRecord.GetOrdinal`](https://docs.microsoft.com/dotnet/api/system.data.idatarecord.getordinal) and is thus slightly less efficient.
+Fields can also be accessed by name, though that uses [`IDataRecord.GetOrdinal()`](https://docs.microsoft.com/dotnet/api/system.data.idatarecord.getordinal) and is thus slightly less efficient.
 
 ```csharp
 IReadOnlyList<double> GetWidgetHeights(DbConnector connector) =>
@@ -151,7 +152,7 @@ IReadOnlyList<double> GetWidgetHeights(DbConnector connector) =>
 
 ### Simple types
 
-Simple types must match the type returned from [`IDataRecord.GetValue`](https://docs.microsoft.com/dotnet/api/system.data.idatarecord.getvalue) exactly. No conversions are performed, except between nullable and non-nullable types. Be sure to use a nullable type if the value could be null, e.g. `int?`; an exception will be thrown if the field is null but the type is not nullable.
+Simple types must match the type returned from [`IDataRecord.GetValue()`](https://docs.microsoft.com/dotnet/api/system.data.idatarecord.getvalue) exactly. No conversions are performed, except between nullable and non-nullable types. Be sure to use a nullable type if the value could be null, e.g. `int?`; an exception will be thrown if the field is null but the type is not nullable.
 
 The supported simple types are `string`, `long`, `int`, `short`, `byte`, `ulong`, `uint`, `ushort`, `sbyte`, `double`, `float`, `decimal`, `bool`, `Guid`, `DateTime`, `DateTimeOffset`, and `TimeSpan`.
 
@@ -276,9 +277,9 @@ var tallWidgets = connector.Command(
     ("minHeight", 1.0), ("maxHeight", 100.0)).Query<long>();
 ```
 
-The [`DbParameters`](Faithlife.Data/DbParameters.md) structure can be used to build a list of parameters by calling one of the [`Create`](Faithlife.Data/DbParameters/Create.md) methods.
+The [`DbParameters`](Faithlife.Data/DbParameters.md) structure can be used to build a list of parameters by calling one of the [`Create()`](Faithlife.Data/DbParameters/Create.md) methods.
 
-You can add additional parameters by calling the [`Add`](Faithlife.Data/DbParameters/Add.md) methods, but note that `DbParameters` is an *immutable* collection, so you will need to use the return value of the `Add` method.
+You can add additional parameters by calling the [`Add()`](Faithlife.Data/DbParameters/Add.md) methods, but note that `DbParameters` is an *immutable* collection, so you will need to use the return value of the `Add` method.
 
 ```csharp
 var tallWidgets = connector.Command(
@@ -288,7 +289,7 @@ var tallWidgets = connector.Command(
 
 ### Parameters from DTOs
 
-Use [`DbParameters.FromDto`](Faithlife.Data/DbParameters/FromDto.md) or [`DbParameters.AddDto`](Faithlife.Data/DbParameters/AddDto.md) to create parameters from the names and values of public properties and fields, e.g. of anonymous types.
+Use [`DbParameters.FromDto()`](Faithlife.Data/DbParameters/FromDto.md) or [`DbParameters.AddDto()`](Faithlife.Data/DbParameters/AddDto.md) to create parameters from the names and values of public properties and fields, e.g. of anonymous types.
 
 ```csharp
 var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
@@ -364,6 +365,45 @@ The `Query` and `Read` methods read all of the records into an `IReadOnlyList<T>
 var averageHeight = connector.Command("select height from widgets;")
     .Enumerate<double>().Average();
 ```
+
+## Bulk insert
+
+The [`BulkInsert()`](Faithlife.Data.BulkInsert/BulkInsertUtility/BulkInsert.md) and [`BulkInsertAsync()`](Faithlife.Data.BulkInsert/BulkInsertUtility/BulkInsertAsync.md) extension methods allow simple and efficient insertion of many rows into a database table.
+
+The simplest way to insert many rows into a database table is to execute `INSERT` commands in a loop. Unfortunately, this can be extremely slow, even when the commands are all executed in a single transaction.
+
+Each DBMS has its own preferred approaches for efficiently inserting many rows into a database, but the most portable way is to execute an `INSERT` command with multiple rows in the `VALUES` clause, like so:
+
+```
+INSERT INTO widgets (name, size) VALUES ('foo', 22), ('bar', 14), ('baz', 42)
+```
+
+Building a SQL statement for a large number of rows is straightforward, but runs the risk of SQL injection problems if the SQL isn't escaped propertly.
+
+Using command parameters is safer, but building and executing the SQL is more complex. Furthermore, databases often have a limit on the maximum number of command parameters that can be used, so it can be necessary to execute multiple SQL statements, one for each batch of rows to insert.
+
+`BulkInsert()` builds the SQL commands for each batch and injects the command parameters as needed.
+
+```csharp
+var widgets = new[] { new { name = "foo", size = 22 }, new { name = "bar", size = 14 }, new { name = "baz", size = 42 } };
+connector.Command("INSERT INTO widgets (name, size) VALUES (@name, @size)...".BulkInsert(widgets.Select(DbParameters.FromDto));
+```
+
+The `...` after the `VALUES` clause must be included. It is used by `BulkInsert` to find the end of the `VALUES` clause that will be transformed. The call above will build a SQL statement like so:
+
+```
+INSERT INTO widgets (name, size) VALUES (@name_0, @size_0), (@name_1, @size_1)
+```
+
+The actual SQL statement will have as many parameters as needed to insert all of the specified rows. If the total number of command parameters would exceed 999 (a reasonable number for many databases), it will execute multiple SQL commands until all of the rows are inserted.
+
+All of the transformed SQL will be executed for each batch, so including additional statements before or after the `INSERT` statement is not recommended.
+
+Execute the method within a transaction if it is important to avoid inserting only some of the rows if there is an error.
+
+The `BulkInsert()` and `BulkInsertAsync()` methods of the `BulkInsertUtility` static class are extension methods on `DbConnectorCommand`. They support an optional [`BulkInsertSettings`](Faithlife.Data.BulkInsert/BulkInsertSettings.md) object that allows you to change the maximum number of command parameters and/or the maximum number of rows per batch.
+
+The method returns the total number of rows affected (or, more specifically, the sum of the row counts returned when executing the SQL commands for each batch).
 
 ## Enhancing the API
 
