@@ -385,14 +385,20 @@ Using command parameters is safer, but building and executing the SQL is more co
 `BulkInsert()` builds the SQL commands for each batch and injects the command parameters as needed.
 
 ```csharp
-var widgets = new[] { new { name = "foo", size = 22 }, new { name = "bar", size = 14 }, new { name = "baz", size = 42 } };
-connector.Command("INSERT INTO widgets (name, size) VALUES (@name, @size)...".BulkInsert(widgets.Select(DbParameters.FromDto));
+var widgets = new[]
+{
+    new { name = "foo", size = 22 },
+    new { name = "bar", size = 14 },
+    new { name = "baz", size = 42 },
+};
+connector.Command("INSERT INTO widgets (name, size) VALUES (@name, @size)...")
+    .BulkInsert(widgets.Select(DbParameters.FromDto));
 ```
 
 The `...` after the `VALUES` clause must be included. It is used by `BulkInsert` to find the end of the `VALUES` clause that will be transformed. The call above will build a SQL statement like so:
 
 ```
-INSERT INTO widgets (name, size) VALUES (@name_0, @size_0), (@name_1, @size_1)
+INSERT INTO widgets (name, size) VALUES (@name_0, @size_0), (@name_1, @size_1), (@name_2, @size_2)
 ```
 
 The actual SQL statement will have as many parameters as needed to insert all of the specified rows. If the total number of command parameters would exceed 999 (a reasonable number for many databases), it will execute multiple SQL commands until all of the rows are inserted.
@@ -401,7 +407,7 @@ All of the transformed SQL will be executed for each batch, so including additio
 
 Execute the method within a transaction if it is important to avoid inserting only some of the rows if there is an error.
 
-The `BulkInsert()` and `BulkInsertAsync()` methods of the `BulkInsertUtility` static class are extension methods on `DbConnectorCommand`. They support an optional [`BulkInsertSettings`](Faithlife.Data.BulkInsert/BulkInsertSettings.md) object that allows you to change the maximum number of command parameters and/or the maximum number of rows per batch.
+The `BulkInsert()` and `BulkInsertAsync()` methods of the `BulkInsertUtility` static class are extension methods on [`DbConnectorCommand`](Faithlife.Data/DbConnectorCommand.md). They support an optional [`BulkInsertSettings`](Faithlife.Data.BulkInsert/BulkInsertSettings.md) parameter that allows you to change the maximum number of command parameters and/or the maximum number of rows per batch.
 
 The method returns the total number of rows affected (or, more specifically, the sum of the row counts returned when executing the SQL commands for each batch).
 
