@@ -10,6 +10,7 @@ public struct DbConnectorCommand
 
 | name | description |
 | --- | --- |
+| [Connector](DbConnectorCommand/Connector.md) { get; } | The connector of the command. |
 | [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
 | [Text](DbConnectorCommand/Text.md) { get; } | The text of the command. |
 | [Create](DbConnectorCommand/Create.md)() | Creates an IDbCommand from the text and parameters. |

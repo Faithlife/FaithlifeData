@@ -20,6 +20,7 @@ public struct DbParameters : IReadOnlyList<ValueTuple<string, object>>
 | [Add&lt;T&gt;](DbParameters/Add.md)(…) | Adds parameters from a sequence of tuples. (2 methods) |
 | [AddDto](DbParameters/AddDto.md)(…) | Adds parameters from the properties of a DTO. |
 | [GetEnumerator](DbParameters/GetEnumerator.md)() | Used to enumerate the parameters. |
+| [ToDictionary](DbParameters/ToDictionary.md)() | Creates a dictionary of parameters. |
 
 ## See Also
 
