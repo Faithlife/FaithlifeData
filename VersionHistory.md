@@ -1,5 +1,11 @@
 # Version History
 
+### 1.3.0
+
+* Add `BulkInsert` and `BulkInsertAsync` extension methods to `DbConnectorCommand`.
+* Add `ToDictionary` to `DbParameters`.
+* Add `Connector` `DbConnectorCommand`.
+
 ### 1.2.0
 
 * Add single parameter `DbParameters.Create` like `DbParameters.Add`.
