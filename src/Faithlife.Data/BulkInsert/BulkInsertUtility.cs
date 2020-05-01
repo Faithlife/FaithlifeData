@@ -26,6 +26,12 @@ namespace Faithlife.Data.BulkInsert
 		/// <summary>
 		/// Efficiently inserts multiple rows, in batches as necessary.
 		/// </summary>
+		public static Task<int> BulkInsertAsync(this DbConnectorCommand command, IEnumerable<DbParameters> rows, CancellationToken cancellationToken) =>
+			command.BulkInsertAsync(rows, null, cancellationToken);
+
+		/// <summary>
+		/// Efficiently inserts multiple rows, in batches as necessary.
+		/// </summary>
 		public static async Task<int> BulkInsertAsync(this DbConnectorCommand command, IEnumerable<DbParameters> rows, BulkInsertSettings? settings = null, CancellationToken cancellationToken = default)
 		{
 			var rowCount = 0;

@@ -1,5 +1,9 @@
 # Version History
 
+### 1.3.2
+
+* Add `BulkInsertAsync` overload.
+
 ### 1.3.1
 
 * Add `BulkInsert` and `BulkInsertAsync` extension methods to `DbConnectorCommand`.
