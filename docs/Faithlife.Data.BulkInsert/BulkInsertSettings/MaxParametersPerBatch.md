@@ -8,7 +8,7 @@ public int? MaxParametersPerBatch { get; set; }
 
 ## Remarks
 
-If neither `MaxParametersPerBatch` nor [`MaxRecordsPerBatch`](MaxRecordsPerBatch.md) are specified, the maximum number of parameters is 999.
+If neither `MaxParametersPerBatch` nor [`MaxRowsPerBatch`](MaxRowsPerBatch.md) are specified, the maximum number of parameters is 999.
 
 ## See Also
 

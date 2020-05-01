@@ -12,7 +12,7 @@ public sealed class BulkInsertSettings
 | --- | --- |
 | [BulkInsertSettings](BulkInsertSettings/BulkInsertSettings.md)() | The default constructor. |
 | [MaxParametersPerBatch](BulkInsertSettings/MaxParametersPerBatch.md) { get; set; } | Specifies the maximum number of parameters to use per batch. |
-| [MaxRecordsPerBatch](BulkInsertSettings/MaxRecordsPerBatch.md) { get; set; } | Specifies the maximum number of records to insert per batch. |
+| [MaxRowsPerBatch](BulkInsertSettings/MaxRowsPerBatch.md) { get; set; } | Specifies the maximum number of rows to insert per batch. |
 
 ## See Also
 
