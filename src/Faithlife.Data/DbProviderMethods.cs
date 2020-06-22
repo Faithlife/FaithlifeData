@@ -65,6 +65,7 @@ namespace Faithlife.Data
 			{
 				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, CancellationToken ct) =>
 					await c.BeginTransactionAsync(ct).ConfigureAwait(false);
+
 				return DoAsync(dbConnection, cancellationToken);
 			}
 #endif
@@ -82,6 +83,7 @@ namespace Faithlife.Data
 			{
 				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, IsolationLevel il, CancellationToken ct) =>
 					await c.BeginTransactionAsync(il, ct).ConfigureAwait(false);
+
 				return DoAsync(dbConnection, isolationLevel, cancellationToken);
 			}
 #endif
@@ -151,6 +153,7 @@ namespace Faithlife.Data
 			{
 				static async ValueTask<IDataReader> DoAsync(DbCommand c, CancellationToken ct) =>
 					await c.ExecuteReaderAsync(ct).ConfigureAwait(false);
+
 				return DoAsync(dbCommand, cancellationToken);
 			}
 
@@ -166,6 +169,7 @@ namespace Faithlife.Data
 			{
 				static async ValueTask<IDataReader> DoAsync(DbCommand c, CommandBehavior cb, CancellationToken ct) =>
 					await c.ExecuteReaderAsync(cb, ct).ConfigureAwait(false);
+
 				return DoAsync(dbCommand, commandBehavior, cancellationToken);
 			}
 

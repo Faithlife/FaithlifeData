@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Linq;
-using System.Reflection;
 using Faithlife.Reflection;
 
 namespace Faithlife.Data
@@ -23,12 +20,12 @@ namespace Faithlife.Data
 
 			if (m_strategy == DbValueTypeStrategy.DtoProperties)
 			{
-				T dto = DtoInfo.GetInfo<T>().CreateNew();
-				bool notNull = false;
-				for (int i = index; i < index + count; i++)
+				var dto = DtoInfo.GetInfo<T>().CreateNew();
+				var notNull = false;
+				for (var i = index; i < index + count; i++)
 				{
 					string name = record.GetName(i);
-					if (!m_properties!.TryGetValue(NormalizeFieldName(name), out var property))
+					if (!m_properties!.TryGetValue(NormalizeFieldName(name), out (IDtoProperty<T> Dto, IDbValueTypeInfo Db) property))
 						throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
 					if (!record.IsDBNull(i))
 					{
@@ -41,8 +38,8 @@ namespace Faithlife.Data
 			else if (m_strategy == DbValueTypeStrategy.Dynamic && count > 1)
 			{
 				IDictionary<string, object?> obj = new ExpandoObject();
-				bool notNull = false;
-				for (int i = index; i < index + count; i++)
+				var notNull = false;
+				for (var i = index; i < index + count; i++)
 				{
 					string name = record.GetName(i);
 					if (!record.IsDBNull(i))
@@ -62,17 +59,17 @@ namespace Faithlife.Data
 				if (record.IsDBNull(index))
 					return default!;
 
-				int byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
+				var byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
 				byte[] bytes = new byte[byteCount];
 				record.GetBytes(index, 0, bytes, 0, byteCount);
 				return (T) (object) bytes;
 			}
 			else if (m_strategy == DbValueTypeStrategy.Tuple)
 			{
-				int valueCount = m_tupleTypeInfos!.Count;
+				var valueCount = m_tupleTypeInfos!.Count;
 				object?[] values = new object[valueCount];
-				int recordIndex = index;
-				for (int valueIndex = 0; valueIndex < valueCount; valueIndex++)
+				var recordIndex = index;
+				for (var valueIndex = 0; valueIndex < valueCount; valueIndex++)
 				{
 					var info = m_tupleTypeInfos[valueIndex];
 
@@ -81,10 +78,10 @@ namespace Faithlife.Data
 					if (info.FieldCount == null)
 					{
 						int? remainingFieldCount = 0;
-						int minimumRemainingFieldCount = 0;
-						for (int nextValueIndex = valueIndex + 1; nextValueIndex < valueCount; nextValueIndex++)
+						var minimumRemainingFieldCount = 0;
+						for (var nextValueIndex = valueIndex + 1; nextValueIndex < valueCount; nextValueIndex++)
 						{
-							int? nextFieldCount = m_tupleTypeInfos[nextValueIndex].FieldCount;
+							var nextFieldCount = m_tupleTypeInfos[nextValueIndex].FieldCount;
 							if (nextFieldCount != null)
 							{
 								remainingFieldCount += nextFieldCount.Value;
@@ -103,7 +100,7 @@ namespace Faithlife.Data
 						}
 						else
 						{
-							for (int nextRecordIndex = recordIndex + 1; nextRecordIndex < count; nextRecordIndex++)
+							for (var nextRecordIndex = recordIndex + 1; nextRecordIndex < count; nextRecordIndex++)
 							{
 								if (record.GetName(nextRecordIndex).Equals("NULL", StringComparison.OrdinalIgnoreCase))
 								{
@@ -162,8 +159,8 @@ namespace Faithlife.Data
 			else if (m_strategy == DbValueTypeStrategy.Dictionary)
 			{
 				var dictionary = new Dictionary<string, object?>();
-				bool notNull = false;
-				for (int i = index; i < index + count; i++)
+				var notNull = false;
+				for (var i = index; i < index + count; i++)
 				{
 					string name = record.GetName(i);
 					if (!record.IsDBNull(i))
