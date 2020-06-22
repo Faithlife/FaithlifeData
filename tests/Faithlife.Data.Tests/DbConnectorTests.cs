@@ -297,7 +297,7 @@ namespace Faithlife.Data.Tests
 			using var connector = CreateConnector();
 			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 			connector.Command("insert into Items (Name) values ('one'), ('two'), ('three');").Execute().Should().Be(3);
-			Invoking(() => connector.Command("select Name from Items where Name in (@names...);", ("names", new string[0]))
+			Invoking(() => connector.Command("select Name from Items where Name in (@names...);", ("names", Array.Empty<string>()))
 				.Query<string>()).Should().Throw<InvalidOperationException>();
 		}
 
@@ -316,7 +316,7 @@ namespace Faithlife.Data.Tests
 			throw new InvalidOperationException();
 		}
 
-		private DbConnector CreateConnector() => DbConnector.Create(
+		private static DbConnector CreateConnector() => DbConnector.Create(
 			new SQLiteConnection("Data Source=:memory:"),
 			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods(), AutoOpen = true, LazyOpen = true });
 

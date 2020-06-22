@@ -223,7 +223,11 @@ namespace Faithlife.Data
 
 		object? IDbValueTypeInfo.GetValue(IDataRecord record, int index, int count) => GetValue(record, index, count);
 
+#if !NETSTANDARD2_0
+		private static string NormalizeFieldName(string text) => text.Replace("_", "", StringComparison.Ordinal);
+#else
 		private static string NormalizeFieldName(string text) => text.Replace("_", "");
+#endif
 
 		private readonly Type m_coreType;
 		private readonly Type? m_nullableType;

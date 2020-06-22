@@ -187,7 +187,7 @@ namespace Faithlife.Data.Tests.BulkInsert
 		[Test]
 		public void NothingToInsert()
 		{
-			var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo)...", DbParameters.Empty, new DbParameters[0]).ToList();
+			var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo)...", DbParameters.Empty, Array.Empty<DbParameters>()).ToList();
 			commands.Count.Should().Be(0);
 		}
 

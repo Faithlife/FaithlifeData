@@ -32,7 +32,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask CloseConnectionAsync(IDbConnection connection)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 				return new ValueTask(dbConnection.CloseAsync());
 #endif
@@ -46,7 +46,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeConnectionAsync(IDbConnection connection)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 				return dbConnection.DisposeAsync();
 #endif
@@ -60,7 +60,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 			{
 				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, CancellationToken ct) =>
@@ -77,7 +77,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, IsolationLevel isolationLevel, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 			{
 				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, IsolationLevel il, CancellationToken ct) =>
@@ -94,7 +94,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask CommitTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (transaction is DbTransaction dbTransaction)
 				return new ValueTask(dbTransaction.CommitAsync(cancellationToken));
 #endif
@@ -108,7 +108,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (transaction is DbTransaction dbTransaction)
 				return new ValueTask(dbTransaction.RollbackAsync(cancellationToken));
 #endif
@@ -122,7 +122,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeTransactionAsync(IDbTransaction transaction)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (transaction is DbTransaction dbTransaction)
 				return dbTransaction.DisposeAsync();
 #endif
@@ -177,7 +177,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeCommandAsync(IDbCommand command)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (command is DbCommand dbCommand)
 				return dbCommand.DisposeAsync();
 #endif
@@ -213,7 +213,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeReaderAsync(IDataReader reader)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (reader is DbDataReader dbReader)
 				return dbReader.DisposeAsync();
 #endif
