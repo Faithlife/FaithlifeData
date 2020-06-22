@@ -183,7 +183,7 @@ namespace Faithlife.Data.Tests
 		public async Task IsolationLevelAsyncTests()
 		{
 			await using var connector = CreateConnector();
-			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+			await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 
 			await using (await connector.BeginTransactionAsync(IsolationLevel.ReadCommitted))
 			{
@@ -319,6 +319,6 @@ namespace Faithlife.Data.Tests
 			new SQLiteConnection("Data Source=:memory:"),
 			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods(), AutoOpen = true, LazyOpen = true });
 
-		private string ToUpper(IDataRecord x) => x.Get<string>().ToUpperInvariant();
+		private static string ToUpper(IDataRecord x) => x.Get<string>().ToUpperInvariant();
 	}
 }

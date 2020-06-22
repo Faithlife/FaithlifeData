@@ -103,8 +103,8 @@ namespace Faithlife.Data
 		public Dictionary<string, object?> ToDictionary()
 		{
 			var dictionary = new Dictionary<string, object?>();
-			foreach (var parameter in Parameters)
-				dictionary[parameter.Name] = parameter.Value;
+			foreach (var (name, value) in Parameters)
+				dictionary[name] = value;
 			return dictionary;
 		}
 

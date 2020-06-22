@@ -87,14 +87,14 @@ namespace Faithlife.Data.BulkInsert
 				var recordIndex = batchSqls.Count;
 				Array.Copy(tupleParts, rowParts, tupleParts.Length);
 
-				foreach (var rowParameter in rowParameters)
+				foreach (var (name, value) in rowParameters)
 				{
-					if (tupleParameters.TryGetValue(rowParameter.Name, out var indices))
+					if (tupleParameters.TryGetValue(name, out var indices))
 					{
 						foreach (var index in indices)
 						{
 							rowParts[index] = $"{rowParts[index]}_{recordIndex}";
-							batchParameters[$"{rowParameter.Name}_{recordIndex}"] = rowParameter.Value;
+							batchParameters[$"{name}_{recordIndex}"] = value;
 						}
 					}
 				}
