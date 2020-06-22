@@ -13,7 +13,6 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests
 {
 	[TestFixture]
-	[SuppressMessage("ReSharper", "ConsiderUsingConfigureAwait")]
 	public class DbConnectorTests
 	{
 		[Test]

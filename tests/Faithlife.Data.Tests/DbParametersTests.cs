@@ -12,7 +12,6 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void Empty()
 		{
-			new DbParameters().Should().BeEmpty();
 			default(DbParameters).Should().BeEmpty();
 			DbParameters.Empty.Should().BeEmpty();
 		}
@@ -75,7 +74,7 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void Add()
 		{
-			new DbParameters()
+			default(DbParameters)
 				.Add("one", 1)
 				.Add(("two", 2L))
 				.Add()
@@ -103,13 +102,13 @@ namespace Faithlife.Data.Tests
 		public void Nulls()
 		{
 			Invoking(() => DbParameters.Create(null!)).Should().Throw<ArgumentNullException>();
-			Invoking(() => new DbParameters().Add(null!)).Should().Throw<ArgumentNullException>();
+			Invoking(() => default(DbParameters).Add(null!)).Should().Throw<ArgumentNullException>();
 			Invoking(() => DbParameters.Create(default((string, string)[])!)).Should().Throw<ArgumentNullException>();
-			Invoking(() => new DbParameters().Add(default((string, string)[])!)).Should().Throw<ArgumentNullException>();
+			Invoking(() => default(DbParameters).Add(default((string, string)[])!)).Should().Throw<ArgumentNullException>();
 			Invoking(() => DbParameters.Create(default(Dictionary<string, string>)!)).Should().Throw<ArgumentNullException>();
-			Invoking(() => new DbParameters().Add(default(Dictionary<string, string>)!)).Should().Throw<ArgumentNullException>();
+			Invoking(() => default(DbParameters).Add(default(Dictionary<string, string>)!)).Should().Throw<ArgumentNullException>();
 			Invoking(() => DbParameters.FromDto(null!)).Should().Throw<ArgumentNullException>();
-			Invoking(() => new DbParameters().AddDto(null!)).Should().Throw<ArgumentNullException>();
+			Invoking(() => default(DbParameters).AddDto(null!)).Should().Throw<ArgumentNullException>();
 		}
 
 		private sealed class HasTwo

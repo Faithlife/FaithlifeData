@@ -14,7 +14,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// An empty list of parameters.
 		/// </summary>
-		public static readonly DbParameters Empty = new DbParameters();
+		public static readonly DbParameters Empty = default;
 
 		/// <summary>
 		/// Creates a list of parameters with one parameter.

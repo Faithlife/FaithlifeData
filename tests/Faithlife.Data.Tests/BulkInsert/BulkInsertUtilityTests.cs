@@ -10,7 +10,6 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests.BulkInsert
 {
 	[TestFixture]
-	[SuppressMessage("ReSharper", "ConsiderUsingConfigureAwait")]
 	public class BulkInsertUtilityTests
 	{
 		[Test]

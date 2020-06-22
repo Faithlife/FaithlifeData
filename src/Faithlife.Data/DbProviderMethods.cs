@@ -24,7 +24,7 @@ namespace Faithlife.Data
 				return new ValueTask(dbConnection.OpenAsync(cancellationToken));
 
 			connection.Open();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Faithlife.Data
 #endif
 
 			connection.Close();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace Faithlife.Data
 #endif
 
 			connection.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -63,9 +63,9 @@ namespace Faithlife.Data
 #if NETSTANDARD2_1
 			if (connection is DbConnection dbConnection)
 			{
-				static async ValueTask<IDbTransaction> doAsync(DbConnection c, CancellationToken ct) =>
+				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, CancellationToken ct) =>
 					await c.BeginTransactionAsync(ct).ConfigureAwait(false);
-				return doAsync(dbConnection, cancellationToken);
+				return DoAsync(dbConnection, cancellationToken);
 			}
 #endif
 
@@ -80,9 +80,9 @@ namespace Faithlife.Data
 #if NETSTANDARD2_1
 			if (connection is DbConnection dbConnection)
 			{
-				static async ValueTask<IDbTransaction> doAsync(DbConnection c, IsolationLevel il, CancellationToken ct) =>
+				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, IsolationLevel il, CancellationToken ct) =>
 					await c.BeginTransactionAsync(il, ct).ConfigureAwait(false);
-				return doAsync(dbConnection, isolationLevel, cancellationToken);
+				return DoAsync(dbConnection, isolationLevel, cancellationToken);
 			}
 #endif
 
@@ -100,7 +100,7 @@ namespace Faithlife.Data
 #endif
 
 			transaction.Commit();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace Faithlife.Data
 #endif
 
 			transaction.Rollback();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -128,7 +128,7 @@ namespace Faithlife.Data
 #endif
 
 			transaction.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -149,9 +149,9 @@ namespace Faithlife.Data
 		{
 			if (command is DbCommand dbCommand)
 			{
-				static async ValueTask<IDataReader> doAsync(DbCommand c, CancellationToken ct) =>
+				static async ValueTask<IDataReader> DoAsync(DbCommand c, CancellationToken ct) =>
 					await c.ExecuteReaderAsync(ct).ConfigureAwait(false);
-				return doAsync(dbCommand, cancellationToken);
+				return DoAsync(dbCommand, cancellationToken);
 			}
 
 			return new ValueTask<IDataReader>(command.ExecuteReader());
@@ -164,9 +164,9 @@ namespace Faithlife.Data
 		{
 			if (command is DbCommand dbCommand)
 			{
-				static async ValueTask<IDataReader> doAsync(DbCommand c, CommandBehavior cb, CancellationToken ct) =>
+				static async ValueTask<IDataReader> DoAsync(DbCommand c, CommandBehavior cb, CancellationToken ct) =>
 					await c.ExecuteReaderAsync(cb, ct).ConfigureAwait(false);
-				return doAsync(dbCommand, commandBehavior, cancellationToken);
+				return DoAsync(dbCommand, commandBehavior, cancellationToken);
 			}
 
 			return new ValueTask<IDataReader>(command.ExecuteReader(commandBehavior));
@@ -183,7 +183,7 @@ namespace Faithlife.Data
 #endif
 
 			command.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -219,7 +219,7 @@ namespace Faithlife.Data
 #endif
 
 			reader.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
