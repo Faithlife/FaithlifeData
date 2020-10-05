@@ -9,7 +9,7 @@ namespace Faithlife.Data.Tests
 		public override ValueTask OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken)
 		{
 			connection.Open();
-			return new ValueTask();
+			return default;
 		}
 	}
 }

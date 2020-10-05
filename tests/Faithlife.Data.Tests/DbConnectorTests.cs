@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
@@ -13,7 +12,6 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests
 {
 	[TestFixture]
-	[SuppressMessage("ReSharper", "ConsiderUsingConfigureAwait")]
 	public class DbConnectorTests
 	{
 		[Test]
@@ -185,7 +183,7 @@ namespace Faithlife.Data.Tests
 		public async Task IsolationLevelAsyncTests()
 		{
 			await using var connector = CreateConnector();
-			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+			await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
 
 			await using (await connector.BeginTransactionAsync(IsolationLevel.ReadCommitted))
 			{
@@ -209,16 +207,16 @@ namespace Faithlife.Data.Tests
 
 			using (var resultSet = connector.Command(sql).QueryMultiple())
 			{
-				long id1 = resultSet.Read<long>().First();
-				long id2 = resultSet.Read(x => x.Get<long>()).Single();
+				var id1 = resultSet.Read<long>().First();
+				var id2 = resultSet.Read(x => x.Get<long>()).Single();
 				id1.Should().BeLessThan(id2);
 				Invoking(() => resultSet.Read(x => 0)).Should().Throw<InvalidOperationException>();
 			}
 
 			using (var resultSet = connector.Command(sql).QueryMultiple())
 			{
-				long id1 = resultSet.Enumerate<long>().First();
-				long id2 = resultSet.Enumerate(x => x.Get<long>()).Single();
+				var id1 = resultSet.Enumerate<long>().First();
+				var id2 = resultSet.Enumerate(x => x.Get<long>()).Single();
 				id1.Should().BeLessThan(id2);
 				Invoking(() => resultSet.Enumerate(x => 0).Count()).Should().Throw<InvalidOperationException>();
 			}
@@ -237,16 +235,16 @@ namespace Faithlife.Data.Tests
 
 			await using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
 			{
-				long id1 = (await resultSet.ReadAsync<long>()).First();
-				long id2 = (await resultSet.ReadAsync(x => x.Get<long>())).Single();
+				var id1 = (await resultSet.ReadAsync<long>()).First();
+				var id2 = (await resultSet.ReadAsync(x => x.Get<long>())).Single();
 				id1.Should().BeLessThan(id2);
 				Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
 			}
 
 			await using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
 			{
-				long id1 = await FirstAsync(resultSet.EnumerateAsync<long>());
-				long id2 = await FirstAsync(resultSet.EnumerateAsync(x => x.Get<long>()));
+				var id1 = await FirstAsync(resultSet.EnumerateAsync<long>());
+				var id2 = await FirstAsync(resultSet.EnumerateAsync(x => x.Get<long>()));
 				id1.Should().BeLessThan(id2);
 				Awaiting(async () => await ToListAsync(resultSet.EnumerateAsync(x => 0))).Should().Throw<InvalidOperationException>();
 			}
@@ -298,7 +296,7 @@ namespace Faithlife.Data.Tests
 			using var connector = CreateConnector();
 			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 			connector.Command("insert into Items (Name) values ('one'), ('two'), ('three');").Execute().Should().Be(3);
-			Invoking(() => connector.Command("select Name from Items where Name in (@names...);", ("names", new string[0]))
+			Invoking(() => connector.Command("select Name from Items where Name in (@names...);", ("names", Array.Empty<string>()))
 				.Query<string>()).Should().Throw<InvalidOperationException>();
 		}
 
@@ -317,10 +315,10 @@ namespace Faithlife.Data.Tests
 			throw new InvalidOperationException();
 		}
 
-		private DbConnector CreateConnector() => DbConnector.Create(
+		private static DbConnector CreateConnector() => DbConnector.Create(
 			new SQLiteConnection("Data Source=:memory:"),
 			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods(), AutoOpen = true, LazyOpen = true });
 
-		private string ToUpper(IDataRecord x) => x.Get<string>().ToUpperInvariant();
+		private static string ToUpper(IDataRecord x) => x.Get<string>().ToUpperInvariant();
 	}
 }

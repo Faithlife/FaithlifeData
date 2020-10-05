@@ -199,8 +199,8 @@ namespace Faithlife.Data
 		{
 			VerifyNotDisposed();
 
-			if (!m_noDisposeTransaction && m_transaction != null)
-				m_transaction.Dispose();
+			if (!m_noDisposeTransaction)
+				m_transaction?.Dispose();
 			m_transaction = null;
 		}
 

@@ -78,7 +78,7 @@ namespace Faithlife.Data.BulkInsert
 			var batchSqls = new List<string>();
 			Dictionary<string, object?>? batchParameters = null;
 			var rowParts = new string[tupleParts.Length];
-			string getBatchSql() => sqlPrefix + string.Join(", ", batchSqls) + sqlSuffix;
+			string GetBatchSql() => sqlPrefix + string.Join(", ", batchSqls) + sqlSuffix;
 
 			foreach (var rowParameters in rows)
 			{
@@ -103,14 +103,14 @@ namespace Faithlife.Data.BulkInsert
 
 				if (batchSqls.Count == maxRowsPerBatch || batchParameters.Count + tupleParts.Length / 2 > maxParametersPerBatch)
 				{
-					yield return (getBatchSql(), DbParameters.Create(batchParameters));
+					yield return (GetBatchSql(), DbParameters.Create(batchParameters));
 					batchSqls.Clear();
 					batchParameters = null;
 				}
 			}
 
 			if (batchSqls.Count != 0)
-				yield return (getBatchSql(), DbParameters.Create(batchParameters!));
+				yield return (GetBatchSql(), DbParameters.Create(batchParameters!));
 		}
 
 		private const int c_defaultMaxParametersPerBatch = 999;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Faithlife.Data.BulkInsert;
 using FluentAssertions;
@@ -10,7 +9,6 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests.BulkInsert
 {
 	[TestFixture]
-	[SuppressMessage("ReSharper", "ConsiderUsingConfigureAwait")]
 	public class BulkInsertUtilityTests
 	{
 		[Test]
@@ -188,7 +186,7 @@ namespace Faithlife.Data.Tests.BulkInsert
 		[Test]
 		public void NothingToInsert()
 		{
-			var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo)...", DbParameters.Empty, new DbParameters[0]).ToList();
+			var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo)...", DbParameters.Empty, Array.Empty<DbParameters>()).ToList();
 			commands.Count.Should().Be(0);
 		}
 

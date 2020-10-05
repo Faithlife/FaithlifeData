@@ -25,7 +25,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public static T Get<T>(this IDataRecord record, int index, int count)
 		{
-			int fieldCount = (record ?? throw new ArgumentNullException(nameof(record))).FieldCount;
+			var fieldCount = (record ?? throw new ArgumentNullException(nameof(record))).FieldCount;
 			if (index < 0 || count < 0 || index > fieldCount - count)
 				throw new ArgumentException($"Index {index} and count {count} are out of range for {fieldCount} fields.");
 			return DbValueTypeInfo.GetInfo<T>().GetValue(record, index, count);
@@ -51,8 +51,8 @@ namespace Faithlife.Data
 			if (record == null)
 				throw new ArgumentNullException(nameof(record));
 
-			int fromIndex = record.GetOrdinal(fromName);
-			int toIndex = record.GetOrdinal(toName);
+			var fromIndex = record.GetOrdinal(fromName);
+			var toIndex = record.GetOrdinal(toName);
 			return Get<T>(record, fromIndex, toIndex - fromIndex + 1);
 		}
 

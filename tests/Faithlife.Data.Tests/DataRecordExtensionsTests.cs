@@ -452,7 +452,7 @@ namespace Faithlife.Data.Tests
 			reader.Get<(long, bool)>("TheInt64", "TheBool").Should().Be((s_record.TheInt64, s_record.TheBool));
 		}
 
-		private IDbConnection GetOpenConnection()
+		private static IDbConnection GetOpenConnection()
 		{
 			var connection = new SQLiteConnection("Data Source=:memory:");
 			connection.Open();

@@ -303,7 +303,7 @@ namespace Faithlife.Data
 			if (transaction != null)
 				command.Transaction = transaction;
 
-			void addCommandParameter(string name, object? value)
+			void AddCommandParameter(string name, object? value)
 			{
 				if (!(value is IDbDataParameter dbParameter))
 				{
@@ -324,7 +324,7 @@ namespace Faithlife.Data
 				{
 					var itemCount = -1;
 
-					string replacement(Match match)
+					string Replacement(Match match)
 					{
 						if (itemCount == -1)
 						{
@@ -332,7 +332,7 @@ namespace Faithlife.Data
 
 							foreach (var item in list)
 							{
-								addCommandParameter($"{name}_{itemCount}", item);
+								AddCommandParameter($"{name}_{itemCount}", item);
 								itemCount++;
 							}
 
@@ -344,15 +344,15 @@ namespace Faithlife.Data
 					}
 
 					commandText = Regex.Replace(commandText, $@"([?@:]{Regex.Escape(name)})\.\.\.",
-						replacement, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+						Replacement, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
 					// if special syntax wasn't found, just add the parameter, for databases that support collections directly
 					if (itemCount == -1)
-						addCommandParameter(name, value);
+						AddCommandParameter(name, value);
 				}
 				else
 				{
-					addCommandParameter(name, value);
+					AddCommandParameter(name, value);
 				}
 			}
 
@@ -371,7 +371,8 @@ namespace Faithlife.Data
 			{
 				while (reader.Read())
 					list.Add(map != null ? map(reader) : reader.Get<T>());
-			} while (reader.NextResult());
+			}
+			while (reader.NextResult());
 
 			return list;
 		}
@@ -389,7 +390,8 @@ namespace Faithlife.Data
 			{
 				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 					list.Add(map != null ? map(reader) : reader.Get<T>());
-			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+			}
+			while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 
 			return list;
 		}
@@ -455,7 +457,8 @@ namespace Faithlife.Data
 			{
 				while (reader.Read())
 					yield return map != null ? map(reader) : reader.Get<T>();
-			} while (reader.NextResult());
+			}
+			while (reader.NextResult());
 		}
 
 		private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? map, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -469,7 +472,8 @@ namespace Faithlife.Data
 			{
 				while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 					yield return map != null ? map(reader) : reader.Get<T>();
-			} while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+			}
+			while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 		}
 	}
 }

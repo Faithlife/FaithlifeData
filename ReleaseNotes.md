@@ -1,35 +1,35 @@
-# Version History
+# Release Notes
 
-### 1.3.2
+## 1.3.2
 
 * Add `BulkInsertAsync` overload.
 
-### 1.3.1
+## 1.3.1
 
 * Add `BulkInsert` and `BulkInsertAsync` extension methods to `DbConnectorCommand`.
 * Add `ToDictionary` to `DbParameters`.
 * Add `Connector` `DbConnectorCommand`.
 
-### 1.2.0
+## 1.2.0
 
 * Add single parameter `DbParameters.Create` like `DbParameters.Add`.
 * Add special syntax for collection parameters.
 
-### 1.1.0
+## 1.1.0
 
 * Create/add parameters from sequences of parameter tuples with non-`object` value types.
 * Create/add parameters from dictionaries.
 * Drop `MaybeNull` attribute from `QueryFirstOrDefault` and `QuerySingleOrDefault`.
 
-### 1.0.0
+## 1.0.0
 
 * Official release.
 
-### 0.300.1
+## 0.300.1
 
 * Try to avoid assembly binding errors from downstream dependencies.
 
-### 0.300.0
+## 0.300.0
 
 * **Breaking:** Allow `object` to return a single field as-is instead of building a dynamic object with one property.
 * **Breaking:** Make `ProviderMethods` property internal (otherwise it seems important to the API).
@@ -42,7 +42,7 @@
 * Support mapping records to dictionaries.
 * Add null record fields when mapping to dynamic.
 
-### 0.200.0
+## 0.200.0
 
 * **Breaking:** Eliminate `DataRecordUtility`.
 * **Breaking:** Rename `DbConnectorResultSet` to `DbConnectorResultSets`.
@@ -57,18 +57,18 @@
 * Add XML documentation comments.
 * Improve NuGet package description and tags.
 
-### 0.100.1
+## 0.100.1
 
 * Fix bug with QueryFirst/Single and multiple result sets.
 
-### 0.100.0
+## 0.100.0
 
 * Advance version past internal version.
 
-### 0.10.0
+## 0.10.0
 
 * Stop using CommandBehavior.SequentialAccess.
 
-### 0.1.0
+## 0.1.0
 
 * Initial release.

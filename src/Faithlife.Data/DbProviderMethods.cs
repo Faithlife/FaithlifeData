@@ -24,7 +24,7 @@ namespace Faithlife.Data
 				return new ValueTask(dbConnection.OpenAsync(cancellationToken));
 
 			connection.Open();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -32,13 +32,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask CloseConnectionAsync(IDbConnection connection)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 				return new ValueTask(dbConnection.CloseAsync());
 #endif
 
 			connection.Close();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -46,13 +46,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeConnectionAsync(IDbConnection connection)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 				return dbConnection.DisposeAsync();
 #endif
 
 			connection.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -60,12 +60,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 			{
-				static async ValueTask<IDbTransaction> doAsync(DbConnection c, CancellationToken ct) =>
+				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, CancellationToken ct) =>
 					await c.BeginTransactionAsync(ct).ConfigureAwait(false);
-				return doAsync(dbConnection, cancellationToken);
+
+				return DoAsync(dbConnection, cancellationToken);
 			}
 #endif
 
@@ -77,12 +78,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask<IDbTransaction> BeginTransactionAsync(IDbConnection connection, IsolationLevel isolationLevel, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (connection is DbConnection dbConnection)
 			{
-				static async ValueTask<IDbTransaction> doAsync(DbConnection c, IsolationLevel il, CancellationToken ct) =>
+				static async ValueTask<IDbTransaction> DoAsync(DbConnection c, IsolationLevel il, CancellationToken ct) =>
 					await c.BeginTransactionAsync(il, ct).ConfigureAwait(false);
-				return doAsync(dbConnection, isolationLevel, cancellationToken);
+
+				return DoAsync(dbConnection, isolationLevel, cancellationToken);
 			}
 #endif
 
@@ -94,13 +96,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask CommitTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (transaction is DbTransaction dbTransaction)
 				return new ValueTask(dbTransaction.CommitAsync(cancellationToken));
 #endif
 
 			transaction.Commit();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -108,13 +110,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask RollbackTransactionAsync(IDbTransaction transaction, CancellationToken cancellationToken)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (transaction is DbTransaction dbTransaction)
 				return new ValueTask(dbTransaction.RollbackAsync(cancellationToken));
 #endif
 
 			transaction.Rollback();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -122,13 +124,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeTransactionAsync(IDbTransaction transaction)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (transaction is DbTransaction dbTransaction)
 				return dbTransaction.DisposeAsync();
 #endif
 
 			transaction.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -149,9 +151,10 @@ namespace Faithlife.Data
 		{
 			if (command is DbCommand dbCommand)
 			{
-				static async ValueTask<IDataReader> doAsync(DbCommand c, CancellationToken ct) =>
+				static async ValueTask<IDataReader> DoAsync(DbCommand c, CancellationToken ct) =>
 					await c.ExecuteReaderAsync(ct).ConfigureAwait(false);
-				return doAsync(dbCommand, cancellationToken);
+
+				return DoAsync(dbCommand, cancellationToken);
 			}
 
 			return new ValueTask<IDataReader>(command.ExecuteReader());
@@ -164,9 +167,10 @@ namespace Faithlife.Data
 		{
 			if (command is DbCommand dbCommand)
 			{
-				static async ValueTask<IDataReader> doAsync(DbCommand c, CommandBehavior cb, CancellationToken ct) =>
+				static async ValueTask<IDataReader> DoAsync(DbCommand c, CommandBehavior cb, CancellationToken ct) =>
 					await c.ExecuteReaderAsync(cb, ct).ConfigureAwait(false);
-				return doAsync(dbCommand, commandBehavior, cancellationToken);
+
+				return DoAsync(dbCommand, commandBehavior, cancellationToken);
 			}
 
 			return new ValueTask<IDataReader>(command.ExecuteReader(commandBehavior));
@@ -177,13 +181,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeCommandAsync(IDbCommand command)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (command is DbCommand dbCommand)
 				return dbCommand.DisposeAsync();
 #endif
 
 			command.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
@@ -213,13 +217,13 @@ namespace Faithlife.Data
 		/// </summary>
 		public virtual ValueTask DisposeReaderAsync(IDataReader reader)
 		{
-#if NETSTANDARD2_1
+#if !NETSTANDARD2_0
 			if (reader is DbDataReader dbReader)
 				return dbReader.DisposeAsync();
 #endif
 
 			reader.Dispose();
-			return new ValueTask();
+			return default;
 		}
 
 		/// <summary>
