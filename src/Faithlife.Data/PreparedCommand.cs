@@ -10,6 +10,9 @@ namespace Faithlife.Data
 			Inner = inner;
 		}
 
+		public static IDbCommand Unwrap(IDbCommand command) =>
+			command is PreparedCommand preparedCommand ? preparedCommand.Inner : command;
+
 		public IDbCommand Inner { get; }
 
 		public void Dispose()

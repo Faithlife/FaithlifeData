@@ -234,7 +234,7 @@ namespace Faithlife.Data
 			if (m_commandCache != null)
 			{
 				foreach (var command in m_commandCache.Values)
-					await m_providerMethods.DisposeCommandAsync(command).ConfigureAwait(false);
+					await m_providerMethods.DisposeCommandAsync(PreparedCommand.Unwrap(command)).ConfigureAwait(false);
 			}
 		}
 

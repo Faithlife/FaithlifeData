@@ -85,7 +85,7 @@ namespace Faithlife.Data
 		public async ValueTask DisposeAsync()
 		{
 			await m_methods.DisposeReaderAsync(m_reader).ConfigureAwait(false);
-			await m_methods.DisposeCommandAsync(m_command).ConfigureAwait(false);
+			await m_methods.DisposeCommandAsync(PreparedCommand.Unwrap(m_command)).ConfigureAwait(false);
 		}
 
 		internal DbConnectorResultSets(IDbCommand command, IDataReader reader, DbProviderMethods methods)
