@@ -83,7 +83,7 @@ namespace Faithlife.Data
 				for (var i = index; i < index + count; i++)
 				{
 					string name = record.GetName(i);
-					if (!m_properties!.TryGetValue(NormalizeFieldName(name), out (IDtoProperty<T> Dto, IDbValueTypeInfo Db) property))
+					if (!m_properties!.TryGetValue(NormalizeFieldName(name), out var property))
 						throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
 					if (!record.IsDBNull(i))
 					{

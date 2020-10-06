@@ -124,6 +124,6 @@ namespace Faithlife.Data
 
 		private IReadOnlyList<(string Name, object? Value)> Parameters => m_parameters ?? Array.Empty<(string Name, object? Value)>();
 
-		private readonly IReadOnlyList<(string Name, object? Value)> m_parameters;
+		private readonly IReadOnlyList<(string Name, object? Value)>? m_parameters;
 	}
 }

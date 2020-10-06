@@ -311,8 +311,7 @@ namespace Faithlife.Data
 					dbParameter.Value = value ?? DBNull.Value;
 				}
 
-				if (name != null)
-					dbParameter.ParameterName = name;
+				dbParameter.ParameterName = name;
 
 				command.Parameters.Add(dbParameter);
 			}
