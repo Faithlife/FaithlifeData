@@ -11,10 +11,7 @@ namespace Faithlife.Data
 	/// the next consumer of the command.</remarks>
 	internal sealed class CachedCommand : IDbCommand
 	{
-		public CachedCommand(IDbCommand inner)
-		{
-			Inner = inner;
-		}
+		public CachedCommand(IDbCommand inner) => Inner = inner;
 
 		public static IDbCommand Unwrap(IDbCommand command) =>
 			command is CachedCommand cachedCommand ? cachedCommand.Inner : command;
