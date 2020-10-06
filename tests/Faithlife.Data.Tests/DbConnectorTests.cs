@@ -285,9 +285,11 @@ namespace Faithlife.Data.Tests
 			var resultSets = connector.Command(@"
 				select Name from Items where Name in (@names...);
 				select Name from Items where Name not in (@names...);
-				", ("names", new[] { "one", "three", "five" })).QueryMultiple();
+				select @before + @after;
+				", ("before", 1), ("names", new[] { "one", "three", "five" }), ("ignore", new[] { 0 }), ("after", 2)).QueryMultiple();
 			resultSets.Read<string>().Should().BeEquivalentTo("one", "three");
 			resultSets.Read<string>().Should().BeEquivalentTo("two");
+			resultSets.Read<long>().Should().BeEquivalentTo(3);
 		}
 
 		[Test]

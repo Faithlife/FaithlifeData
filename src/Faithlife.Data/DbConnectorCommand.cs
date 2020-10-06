@@ -308,14 +308,17 @@ namespace Faithlife.Data
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
 			var commandText = Text;
-			var parameters = new List<(string Name, object? Value)>();
 
-			foreach (var (name, value) in Parameters)
+			var parameters = Parameters;
+			var index = 0;
+			while (index < parameters.Count)
 			{
 				// look for @name... in SQL for collection parameters
+				var (name, value) = parameters[index];
 				if (!string.IsNullOrEmpty(name) && !(value is string) && !(value is byte[]) && value is IEnumerable list)
 				{
 					var itemCount = -1;
+					var replacements = new List<(string Name, object? Value)>();
 
 					string Replacement(Match match)
 					{
@@ -325,7 +328,7 @@ namespace Faithlife.Data
 
 							foreach (var item in list)
 							{
-								parameters.Add(($"{name}_{itemCount}", item));
+								replacements.Add(($"{name}_{itemCount}", item));
 								itemCount++;
 							}
 
@@ -339,13 +342,20 @@ namespace Faithlife.Data
 					commandText = Regex.Replace(commandText, $@"([?@:]{Regex.Escape(name)})\.\.\.",
 						Replacement, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-					// if special syntax wasn't found, just add the parameter, for databases that support collections directly
-					if (itemCount == -1)
-						parameters.Add((name, value));
+					// if special syntax wasn't found, leave the parameter alone, for databases that support collections directly
+					if (itemCount != -1)
+					{
+						parameters = DbParameters.Create(parameters.Take(index).Concat(replacements).Concat(parameters.Skip(index + 1)));
+						index += replacements.Count;
+					}
+					else
+					{
+						index += 1;
+					}
 				}
 				else
 				{
-					parameters.Add((name, value));
+					index += 1;
 				}
 			}
 
