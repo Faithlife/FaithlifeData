@@ -225,7 +225,7 @@ namespace Faithlife.Data
 			if (m_commandCache != null)
 			{
 				foreach (var command in m_commandCache.Values)
-					command.Dispose();
+					CachedCommand.Unwrap(command).Dispose();
 			}
 		}
 
