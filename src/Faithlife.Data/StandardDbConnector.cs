@@ -156,7 +156,7 @@ namespace Faithlife.Data
 
 		protected internal override DbProviderMethods ProviderMethods => m_providerMethods;
 
-		protected internal override IDictionary<string, IDbCommand> PreparedCommandCache => m_commandCache ??= new Dictionary<string, IDbCommand>();
+		protected internal override IDictionary<string, IDbCommand> CommandCache => m_commandCache ??= new Dictionary<string, IDbCommand>();
 
 		private IDbConnection LazyOpenConnection()
 		{
@@ -234,7 +234,7 @@ namespace Faithlife.Data
 			if (m_commandCache != null)
 			{
 				foreach (var command in m_commandCache.Values)
-					await m_providerMethods.DisposeCommandAsync(PreparedCommand.Unwrap(command)).ConfigureAwait(false);
+					await m_providerMethods.DisposeCommandAsync(CachedCommand.Unwrap(command)).ConfigureAwait(false);
 			}
 		}
 

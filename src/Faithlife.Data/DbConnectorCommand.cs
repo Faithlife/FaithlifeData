@@ -31,9 +31,9 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
-		/// True after <seealso cref="Prepare"/> is called.
+		/// True after <see cref="Cache"/> is called.
 		/// </summary>
-		public bool IsPrepared { get; }
+		public bool IsCached { get; }
 
 		/// <summary>
 		/// Executes the command, returning the number of rows affected.
@@ -52,7 +52,7 @@ namespace Faithlife.Data
 		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return await Connector.ProviderMethods.ExecuteNonQueryAsync(PreparedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			return await Connector.ProviderMethods.ExecuteNonQueryAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -261,13 +261,13 @@ namespace Faithlife.Data
 		{
 			var methods = Connector.ProviderMethods;
 			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(PreparedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false), methods);
+			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false), methods);
 		}
 
 		/// <summary>
-		/// Prepare and cache the command.
+		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, isPrepared: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -291,12 +291,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isPrepared = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isCached = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
-			IsPrepared = isPrepared;
+			IsCached = isCached;
 		}
 
 		private void Validate()
@@ -362,18 +362,18 @@ namespace Faithlife.Data
 			IDbCommand command;
 			var transaction = Connector.Transaction;
 
-			var preparedCache = IsPrepared ? Connector.PreparedCommandCache : null;
-			if (preparedCache != null)
+			var cache = IsCached ? Connector.CommandCache : null;
+			if (cache != null)
 			{
-				if (preparedCache.TryGetValue(commandText, out command))
+				if (cache.TryGetValue(commandText, out command))
 				{
 					command.Parameters.Clear();
 					command.Transaction = transaction;
 				}
 				else
 				{
-					command = new PreparedCommand(CreateNewCommand());
-					preparedCache.Add(commandText, command);
+					command = new CachedCommand(CreateNewCommand());
+					cache.Add(commandText, command);
 				}
 			}
 			else
@@ -428,7 +428,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(PreparedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 
 			var list = new List<T>();
 
@@ -469,7 +469,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = single ? await methods.ExecuteReaderAsync(PreparedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(PreparedCommand.Unwrap(command), CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
+			using var reader = single ? await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
 
 			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
@@ -512,7 +512,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(PreparedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 
 			do
 			{

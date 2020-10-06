@@ -150,9 +150,9 @@ namespace Faithlife.Data
 		protected internal abstract DbProviderMethods ProviderMethods { get; }
 
 		/// <summary>
-		/// Gets the prepared command cache, if supported.
+		/// Gets the command cache, if supported.
 		/// </summary>
-		protected internal virtual IDictionary<string, IDbCommand>? PreparedCommandCache => null;
+		protected internal virtual IDictionary<string, IDbCommand>? CommandCache => null;
 
 		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 	}

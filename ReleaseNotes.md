@@ -2,7 +2,7 @@
 
 ## 1.4.0
 
-* Support prepared (and cached) commands.
+* Support cached commands.
 
 ## 1.3.2
 

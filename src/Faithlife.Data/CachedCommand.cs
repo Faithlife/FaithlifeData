@@ -3,15 +3,15 @@ using System.Data;
 
 namespace Faithlife.Data
 {
-	internal sealed class PreparedCommand : IDbCommand
+	internal sealed class CachedCommand : IDbCommand
 	{
-		public PreparedCommand(IDbCommand inner)
+		public CachedCommand(IDbCommand inner)
 		{
 			Inner = inner;
 		}
 
 		public static IDbCommand Unwrap(IDbCommand command) =>
-			command is PreparedCommand preparedCommand ? preparedCommand.Inner : command;
+			command is CachedCommand cachedCommand ? cachedCommand.Inner : command;
 
 		public IDbCommand Inner { get; }
 
@@ -31,9 +31,7 @@ namespace Faithlife.Data
 
 		public object ExecuteScalar() => Inner.ExecuteScalar();
 
-		public void Prepare()
-		{
-		}
+		public void Prepare() => Inner.Prepare();
 
 		public string CommandText
 		{
@@ -74,6 +72,6 @@ namespace Faithlife.Data
 		}
 
 		private static InvalidOperationException CreateException() =>
-			new InvalidOperationException("This property cannot be modified for this prepared command.");
+			new InvalidOperationException("Property cannot be modified for cached command.");
 	}
 }
