@@ -152,7 +152,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Gets the command cache, if supported.
 		/// </summary>
-		protected internal virtual IDictionary<string, IDbCommand>? CommandCache => null;
+		protected internal virtual DbCommandCache? CommandCache => null;
 
 		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 	}

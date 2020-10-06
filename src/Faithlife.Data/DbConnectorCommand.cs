@@ -365,7 +365,7 @@ namespace Faithlife.Data
 			var cache = IsCached ? Connector.CommandCache : null;
 			if (cache != null)
 			{
-				if (cache.TryGetValue(commandText, out command))
+				if (cache.TryGetCommand(commandText, out command))
 				{
 					command.Parameters.Clear();
 					command.Transaction = transaction;
@@ -373,7 +373,7 @@ namespace Faithlife.Data
 				else
 				{
 					command = new CachedCommand(CreateNewCommand());
-					cache.Add(commandText, command);
+					cache.AddCommand(commandText, command);
 				}
 			}
 			else

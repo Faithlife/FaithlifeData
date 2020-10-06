@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -156,7 +155,7 @@ namespace Faithlife.Data
 
 		protected internal override DbProviderMethods ProviderMethods => m_providerMethods;
 
-		protected internal override IDictionary<string, IDbCommand> CommandCache => m_commandCache ??= new Dictionary<string, IDbCommand>();
+		protected internal override DbCommandCache CommandCache => m_commandCache ??= DbCommandCache.Create();
 
 		private IDbConnection LazyOpenConnection()
 		{
@@ -224,7 +223,7 @@ namespace Faithlife.Data
 		{
 			if (m_commandCache != null)
 			{
-				foreach (var command in m_commandCache.Values)
+				foreach (var command in m_commandCache.GetCommands())
 					CachedCommand.Unwrap(command).Dispose();
 			}
 		}
@@ -233,7 +232,7 @@ namespace Faithlife.Data
 		{
 			if (m_commandCache != null)
 			{
-				foreach (var command in m_commandCache.Values)
+				foreach (var command in m_commandCache.GetCommands())
 					await m_providerMethods.DisposeCommandAsync(CachedCommand.Unwrap(command)).ConfigureAwait(false);
 			}
 		}
@@ -330,7 +329,7 @@ namespace Faithlife.Data
 		private readonly Action? m_whenDisposed;
 		private readonly IDbConnection m_connection;
 		private IDbTransaction? m_transaction;
-		private Dictionary<string, IDbCommand>? m_commandCache;
+		private DbCommandCache? m_commandCache;
 		private bool m_pendingLazyOpen;
 		private bool m_isConnectionOpen;
 		private bool m_isDisposed;
