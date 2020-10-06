@@ -3,6 +3,12 @@ using System.Data;
 
 namespace Faithlife.Data
 {
+	/// <summary>
+	/// Wraps a cached command.
+	/// </summary>
+	/// <remarks>This class makes <c>Dispose</c> a no-op so that the inner command
+	/// can be reused. It also prevents modifications to the command that could leak to
+	/// the next consumer of the command.</remarks>
 	internal sealed class CachedCommand : IDbCommand
 	{
 		public CachedCommand(IDbCommand inner)
