@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.4.0
+
+* Support prepared (and cached) commands.
+
 ## 1.3.2
 
 * Add `BulkInsertAsync` overload.

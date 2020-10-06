@@ -31,6 +31,11 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
+		/// True after <seealso cref="Prepare"/> is called.
+		/// </summary>
+		public bool IsPrepared { get; }
+
+		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
 		/// <seealso cref="ExecuteAsync" />
@@ -260,6 +265,11 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Prepare and cache the command.
+		/// </summary>
+		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, isPrepared: true);
+
+		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
 		/// </summary>
 		/// <seealso cref="CreateAsync" />
@@ -281,11 +291,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isPrepared = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
+			IsPrepared = isPrepared;
 		}
 
 		private void Validate()
@@ -296,25 +307,8 @@ namespace Faithlife.Data
 
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
-			var command = connection.CreateCommand();
 			var commandText = Text;
-
-			var transaction = Connector.Transaction;
-			if (transaction != null)
-				command.Transaction = transaction;
-
-			void AddCommandParameter(string name, object? value)
-			{
-				if (!(value is IDbDataParameter dbParameter))
-				{
-					dbParameter = command.CreateParameter();
-					dbParameter.Value = value ?? DBNull.Value;
-				}
-
-				dbParameter.ParameterName = name;
-
-				command.Parameters.Add(dbParameter);
-			}
+			var parameters = new List<(string Name, object? Value)>();
 
 			foreach (var (name, value) in Parameters)
 			{
@@ -331,7 +325,7 @@ namespace Faithlife.Data
 
 							foreach (var item in list)
 							{
-								AddCommandParameter($"{name}_{itemCount}", item);
+								parameters.Add(($"{name}_{itemCount}", item));
 								itemCount++;
 							}
 
@@ -347,16 +341,59 @@ namespace Faithlife.Data
 
 					// if special syntax wasn't found, just add the parameter, for databases that support collections directly
 					if (itemCount == -1)
-						AddCommandParameter(name, value);
+						parameters.Add((name, value));
 				}
 				else
 				{
-					AddCommandParameter(name, value);
+					parameters.Add((name, value));
 				}
 			}
 
-			command.CommandText = commandText;
+			IDbCommand command;
+			var transaction = Connector.Transaction;
+
+			var preparedCache = IsPrepared ? Connector.PreparedCommandCache : null;
+			if (preparedCache != null)
+			{
+				if (preparedCache.TryGetValue(commandText, out command))
+				{
+					command.Parameters.Clear();
+					command.Transaction = transaction;
+				}
+				else
+				{
+					command = new PreparedCommand(CreateNewCommand());
+					preparedCache.Add(commandText, command);
+				}
+			}
+			else
+			{
+				command = CreateNewCommand();
+			}
+
+			foreach (var (name, value) in parameters)
+			{
+				if (!(value is IDbDataParameter dbParameter))
+				{
+					dbParameter = command.CreateParameter();
+					dbParameter.Value = value ?? DBNull.Value;
+				}
+
+				dbParameter.ParameterName = name;
+
+				command.Parameters.Add(dbParameter);
+			}
+
 			return command;
+
+			IDbCommand CreateNewCommand()
+			{
+				var newCommand = connection.CreateCommand();
+				newCommand.CommandText = commandText;
+				if (transaction != null)
+					newCommand.Transaction = transaction;
+				return newCommand;
+			}
 		}
 
 		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T>? map)
@@ -473,6 +510,77 @@ namespace Faithlife.Data
 					yield return map != null ? map(reader) : reader.Get<T>();
 			}
 			while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
+		}
+
+		private sealed class PreparedCommand : IDbCommand
+		{
+			public PreparedCommand(IDbCommand inner)
+			{
+				m_inner = inner;
+			}
+
+			public void Dispose()
+			{
+			}
+
+			public void Cancel() => m_inner.Cancel();
+
+			public IDbDataParameter CreateParameter() => m_inner.CreateParameter();
+
+			public int ExecuteNonQuery() => m_inner.ExecuteNonQuery();
+
+			public IDataReader ExecuteReader() => m_inner.ExecuteReader();
+
+			public IDataReader ExecuteReader(CommandBehavior behavior) => m_inner.ExecuteReader(behavior);
+
+			public object ExecuteScalar() => m_inner.ExecuteScalar();
+
+			public void Prepare()
+			{
+			}
+
+			public string CommandText
+			{
+				get => m_inner.CommandText;
+				set => throw CreateException();
+			}
+
+			public int CommandTimeout
+			{
+				get => m_inner.CommandTimeout;
+				set => throw CreateException();
+			}
+
+			public CommandType CommandType
+			{
+				get => m_inner.CommandType;
+				set => throw CreateException();
+			}
+
+			public IDbConnection Connection
+			{
+				get => m_inner.Connection;
+				set => throw CreateException();
+			}
+
+			public IDataParameterCollection Parameters => m_inner.Parameters;
+
+			public IDbTransaction Transaction
+			{
+				get => m_inner.Transaction;
+				set => m_inner.Transaction = value;
+			}
+
+			public UpdateRowSource UpdatedRowSource
+			{
+				get => m_inner.UpdatedRowSource;
+				set => throw CreateException();
+			}
+
+			private static InvalidOperationException CreateException() =>
+				new InvalidOperationException("This property cannot be modified for this prepared command.");
+
+			private readonly IDbCommand m_inner;
 		}
 	}
 }
