@@ -52,7 +52,7 @@ namespace Faithlife.Data
 		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return await Connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
+			return await Connector.ProviderMethods.ExecuteNonQueryAsync(Unwrap(command), cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -261,7 +261,7 @@ namespace Faithlife.Data
 		{
 			var methods = Connector.ProviderMethods;
 			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false), methods);
+			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(Unwrap(command), cancellationToken).ConfigureAwait(false), methods);
 		}
 
 		/// <summary>
@@ -428,7 +428,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(Unwrap(command), cancellationToken).ConfigureAwait(false);
 
 			var list = new List<T>();
 
@@ -469,7 +469,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = single ? await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(command, CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
+			using var reader = single ? await methods.ExecuteReaderAsync(Unwrap(command), cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(Unwrap(command), CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
 
 			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
@@ -512,7 +512,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(Unwrap(command), cancellationToken).ConfigureAwait(false);
 
 			do
 			{
@@ -522,75 +522,7 @@ namespace Faithlife.Data
 			while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 		}
 
-		private sealed class PreparedCommand : IDbCommand
-		{
-			public PreparedCommand(IDbCommand inner)
-			{
-				m_inner = inner;
-			}
-
-			public void Dispose()
-			{
-			}
-
-			public void Cancel() => m_inner.Cancel();
-
-			public IDbDataParameter CreateParameter() => m_inner.CreateParameter();
-
-			public int ExecuteNonQuery() => m_inner.ExecuteNonQuery();
-
-			public IDataReader ExecuteReader() => m_inner.ExecuteReader();
-
-			public IDataReader ExecuteReader(CommandBehavior behavior) => m_inner.ExecuteReader(behavior);
-
-			public object ExecuteScalar() => m_inner.ExecuteScalar();
-
-			public void Prepare()
-			{
-			}
-
-			public string CommandText
-			{
-				get => m_inner.CommandText;
-				set => throw CreateException();
-			}
-
-			public int CommandTimeout
-			{
-				get => m_inner.CommandTimeout;
-				set => throw CreateException();
-			}
-
-			public CommandType CommandType
-			{
-				get => m_inner.CommandType;
-				set => throw CreateException();
-			}
-
-			public IDbConnection Connection
-			{
-				get => m_inner.Connection;
-				set => throw CreateException();
-			}
-
-			public IDataParameterCollection Parameters => m_inner.Parameters;
-
-			public IDbTransaction Transaction
-			{
-				get => m_inner.Transaction;
-				set => m_inner.Transaction = value;
-			}
-
-			public UpdateRowSource UpdatedRowSource
-			{
-				get => m_inner.UpdatedRowSource;
-				set => throw CreateException();
-			}
-
-			private static InvalidOperationException CreateException() =>
-				new InvalidOperationException("This property cannot be modified for this prepared command.");
-
-			private readonly IDbCommand m_inner;
-		}
+		private static IDbCommand Unwrap(IDbCommand command) =>
+			command is PreparedCommand preparedCommand ? preparedCommand.Inner : command;
 	}
 }
