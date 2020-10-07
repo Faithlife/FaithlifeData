@@ -5,6 +5,7 @@
 | public type | description |
 | --- | --- |
 | static class [DataRecordExtensions](Faithlife.Data/DataRecordExtensions.md) | Extension methods for IDataRecord. |
+| abstract class [DbCommandCache](Faithlife.Data/DbCommandCache.md) | A cache of IDbCommand by command text. |
 | abstract class [DbConnectionCloser](Faithlife.Data/DbConnectionCloser.md) | Closes the connection when disposed. |
 | abstract class [DbConnector](Faithlife.Data/DbConnector.md) | Encapsulates a database connection and any current transaction. |
 | struct [DbConnectorCommand](Faithlife.Data/DbConnectorCommand.md) | Encapsulates the text and parameters of a database command. |

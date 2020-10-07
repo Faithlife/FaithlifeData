@@ -11,6 +11,7 @@ public class DbProviderMethods
 | name | description |
 | --- | --- |
 | static readonly [Default](DbProviderMethods/Default.md) | The default database access methods. |
+| static [FromConnector](DbProviderMethods/FromConnector.md)(…) | Provides access via connector. Used when creating wrapping connectors. |
 | virtual [BeginTransactionAsync](DbProviderMethods/BeginTransactionAsync.md)(…) | Begins a transaction asynchronously. (2 methods) |
 | virtual [CloseConnectionAsync](DbProviderMethods/CloseConnectionAsync.md)(…) | Closes a connection asynchronously. |
 | virtual [CommitTransactionAsync](DbProviderMethods/CommitTransactionAsync.md)(…) | Commits a transaction asynchronously. |

@@ -32,6 +32,7 @@ public abstract class DbConnector : IAsyncDisposable, IDisposable
 | name | description |
 | --- | --- |
 | [DbConnector](DbConnector/DbConnector.md)() | The default constructor. |
+| virtual [CommandCache](DbConnector/CommandCache.md) { get; } | Gets the command cache, if supported. |
 | abstract [ProviderMethods](DbConnector/ProviderMethods.md) { get; } | Special methods provided by the database provider. |
 
 ## See Also

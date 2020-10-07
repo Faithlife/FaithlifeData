@@ -11,8 +11,10 @@ public struct DbConnectorCommand
 | name | description |
 | --- | --- |
 | [Connector](DbConnectorCommand/Connector.md) { get; } | The connector of the command. |
+| [IsCached](DbConnectorCommand/IsCached.md) { get; } | True after [`Cache`](DbConnectorCommand/Cache.md) is called. |
 | [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
 | [Text](DbConnectorCommand/Text.md) { get; } | The text of the command. |
+| [Cache](DbConnectorCommand/Cache.md)() | Caches the command. |
 | [Create](DbConnectorCommand/Create.md)() | Creates an IDbCommand from the text and parameters. |
 | [CreateAsync](DbConnectorCommand/CreateAsync.md)(…) | Creates an IDbCommand from the text and parameters. |
 | [Enumerate&lt;T&gt;](DbConnectorCommand/Enumerate.md)() | Executes the query, reading one record at a time and converting it to the specified type. |
