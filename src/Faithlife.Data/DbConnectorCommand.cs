@@ -31,6 +31,11 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
+		/// True after <see cref="Cache"/> is called.
+		/// </summary>
+		public bool IsCached { get; }
+
+		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
 		/// <seealso cref="ExecuteAsync" />
@@ -47,7 +52,7 @@ namespace Faithlife.Data
 		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return await Connector.ProviderMethods.ExecuteNonQueryAsync(command, cancellationToken).ConfigureAwait(false);
+			return await Connector.ProviderMethods.ExecuteNonQueryAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -256,8 +261,13 @@ namespace Faithlife.Data
 		{
 			var methods = Connector.ProviderMethods;
 			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false), methods);
+			return new DbConnectorResultSets(command, await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false), methods);
 		}
+
+		/// <summary>
+		/// Caches the command.
+		/// </summary>
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -281,11 +291,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isCached = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
+			IsCached = isCached;
 		}
 
 		private void Validate()
@@ -296,32 +307,18 @@ namespace Faithlife.Data
 
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
-			var command = connection.CreateCommand();
 			var commandText = Text;
 
-			var transaction = Connector.Transaction;
-			if (transaction != null)
-				command.Transaction = transaction;
-
-			void AddCommandParameter(string name, object? value)
-			{
-				if (!(value is IDbDataParameter dbParameter))
-				{
-					dbParameter = command.CreateParameter();
-					dbParameter.Value = value ?? DBNull.Value;
-				}
-
-				dbParameter.ParameterName = name;
-
-				command.Parameters.Add(dbParameter);
-			}
-
-			foreach (var (name, value) in Parameters)
+			var parameters = Parameters;
+			var index = 0;
+			while (index < parameters.Count)
 			{
 				// look for @name... in SQL for collection parameters
+				var (name, value) = parameters[index];
 				if (!string.IsNullOrEmpty(name) && !(value is string) && !(value is byte[]) && value is IEnumerable list)
 				{
 					var itemCount = -1;
+					var replacements = new List<(string Name, object? Value)>();
 
 					string Replacement(Match match)
 					{
@@ -331,7 +328,7 @@ namespace Faithlife.Data
 
 							foreach (var item in list)
 							{
-								AddCommandParameter($"{name}_{itemCount}", item);
+								replacements.Add(($"{name}_{itemCount}", item));
 								itemCount++;
 							}
 
@@ -345,18 +342,68 @@ namespace Faithlife.Data
 					commandText = Regex.Replace(commandText, $@"([?@:]{Regex.Escape(name)})\.\.\.",
 						Replacement, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-					// if special syntax wasn't found, just add the parameter, for databases that support collections directly
-					if (itemCount == -1)
-						AddCommandParameter(name, value);
+					// if special syntax wasn't found, leave the parameter alone, for databases that support collections directly
+					if (itemCount != -1)
+					{
+						parameters = DbParameters.Create(parameters.Take(index).Concat(replacements).Concat(parameters.Skip(index + 1)));
+						index += replacements.Count;
+					}
+					else
+					{
+						index += 1;
+					}
 				}
 				else
 				{
-					AddCommandParameter(name, value);
+					index += 1;
 				}
 			}
 
-			command.CommandText = commandText;
+			IDbCommand command;
+			var transaction = Connector.Transaction;
+
+			var cache = IsCached ? Connector.CommandCache : null;
+			if (cache != null)
+			{
+				if (cache.TryGetCommand(commandText, out command))
+				{
+					command.Parameters.Clear();
+					command.Transaction = transaction;
+				}
+				else
+				{
+					command = new CachedCommand(CreateNewCommand());
+					cache.AddCommand(commandText, command);
+				}
+			}
+			else
+			{
+				command = CreateNewCommand();
+			}
+
+			foreach (var (name, value) in parameters)
+			{
+				if (!(value is IDbDataParameter dbParameter))
+				{
+					dbParameter = command.CreateParameter();
+					dbParameter.Value = value ?? DBNull.Value;
+				}
+
+				dbParameter.ParameterName = name;
+
+				command.Parameters.Add(dbParameter);
+			}
+
 			return command;
+
+			IDbCommand CreateNewCommand()
+			{
+				var newCommand = connection.CreateCommand();
+				newCommand.CommandText = commandText;
+				if (transaction != null)
+					newCommand.Transaction = transaction;
+				return newCommand;
+			}
 		}
 
 		private IReadOnlyList<T> DoQuery<T>(Func<IDataRecord, T>? map)
@@ -381,7 +428,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 
 			var list = new List<T>();
 
@@ -422,7 +469,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = single ? await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(command, CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
+			using var reader = single ? await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
 
 			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
@@ -465,7 +512,7 @@ namespace Faithlife.Data
 			var methods = Connector.ProviderMethods;
 
 			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(command, cancellationToken).ConfigureAwait(false);
+			using var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 
 			do
 			{

@@ -285,9 +285,11 @@ namespace Faithlife.Data.Tests
 			var resultSets = connector.Command(@"
 				select Name from Items where Name in (@names...);
 				select Name from Items where Name not in (@names...);
-				", ("names", new[] { "one", "three", "five" })).QueryMultiple();
+				select @before + @after;
+				", ("before", 1), ("names", new[] { "one", "three", "five" }), ("ignore", new[] { 0 }), ("after", 2)).QueryMultiple();
 			resultSets.Read<string>().Should().BeEquivalentTo("one", "three");
 			resultSets.Read<string>().Should().BeEquivalentTo("two");
+			resultSets.Read<long>().Should().BeEquivalentTo(3);
 		}
 
 		[Test]
@@ -298,6 +300,26 @@ namespace Faithlife.Data.Tests
 			connector.Command("insert into Items (Name) values ('one'), ('two'), ('three');").Execute().Should().Be(3);
 			Invoking(() => connector.Command("select Name from Items where Name in (@names...);", ("names", Array.Empty<string>()))
 				.Query<string>()).Should().Throw<InvalidOperationException>();
+		}
+
+		[Test]
+		public void CacheTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			foreach (var name in new[] { "one", "two", "three" })
+				connector.Command("insert into Items (Name) values (@name);", ("name", name)).Cache().Execute().Should().Be(1);
+			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one", "two", "three");
+		}
+
+		[Test]
+		public async Task CacheAsyncTests()
+		{
+			await using var connector = CreateConnector();
+			(await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
+			foreach (var name in new[] { "one", "two", "three" })
+				(await connector.Command("insert into Items (Name) values (@name);", ("name", name)).Cache().ExecuteAsync()).Should().Be(1);
+			(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("one", "two", "three");
 		}
 
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)

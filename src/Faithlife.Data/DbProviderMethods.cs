@@ -16,6 +16,11 @@ namespace Faithlife.Data
 		public static readonly DbProviderMethods Default = new DbProviderMethods();
 
 		/// <summary>
+		/// Provides access via connector. Used when creating wrapping connectors.
+		/// </summary>
+		public static DbProviderMethods FromConnector(DbConnector connector) => connector.ProviderMethods;
+
+		/// <summary>
 		/// Opens the connection asynchronously.
 		/// </summary>
 		public virtual ValueTask OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken)

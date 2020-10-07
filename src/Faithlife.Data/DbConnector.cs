@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -147,6 +148,11 @@ namespace Faithlife.Data
 		/// Special methods provided by the database provider.
 		/// </summary>
 		protected internal abstract DbProviderMethods ProviderMethods { get; }
+
+		/// <summary>
+		/// Gets the command cache, if supported.
+		/// </summary>
+		protected internal virtual DbCommandCache? CommandCache => null;
 
 		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
 	}

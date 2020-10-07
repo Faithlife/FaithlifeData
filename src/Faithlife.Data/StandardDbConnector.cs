@@ -125,6 +125,8 @@ namespace Faithlife.Data
 			{
 				DisposeTransaction();
 
+				DisposeCachedCommands();
+
 				if (!m_noDisposeConnection)
 					m_connection.Dispose();
 
@@ -140,6 +142,8 @@ namespace Faithlife.Data
 			{
 				await DisposeTransactionAsync().ConfigureAwait(false);
 
+				await DisposeCachedCommandsAsync().ConfigureAwait(false);
+
 				if (!m_noDisposeConnection)
 					await m_providerMethods.DisposeConnectionAsync(m_connection).ConfigureAwait(false);
 
@@ -150,6 +154,8 @@ namespace Faithlife.Data
 		}
 
 		protected internal override DbProviderMethods ProviderMethods => m_providerMethods;
+
+		protected internal override DbCommandCache CommandCache => m_commandCache ??= DbCommandCache.Create();
 
 		private IDbConnection LazyOpenConnection()
 		{
@@ -211,6 +217,24 @@ namespace Faithlife.Data
 			if (!m_noDisposeTransaction && m_transaction != null)
 				await m_providerMethods.DisposeTransactionAsync(m_transaction).ConfigureAwait(false);
 			m_transaction = null;
+		}
+
+		private void DisposeCachedCommands()
+		{
+			if (m_commandCache != null)
+			{
+				foreach (var command in m_commandCache.GetCommands())
+					CachedCommand.Unwrap(command).Dispose();
+			}
+		}
+
+		private async ValueTask DisposeCachedCommandsAsync()
+		{
+			if (m_commandCache != null)
+			{
+				foreach (var command in m_commandCache.GetCommands())
+					await m_providerMethods.DisposeCommandAsync(CachedCommand.Unwrap(command)).ConfigureAwait(false);
+			}
 		}
 
 		private void VerifyNotDisposed()
@@ -305,6 +329,7 @@ namespace Faithlife.Data
 		private readonly Action? m_whenDisposed;
 		private readonly IDbConnection m_connection;
 		private IDbTransaction? m_transaction;
+		private DbCommandCache? m_commandCache;
 		private bool m_pendingLazyOpen;
 		private bool m_isConnectionOpen;
 		private bool m_isDisposed;
