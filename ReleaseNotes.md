@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.4.1
+
+* Fix error message on empty collection query parameter.
+
 ## 1.4.0
 
 * Support cached commands.

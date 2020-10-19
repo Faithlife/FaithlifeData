@@ -333,7 +333,7 @@ namespace Faithlife.Data
 							}
 
 							if (itemCount == 0)
-								throw new InvalidOperationException("Collection parameter '{name}' must not be empty.");
+								throw new InvalidOperationException($"Collection parameter '{name}' must not be empty.");
 						}
 
 						return string.Join(",", Enumerable.Range(0, itemCount).Select(x => $"{match.Groups[1]}_{x}"));
