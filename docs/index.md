@@ -156,7 +156,7 @@ Simple types must match the type returned from [`IDataRecord.GetValue()`](https:
 
 The supported simple types are `string`, `long`, `int`, `short`, `byte`, `ulong`, `uint`, `ushort`, `sbyte`, `double`, `float`, `decimal`, `bool`, `Guid`, `DateTime`, `DateTimeOffset`, and `TimeSpan`.
 
-Use `byte[]` to return the bytes from a "blob" column.
+Use `byte[]` or `Stream` to return the bytes from a "blob" column. If a non-null `Stream` is returned, be sure to dispose it.
 
 ### Tuples
 

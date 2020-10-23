@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using static FluentAssertions.FluentActions;
@@ -172,6 +174,28 @@ namespace Faithlife.Data.Tests
 			reader.Read().Should().BeTrue();
 
 			reader.Get<byte[]>(6, 1).Should().BeNull();
+		}
+
+		[Test]
+		public void StreamTests()
+		{
+			using var connection = GetOpenConnection();
+			using var command = connection.CreateCommand();
+			command.CommandText = "select TheString, TheInt32, TheInt64, TheBool, TheSingle, TheDouble, TheBlob from items;";
+			using var reader = command.ExecuteReader();
+
+			// get non-nulls
+			reader.Read().Should().BeTrue();
+
+			var bytes = new byte[100];
+			using (var stream = reader.Get<Stream>(6, 1))
+				stream.Read(bytes, 0, bytes.Length).Should().Be(s_record.TheBlob!.Length);
+			bytes.Take(s_record.TheBlob!.Length).Should().Equal(s_record.TheBlob);
+
+			// get nulls
+			reader.Read().Should().BeTrue();
+
+			reader.Get<Stream>(6, 1).Should().BeNull();
 		}
 
 		[Test]
