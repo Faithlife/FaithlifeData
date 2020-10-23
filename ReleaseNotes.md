@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.5.0
+
+* Support reading a blob as a `Stream`.
+
 ## 1.4.1
 
 * Fix error message on empty collection query parameter.

@@ -9,5 +9,6 @@ namespace Faithlife.Data
 		Enum,
 		Dynamic,
 		Dictionary,
+		Stream,
 	}
 }

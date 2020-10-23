@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Faithlife.Reflection;
@@ -61,6 +63,7 @@ namespace Faithlife.Data
 			[typeof(IDictionary<string, object?>)] = DbValueTypeStrategy.Dictionary,
 			[typeof(IReadOnlyDictionary<string, object?>)] = DbValueTypeStrategy.Dictionary,
 			[typeof(IDictionary)] = DbValueTypeStrategy.Dictionary,
+			[typeof(Stream)] = DbValueTypeStrategy.Stream,
 		};
 	}
 
@@ -232,6 +235,19 @@ namespace Faithlife.Data
 					}
 				}
 				return notNull ? (T) (object) dictionary : default!;
+			}
+			else if (m_strategy == DbValueTypeStrategy.Stream)
+			{
+				if (record.IsDBNull(index))
+					return default!;
+
+				if (record is DbDataReader dbReader)
+					return (T) (object) dbReader.GetStream(index);
+
+				var byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
+				byte[] bytes = new byte[byteCount];
+				record.GetBytes(index, 0, bytes, 0, byteCount);
+				return (T) (object) new MemoryStream(bytes, 0, byteCount, writable: false);
 			}
 			else
 			{
