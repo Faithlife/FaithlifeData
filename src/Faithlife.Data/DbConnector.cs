@@ -133,6 +133,29 @@ namespace Faithlife.Data
 		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters));
 
 		/// <summary>
+		/// Creates a new command.
+		/// </summary>
+		/// <param name="text">The text of the command.</param>
+		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
+		public DbConnectorCommand Command(string text, bool isStoredProcedure) => new DbConnectorCommand(this, text, default, isStoredProcedure);
+
+		/// <summary>
+		/// Creates a new command.
+		/// </summary>
+		/// <param name="text">The text of the command.</param>
+		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
+		/// <param name="parameters">The command parameters.</param>
+		public DbConnectorCommand Command(string text, bool isStoredProcedure, DbParameters parameters) => new DbConnectorCommand(this, text, parameters, isStoredProcedure);
+
+		/// <summary>
+		/// Creates a new command.
+		/// </summary>
+		/// <param name="text">The text of the command.</param>
+		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
+		/// <param name="parameters">The command parameters.</param>
+		public DbConnectorCommand Command(string text, bool isStoredProcedure, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters), isStoredProcedure);
+
+		/// <summary>
 		/// Disposes the connector.
 		/// </summary>
 		/// <seealso cref="DisposeAsync" />
