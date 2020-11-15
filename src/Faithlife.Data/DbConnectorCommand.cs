@@ -288,6 +288,19 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Sets the command's timeout.
+		/// <param name="timeout">The desired timeout of the command, in seconds. A value of <c>0</c> disables timeout.</param>
+		/// <remarks>Throws <c><see cref="ArgumentOutOfRangeException"/></c> if <c>timeout</c> is negative.</remarks>
+		/// </summary>
+		public DbConnectorCommand Timeout(int timeout)
+		{
+			if (timeout < 0)
+				throw new ArgumentOutOfRangeException(nameof(timeout), "Must be non-negative.");
+
+			return new DbConnectorCommand(Connector, Text, Parameters, timeout, IsCached);
+		}
+
+		/// <summary>
 		/// Caches the command.
 		/// </summary>
 		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, TimeoutLength, isCached: true);
