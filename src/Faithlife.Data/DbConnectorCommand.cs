@@ -31,6 +31,12 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
+		/// The timeout of the command, in seconds.
+		/// </summary>
+		/// <remarks>A value of <c>null</c> will use the database connection's default timeout, usually 30 seconds.</remarks>
+		public int? TimeoutLength { get; }
+
+		/// <summary>
 		/// True after <see cref="Cache"/> is called.
 		/// </summary>
 		public bool IsCached { get; }
@@ -265,9 +271,26 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Sets the command's timeout.
+		/// <remarks>Throws <c><see cref="ArgumentOutOfRangeException"/></c> if <c>timeSpan</c> is not positive or <c><see cref="Timeout.InfiniteTimeSpan"/></c>.</remarks>
+		/// </summary>
+		public DbConnectorCommand Timeout(TimeSpan timeSpan)
+		{
+			int? timeout;
+			if (timeSpan == System.Threading.Timeout.InfiniteTimeSpan)
+				timeout = 0;
+			else if (timeSpan <= TimeSpan.Zero)
+				throw new ArgumentOutOfRangeException(nameof(timeSpan), "Must be positive or 'Timeout.InfiniteTimeSpan'.");
+			else
+				timeout = (int?)Math.Ceiling(timeSpan.TotalSeconds);
+
+			return new DbConnectorCommand(Connector, Text, Parameters, timeout, IsCached);
+		}
+
+		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, TimeoutLength, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -291,11 +314,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, int? timeout = null, bool isCached = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
+			TimeoutLength = timeout;
 			IsCached = isCached;
 		}
 
@@ -393,6 +417,9 @@ namespace Faithlife.Data
 
 				command.Parameters.Add(dbParameter);
 			}
+
+			if (TimeoutLength != null)
+				command.CommandTimeout = (int)TimeoutLength;
 
 			return command;
 
