@@ -322,6 +322,27 @@ namespace Faithlife.Data.Tests
 			(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("one", "two", "three");
 		}
 
+		[Test]
+		public void TimeoutUnitTests()
+		{
+			var command = CreateConnector().Command("select 0;");
+
+			command.TimeoutLength.Should().Be(null);
+
+			Invoking(() => command.Timeout(TimeSpan.FromSeconds(-10))).Should().Throw<ArgumentOutOfRangeException>();
+			Invoking(() => command.Timeout(TimeSpan.FromSeconds(0))).Should().Throw<ArgumentOutOfRangeException>();
+
+			var oneMinuteCommand = command.Timeout(TimeSpan.FromMinutes(1));
+			oneMinuteCommand.TimeoutLength.Should().Be(60);
+			oneMinuteCommand.Create().CommandTimeout.Should().Be(60);
+			var halfSecondCommand = command.Timeout(TimeSpan.FromMilliseconds(500));
+			halfSecondCommand.TimeoutLength.Should().Be(1);
+			halfSecondCommand.Create().CommandTimeout.Should().Be(1);
+			var noTimeoutCommand = command.Timeout(System.Threading.Timeout.InfiniteTimeSpan);
+			noTimeoutCommand.TimeoutLength.Should().Be(0);
+			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
