@@ -76,8 +76,19 @@ namespace Faithlife.Data.Tests
 		public void CreateFromDto()
 		{
 			DbParameters.FromDto(new { one = 1 }).AddDto(new HasTwo()).Should().Equal(("one", 1), ("Two", 2));
+			DbParameters.FromDto(new { one = 1 }, "is_enough").AddDto(new HasTwo(), "is_too_many").Should().Equal(("one_is_enough", 1), ("Two_is_too_many", 2));
 			DbParameters.FromDto("Thing", new { one = 1, Two = 2 }).Should().Equal(("Thing_one", 1), ("Thing_Two", 2));
+			DbParameters.FromDto("Bling", new { one = 1, Two = 2 }, "$$").Should().Equal(("Bling_one_$$", 1), ("Bling_Two_$$", 2));
 			DbParameters.FromDto((string prop) => $"it's {prop}", new { one = 1, Two = 2 }).Should().Equal(("it's one", 1), ("it's Two", 2));
+			DbParameters.FromDto((string prop) => $"{prop}s", new { one = 1, Two = 2 }, "?").Should().Equal(("ones_?", 1), ("Twos_?", 2));
+		}
+
+		[Test]
+		public void CreateFromDtos()
+		{
+			DbParameters.FromDtos(new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("zero_0", 0), ("one_0", 1), ("Two_1", 2));
+			DbParameters.FromDtos("very", new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("very_zero_0", 0), ("very_one_0", 1), ("very_Two_1", 2));
+			DbParameters.FromDtos((string prop, int i) => $"{prop}? more like {(i + 1) * 100}", new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("zero? more like 100", 0), ("one? more like 100", 1), ("Two? more like 200", 2));
 		}
 
 		[Test]
@@ -93,9 +104,12 @@ namespace Faithlife.Data.Tests
 				.Add(new[] { ("ten", 10) })
 				.Add(new Dictionary<string, int> { { "eleven", 11 } })
 				.AddDto(new { twelve = 12 })
-				.AddDto("the", new { thirteen = 13, fourteen = 14 })
+				.AddDto("the", new { thirteen = 13, fourteen = 14 }, "thing")
+				.AddDtos(new object[] { new { fifteen = 15, sixteen = 16 }, new { seventeen = 17 } })
+				.AddDtos("stop", new object[] { new { eighteen = 18, nineteen = 19 }, new { twenty = 20 } })
+				.AddDtos((string prop, int i) => $"I don't want to write any more {prop}ing numbers ({i + 1})", new object[] { new { twenty_one = 21, twenty_two = 22 }, new { twenty_three = 23 } })
 				.Should()
-				.HaveCount(14);
+				.HaveCount(23);
 		}
 
 		[Test]
