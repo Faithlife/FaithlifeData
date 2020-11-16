@@ -76,6 +76,8 @@ namespace Faithlife.Data.Tests
 		public void CreateFromDto()
 		{
 			DbParameters.FromDto(new { one = 1 }).AddDto(new HasTwo()).Should().Equal(("one", 1), ("Two", 2));
+			DbParameters.FromDto("Thing", new { one = 1, Two = 2 }).Should().Equal(("Thing_one", 1), ("Thing_Two", 2));
+			DbParameters.FromDto((string prop) => $"it's {prop}", new { one = 1, Two = 2 }).Should().Equal(("it's one", 1), ("it's Two", 2));
 		}
 
 		[Test]
@@ -90,8 +92,10 @@ namespace Faithlife.Data.Tests
 				.Add(("eight", 8.0f), ("nine", 9.0))
 				.Add(new[] { ("ten", 10) })
 				.Add(new Dictionary<string, int> { { "eleven", 11 } })
+				.AddDto(new { twelve = 12 })
+				.AddDto("the", new { thirteen = 13, fourteen = 14 })
 				.Should()
-				.HaveCount(11);
+				.HaveCount(14);
 		}
 
 		[Test]

@@ -81,6 +81,20 @@ namespace Faithlife.Data
 			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (x.Name, x.GetValue(dto))));
 
 		/// <summary>
+		/// Creates a list of parameters from the properties of a DTO.
+		/// </summary>
+		public static DbParameters FromDto(string name, object dto) =>
+			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => ($"{name}_{x.Name}", x.GetValue(dto))));
+
+		/// <summary>
+		/// Creates a list of parameters from the properties of a DTO.
+		/// <param name="name">A function taking the name of a DTO property as an argument and returning the name of its database parameter.</param>
+		/// <param name="dto">The DTO to retrieve parameters from.</param>
+		/// </summary>
+		public static DbParameters FromDto(Func<string, string> name, object dto) =>
+			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (name(x.Name), x.GetValue(dto))));
+
+		/// <summary>
 		/// The number of parameters.
 		/// </summary>
 		public int Count => Parameters.Count;
@@ -136,6 +150,18 @@ namespace Faithlife.Data
 		/// Adds parameters from the properties of a DTO.
 		/// </summary>
 		public DbParameters AddDto(object dto) => Add(FromDto(dto));
+
+		/// <summary>
+		/// Adds parameters from the properties of a DTO.
+		/// </summary>
+		public DbParameters AddDto(string name, object dto) => Add(FromDto(name, dto));
+
+		/// <summary>
+		/// Adds parameters from the properties of a DTO.
+		/// <param name="name">A function taking the name of a DTO property as an argument and returning the name of its database parameter.</param>
+		/// <param name="dto">The DTO to retrieve parameters from.</param>
+		/// </summary>
+		public DbParameters AddDto(Func<string, string> name, object dto) => Add(FromDto(name, dto));
 
 		/// <summary>
 		/// Creates a dictionary of parameters.
