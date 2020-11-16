@@ -36,6 +36,11 @@ namespace Faithlife.Data
 		public bool IsCached { get; }
 
 		/// <summary>
+		/// True after <see cref="Prepare"/> is called.
+		/// </summary>
+		public bool IsPrepared { get; }
+
+		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
 		/// <seealso cref="ExecuteAsync" />
@@ -270,6 +275,16 @@ namespace Faithlife.Data
 		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true);
 
 		/// <summary>
+		/// Prepares the command.
+		/// </summary>
+		public DbConnectorCommand Prepare()
+		{
+			using var command = Create();
+			command.Prepare();
+			return new DbConnectorCommand(Connector, Text, Parameters, IsCached, isPrepared: true);
+		}
+
+		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
 		/// </summary>
 		/// <seealso cref="CreateAsync" />
@@ -291,12 +306,13 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isCached = false, bool isPrepared = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
 			IsCached = isCached;
+			IsPrepared = isPrepared;
 		}
 
 		private void Validate()
