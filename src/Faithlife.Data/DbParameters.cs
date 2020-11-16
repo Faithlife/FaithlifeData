@@ -25,6 +25,32 @@ namespace Faithlife.Data
 			new DbParameters(new[] { (name, value) });
 
 		/// <summary>
+		/// Creates a list of parameters from a single name and a collection of values.
+		/// </summary>
+		public static DbParameters Create(string name, IEnumerable<object?> values)
+		{
+			int index = 0;
+			var parameters = DbParameters.Empty;
+			foreach (object? value in values ?? throw new ArgumentNullException(nameof(values)))
+				parameters = parameters.Add($"{name}_{index++}", value);
+			return parameters;
+		}
+
+		/// <summary>
+		/// Creates a list of parameters from a collection of values.
+		/// <param name="name">A function taking the index of the value in the collection as an argument and returning the name of its parameter.</param>
+		/// <param name="values">The collection of values to add.</param>
+		/// </summary>
+		public static DbParameters Create(Func<int, string> name, IEnumerable<object?> values)
+		{
+			int index = 0;
+			var parameters = DbParameters.Empty;
+			foreach (object? value in values ?? throw new ArgumentNullException(nameof(values)))
+				parameters = parameters.Add(name(index++), value);
+			return parameters;
+		}
+
+		/// <summary>
 		/// Creates a list of parameters from tuples.
 		/// </summary>
 		public static DbParameters Create(params (string Name, object? Value)[] parameters) =>
@@ -73,6 +99,18 @@ namespace Faithlife.Data
 		/// Adds parameters from another instance.
 		/// </summary>
 		public DbParameters Add(DbParameters parameters) => new DbParameters(Parameters.Concat(parameters));
+
+		/// <summary>
+		/// Adds parameters from a single name and a collection of values.
+		/// </summary>
+		public DbParameters Add(string name, IEnumerable<object?> values) => Add(Create(name, values));
+
+		/// <summary>
+		/// Adds parameters from a collection of values.
+		/// <param name="name">A function taking the index of the value in the collection as an argument and returning the name of its parameter.</param>
+		/// <param name="values">The collection of values to add.</param>
+		/// </summary>
+		public DbParameters Add(Func<int, string> name, IEnumerable<object?> values) => Add(Create(name, values));
 
 		/// <summary>
 		/// Adds parameters from tuples.

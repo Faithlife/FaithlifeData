@@ -23,6 +23,13 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void CreateManyWithOneName()
+		{
+			DbParameters.Create("one", new object?[] { 1, "two", null }).Should().Equal(("one_0", 1), ("one_1", "two"), ("one_2", null));
+			DbParameters.Create((int i) => $"fancy*{2 * i + 1}", new object?[] { 3.14, false }).Should().Equal(("fancy*1", 3.14), ("fancy*3", false));
+		}
+
+		[Test]
 		public void CreateFromPairParams()
 		{
 			DbParameters.Create().Should().BeEmpty();
@@ -78,11 +85,13 @@ namespace Faithlife.Data.Tests
 				.Add("one", 1)
 				.Add(("two", 2L))
 				.Add()
-				.Add(("three", 3.0f), ("four", 4.0))
-				.Add(new[] { ("five", 5) })
-				.Add(new Dictionary<string, int> { { "six", 6 } })
+				.Add("three", new object?[] { 3, "4", null })
+				.Add((int i) => $"six*{2 * i + 1}", new object?[] { 6.0, false })
+				.Add(("eight", 8.0f), ("nine", 9.0))
+				.Add(new[] { ("ten", 10) })
+				.Add(new Dictionary<string, int> { { "eleven", 11 } })
 				.Should()
-				.HaveCount(6);
+				.HaveCount(11);
 		}
 
 		[Test]
