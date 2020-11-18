@@ -314,6 +314,7 @@ namespace Faithlife.Data
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
 			var commandText = Text;
+			var commandType = CommandType;
 
 			var parameters = Parameters;
 			var index = 0;
@@ -387,9 +388,6 @@ namespace Faithlife.Data
 				command = CreateNewCommand();
 			}
 
-			if (CommandType != CommandType.Text)
-				command.CommandType = CommandType;
-
 			foreach (var (name, value) in parameters)
 			{
 				if (!(value is IDbDataParameter dbParameter))
@@ -409,6 +407,7 @@ namespace Faithlife.Data
 			{
 				var newCommand = connection.CreateCommand();
 				newCommand.CommandText = commandText;
+				newCommand.CommandType = commandType;
 				if (transaction != null)
 					newCommand.Transaction = transaction;
 				return newCommand;
