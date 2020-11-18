@@ -137,7 +137,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
-		public DbConnectorCommand Command(string text, bool isStoredProcedure) => new DbConnectorCommand(this, text, default, isStoredProcedure);
+		public DbConnectorCommand StoredProcedure(string text) => new DbConnectorCommand(this, text, default, isStoredProcedure);
 
 		/// <summary>
 		/// Creates a new command.

@@ -387,8 +387,8 @@ namespace Faithlife.Data
 				command = CreateNewCommand();
 			}
 
-			if (IsStoredProcedure)
-				command.CommandType = CommandType.StoredProcedure;
+			if (CommandType != CommandType.Text)
+				command.CommandType = CommandType;
 
 			foreach (var (name, value) in parameters)
 			{
