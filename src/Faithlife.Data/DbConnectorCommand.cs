@@ -373,6 +373,7 @@ namespace Faithlife.Data
 			IDbCommand command;
 			var transaction = Connector.Transaction;
 
+			bool wasCached = false;
 			var cache = IsCached ? Connector.CommandCache : null;
 			if (cache != null)
 			{
@@ -380,6 +381,7 @@ namespace Faithlife.Data
 				{
 					command.Parameters.Clear();
 					command.Transaction = transaction;
+					wasCached = true;
 				}
 				else
 				{
