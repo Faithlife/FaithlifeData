@@ -33,7 +33,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// The timeout of the command, in seconds.
 		/// </summary>
-		/// <remarks>A value of <c>null</c> will use the database connection's default timeout, usually 30 seconds.</remarks>
+		/// <remarks>A value of <c>null</c> will use the database connection's default timeout.</remarks>
 		public int? TimeoutLength { get; }
 
 		/// <summary>
