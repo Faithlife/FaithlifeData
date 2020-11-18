@@ -31,7 +31,7 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
-		/// True if this command is a stored procedure.
+		/// The <c><see cref="CommandType"/></c> of the command.
 		/// </summary>
 		public CommandType CommandType { get; }
 
