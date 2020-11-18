@@ -272,7 +272,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType == CommandType.StoredProcedure, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -296,12 +296,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isStoredProcedure = false, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType = CommandType.Text, bool isCached = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
-			CommandType = isStoredProcedure ? CommandType.StoredProcedure : CommandType.Text;
+			CommandType = commandType;
 			IsCached = isCached;
 		}
 
