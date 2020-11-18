@@ -405,7 +405,7 @@ namespace Faithlife.Data
 				command.Parameters.Add(dbParameter);
 			}
 
-			if (!IsCached)
+			if (IsPrepared && !IsCached)
 				command.Prepare();
 
 			return command;
