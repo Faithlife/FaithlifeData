@@ -277,12 +277,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Prepares the command.
 		/// </summary>
-		public DbConnectorCommand Prepare()
-		{
-			using var command = Create();
-			command.Prepare();
-			return new DbConnectorCommand(Connector, Text, Parameters, IsCached, isPrepared: true);
-		}
+		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, IsCached, isPrepared: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -409,6 +404,9 @@ namespace Faithlife.Data
 
 				command.Parameters.Add(dbParameter);
 			}
+
+			if (!IsCached)
+				command.Prepare();
 
 			return command;
 
