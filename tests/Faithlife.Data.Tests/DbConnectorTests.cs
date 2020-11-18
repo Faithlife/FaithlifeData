@@ -322,6 +322,18 @@ namespace Faithlife.Data.Tests
 			(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("one", "two", "three");
 		}
 
+		public void StoredProcedureUnitTests()
+		{
+			using var connector = CreateConnector();
+			var createCommand = connector.Command("create table Items (ItemId integer primary key, Name text not null);");
+			createCommand.IsStoredProcedure.Should().Be(false);
+			createCommand.Execute().Should().Be(0);
+			connector.Command("insert into Items (Name) values (@item1);", ("item1", "one")).IsStoredProcedure.Should().Be(false);
+
+			connector.Command("values (1);", isStoredProcedure: true).IsStoredProcedure.Should().Be(true);
+			connector.Command("values (@two);", isStoredProcedure: true, ("two", 2)).IsStoredProcedure.Should().Be(true);
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
