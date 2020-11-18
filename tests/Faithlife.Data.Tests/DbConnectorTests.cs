@@ -322,16 +322,19 @@ namespace Faithlife.Data.Tests
 			(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("one", "two", "three");
 		}
 
+		[Test]
 		public void StoredProcedureUnitTests()
 		{
 			using var connector = CreateConnector();
 			var createCommand = connector.Command("create table Items (ItemId integer primary key, Name text not null);");
-			createCommand.IsStoredProcedure.Should().Be(false);
+			createCommand.CommandType.Should().Be(CommandType.Text);
 			createCommand.Execute().Should().Be(0);
-			connector.Command("insert into Items (Name) values (@item1);", ("item1", "one")).IsStoredProcedure.Should().Be(false);
+			connector.Command("insert into Items (Name) values (@item1);", ("item1", "one")).CommandType.Should().Be(CommandType.Text);
 
-			connector.Command("values (1);", isStoredProcedure: true).IsStoredProcedure.Should().Be(true);
-			connector.Command("values (@two);", isStoredProcedure: true, ("two", 2)).IsStoredProcedure.Should().Be(true);
+			var storedProcedureCommand = connector.StoredProcedure("values (1);");
+			storedProcedureCommand.CommandType.Should().Be(CommandType.StoredProcedure);
+			Invoking(() => storedProcedureCommand.Execute()).Should().Throw<ArgumentException>("CommandType must be Text. (Parameter 'value')");
+			connector.StoredProcedure("values (@two);", ("two", 2)).CommandType.Should().Be(CommandType.StoredProcedure);
 		}
 
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)

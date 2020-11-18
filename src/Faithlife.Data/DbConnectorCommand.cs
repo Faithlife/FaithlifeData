@@ -33,7 +33,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// True if this command is a stored procedure.
 		/// </summary>
-		public bool IsStoredProcedure { get; }
+		public CommandType CommandType { get; }
 
 		/// <summary>
 		/// True after <see cref="Cache"/> is called.
@@ -272,7 +272,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, IsStoredProcedure, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType == CommandType.StoredProcedure, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -301,7 +301,7 @@ namespace Faithlife.Data
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
-			IsStoredProcedure = isStoredProcedure;
+			CommandType = isStoredProcedure ? CommandType.StoredProcedure : CommandType.Text;
 			IsCached = isCached;
 		}
 

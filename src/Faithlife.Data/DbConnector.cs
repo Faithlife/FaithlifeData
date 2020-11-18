@@ -133,27 +133,24 @@ namespace Faithlife.Data
 		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters));
 
 		/// <summary>
-		/// Creates a new command.
+		/// Creates a new command to access a stored procedure.
 		/// </summary>
-		/// <param name="text">The text of the command.</param>
-		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
-		public DbConnectorCommand StoredProcedure(string text) => new DbConnectorCommand(this, text, default, isStoredProcedure);
+		/// <param name="text">The name of the stored procedure.</param>
+		public DbConnectorCommand StoredProcedure(string text) => new DbConnectorCommand(this, text, default, isStoredProcedure: true);
 
 		/// <summary>
 		/// Creates a new command.
 		/// </summary>
-		/// <param name="text">The text of the command.</param>
-		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
+		/// <param name="text">The name of the stored procedure.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand Command(string text, bool isStoredProcedure, DbParameters parameters) => new DbConnectorCommand(this, text, parameters, isStoredProcedure);
+		public DbConnectorCommand StoredProcedure(string text, DbParameters parameters) => new DbConnectorCommand(this, text, parameters, isStoredProcedure: true);
 
 		/// <summary>
 		/// Creates a new command.
 		/// </summary>
-		/// <param name="text">The text of the command.</param>
-		/// <param name="isStoredProcedure">Whether or not this command is a stored procedure.</param>
+		/// <param name="text">The name of the stored procedure.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand Command(string text, bool isStoredProcedure, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters), isStoredProcedure);
+		public DbConnectorCommand StoredProcedure(string text, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters), isStoredProcedure: true);
 
 		/// <summary>
 		/// Disposes the connector.
