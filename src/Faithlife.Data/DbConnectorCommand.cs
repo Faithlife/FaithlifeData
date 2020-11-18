@@ -272,7 +272,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true, IsPrepared);
 
 		/// <summary>
 		/// Prepares the command.
