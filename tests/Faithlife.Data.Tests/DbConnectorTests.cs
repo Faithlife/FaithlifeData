@@ -331,7 +331,6 @@ namespace Faithlife.Data.Tests
 
 			Invoking(() => command.Timeout(TimeSpan.FromSeconds(-10))).Should().Throw<ArgumentOutOfRangeException>();
 			Invoking(() => command.Timeout(TimeSpan.FromSeconds(0))).Should().Throw<ArgumentOutOfRangeException>();
-			Invoking(() => command.Timeout(-5)).Should().Throw<ArgumentOutOfRangeException>();
 
 			var oneMinuteCommand = command.Timeout(TimeSpan.FromMinutes(1));
 			oneMinuteCommand.TimeoutLength.Should().Be(60);
@@ -340,13 +339,6 @@ namespace Faithlife.Data.Tests
 			halfSecondCommand.TimeoutLength.Should().Be(1);
 			halfSecondCommand.Create().CommandTimeout.Should().Be(1);
 			var noTimeoutCommand = command.Timeout(System.Threading.Timeout.InfiniteTimeSpan);
-			noTimeoutCommand.TimeoutLength.Should().Be(0);
-			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
-
-			var tenSecondCommand = command.Timeout(10);
-			tenSecondCommand.TimeoutLength.Should().Be(10);
-			tenSecondCommand.Create().CommandTimeout.Should().Be(10);
-			noTimeoutCommand = command.Timeout(0);
 			noTimeoutCommand.TimeoutLength.Should().Be(0);
 			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
 		}
