@@ -23,13 +23,6 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
-		public void CreateManyWithOneName()
-		{
-			DbParameters.Create("one", new object?[] { 1, "two", null }).Should().Equal(("one_0", 1), ("one_1", "two"), ("one_2", null));
-			DbParameters.Create((int i) => $"fancy*{2 * i + 1}", new object?[] { 3.14, false }).Should().Equal(("fancy*1", 3.14), ("fancy*3", false));
-		}
-
-		[Test]
 		public void CreateFromPairParams()
 		{
 			DbParameters.Create().Should().BeEmpty();
@@ -73,14 +66,18 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void CreateManyWithOneName()
+		{
+			DbParameters.FromMany("one", new object?[] { 1, "two", null }).Should().Equal(("one_0", 1), ("one_1", "two"), ("one_2", null));
+			DbParameters.FromMany((int i) => $"fancy*{2 * i + 1}", new object?[] { 3.14, false }).Should().Equal(("fancy*1", 3.14), ("fancy*3", false));
+		}
+
+		[Test]
 		public void CreateFromDto()
 		{
 			DbParameters.FromDto(new { one = 1 }).AddDto(new HasTwo()).Should().Equal(("one", 1), ("Two", 2));
-			DbParameters.FromDto(new { one = 1 }, "is_enough").AddDto(new HasTwo(), "is_too_many").Should().Equal(("one_is_enough", 1), ("Two_is_too_many", 2));
 			DbParameters.FromDto("Thing", new { one = 1, Two = 2 }).Should().Equal(("Thing_one", 1), ("Thing_Two", 2));
-			DbParameters.FromDto("Bling", new { one = 1, Two = 2 }, "$$").Should().Equal(("Bling_one_$$", 1), ("Bling_Two_$$", 2));
 			DbParameters.FromDto((string prop) => $"it's {prop}", new { one = 1, Two = 2 }).Should().Equal(("it's one", 1), ("it's Two", 2));
-			DbParameters.FromDto((string prop) => $"{prop}s", new { one = 1, Two = 2 }, "?").Should().Equal(("ones_?", 1), ("Twos_?", 2));
 		}
 
 		[Test]
@@ -98,13 +95,14 @@ namespace Faithlife.Data.Tests
 				.Add("one", 1)
 				.Add(("two", 2L))
 				.Add()
-				.Add("three", new object?[] { 3, "4", null })
-				.Add((int i) => $"six*{2 * i + 1}", new object?[] { 6.0, false })
-				.Add(("eight", 8.0f), ("nine", 9.0))
-				.Add(new[] { ("ten", 10) })
-				.Add(new Dictionary<string, int> { { "eleven", 11 } })
+				.Add(("three", 3.0f), ("four", 4.0))
+				.Add(new[] { ("five", 5) })
+				.Add(new Dictionary<string, int> { { "six", 6 } })
+				.AddMany("seven", new object?[] { 7, "8", null })
+				.AddMany((int i) => $"ten*{2 * i + 1}", new object?[] { 10.0, false })
 				.AddDto(new { twelve = 12 })
-				.AddDto("the", new { thirteen = 13, fourteen = 14 }, "thing")
+				.AddDto("the", new { thirteen = 13 })
+				.AddDto(name => $"Why ${name}?", new { fourteen = 14 })
 				.AddDtos(new object[] { new { fifteen = 15, sixteen = 16 }, new { seventeen = 17 } })
 				.AddDtos("stop", new object[] { new { eighteen = 18, nineteen = 19 }, new { twenty = 20 } })
 				.AddDtos((string prop, int i) => $"I don't want to write any more {prop}ing numbers ({i + 1})", new object[] { new { twenty_one = 21, twenty_two = 22 }, new { twenty_three = 23 } })
