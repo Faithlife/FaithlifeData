@@ -327,6 +327,7 @@ namespace Faithlife.Data
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
 			var commandText = Text;
+			var timeout = Timeout;
 
 			var parameters = Parameters;
 			var index = 0;
@@ -413,15 +414,19 @@ namespace Faithlife.Data
 				command.Parameters.Add(dbParameter);
 			}
 
-			if (TimeoutLength != null)
-				command.CommandTimeout = (int)TimeoutLength;
-
 			return command;
 
 			IDbCommand CreateNewCommand()
 			{
 				var newCommand = connection.CreateCommand();
 				newCommand.CommandText = commandText;
+				if (timeout != null)
+				{
+					if (timeout == System.Threading.Timeout.InfiniteTimeSpan)
+						newCommand.CommandTimeout = 0;
+					else
+						newCommand.CommandTimeout = (int) Math.Ceiling(((TimeSpan) timeout).TotalSeconds);
+				}
 				if (transaction != null)
 					newCommand.Transaction = transaction;
 				return newCommand;
