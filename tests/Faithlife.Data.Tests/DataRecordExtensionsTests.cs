@@ -311,6 +311,8 @@ namespace Faithlife.Data.Tests
 		[Test]
 		[TestCase(typeof(ItemRecord), true)]
 		[TestCase(typeof(ItemDto), false)]
+		[TestCase(typeof(NonPositionalRecord), false)]
+		[TestCase(typeof(DtoWithConstructors), false)]
 		public void IsPositionalRecordTests(Type type, bool isPositionalRecord)
 		{
 			Assert.AreEqual(isPositionalRecord, DbValueTypeInfo.IsPositionalRecord(type));
@@ -564,6 +566,25 @@ namespace Faithlife.Data.Tests
 #pragma warning disable CA1801,SA1313
 		private record ItemRecord(string? TheString, int TheInt32, long TheInt64, bool TheBool, float TheSingle, double TheDouble, byte[]? TheBlob, int TheOptionalInt32 = 42);
 #pragma warning restore CA1801,SA1313
+
+		private record NonPositionalRecord
+		{
+			public string? TheString { get; set; }
+		}
+
+		private class DtoWithConstructors
+		{
+			public DtoWithConstructors()
+			{
+			}
+
+			public DtoWithConstructors(string theString)
+			{
+				TheString = theString;
+			}
+
+			public string? TheString { get; set; }
+		}
 #endif
 
 		private enum Answer
