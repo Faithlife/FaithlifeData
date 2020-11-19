@@ -31,10 +31,10 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
-		/// The timeout of the command, in seconds.
+		/// The timeout length of the command.
 		/// </summary>
 		/// <remarks>A value of <c>null</c> will use the database connection's default timeout.</remarks>
-		public int? TimeoutLength { get; }
+		public TimeSpan? Timeout { get; }
 
 		/// <summary>
 		/// True after <see cref="Cache"/> is called.
@@ -272,25 +272,20 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Sets the command's timeout.
-		/// <remarks>Throws <c><see cref="ArgumentOutOfRangeException"/></c> if <c>timeSpan</c> is not positive or <c><see cref="Timeout.InfiniteTimeSpan"/></c>.</remarks>
 		/// </summary>
-		public DbConnectorCommand Timeout(TimeSpan timeSpan)
+		/// <exception>Throws <c><see cref="ArgumentOutOfRangeException"/></c> if <c>timeSpan</c> is not positive or <c><see cref="Timeout.InfiniteTimeSpan"/></c>.</exception>
+		public DbConnectorCommand WithTimeout(TimeSpan timeSpan)
 		{
-			int? timeout;
-			if (timeSpan == System.Threading.Timeout.InfiniteTimeSpan)
-				timeout = 0;
-			else if (timeSpan <= TimeSpan.Zero)
+			if (timeSpan <= TimeSpan.Zero && timeSpan != System.Threading.Timeout.InfiniteTimeSpan)
 				throw new ArgumentOutOfRangeException(nameof(timeSpan), "Must be positive or 'Timeout.InfiniteTimeSpan'.");
-			else
-				timeout = (int?)Math.Ceiling(timeSpan.TotalSeconds);
 
-			return new DbConnectorCommand(Connector, Text, Parameters, timeout, IsCached);
+			return new DbConnectorCommand(Connector, Text, Parameters, timeSpan, IsCached);
 		}
 
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, TimeoutLength, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, Timeout, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -314,12 +309,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, int? timeout = null, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, TimeSpan? timeout = null, bool isCached = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
-			TimeoutLength = timeout;
+			Timeout = timeout;
 			IsCached = isCached;
 		}
 

@@ -325,21 +325,21 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void TimeoutUnitTests()
 		{
-			var command = CreateConnector().Command("select 0;");
+			var command = CreateConnector().Command("values (0);");
 
-			command.TimeoutLength.Should().Be(null);
+			command.Timeout.Should().Be(null);
 
-			Invoking(() => command.Timeout(TimeSpan.FromSeconds(-10))).Should().Throw<ArgumentOutOfRangeException>();
-			Invoking(() => command.Timeout(TimeSpan.FromSeconds(0))).Should().Throw<ArgumentOutOfRangeException>();
+			Invoking(() => command.WithTimeout(TimeSpan.FromSeconds(-10))).Should().Throw<ArgumentOutOfRangeException>();
+			Invoking(() => command.WithTimeout(TimeSpan.FromSeconds(0))).Should().Throw<ArgumentOutOfRangeException>();
 
-			var oneMinuteCommand = command.Timeout(TimeSpan.FromMinutes(1));
-			oneMinuteCommand.TimeoutLength.Should().Be(60);
+			var oneMinuteCommand = command.WithTimeout(TimeSpan.FromMinutes(1));
+			oneMinuteCommand.Timeout.Should().Be(TimeSpan.FromMinutes(1));
 			oneMinuteCommand.Create().CommandTimeout.Should().Be(60);
-			var halfSecondCommand = command.Timeout(TimeSpan.FromMilliseconds(500));
-			halfSecondCommand.TimeoutLength.Should().Be(1);
+			var halfSecondCommand = command.WithTimeout(TimeSpan.FromMilliseconds(500));
+			halfSecondCommand.Timeout.Should().Be(TimeSpan.FromMilliseconds(500));
 			halfSecondCommand.Create().CommandTimeout.Should().Be(1);
-			var noTimeoutCommand = command.Timeout(System.Threading.Timeout.InfiniteTimeSpan);
-			noTimeoutCommand.TimeoutLength.Should().Be(0);
+			var noTimeoutCommand = command.WithTimeout(System.Threading.Timeout.InfiniteTimeSpan);
+			noTimeoutCommand.Timeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
 			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
 		}
 
