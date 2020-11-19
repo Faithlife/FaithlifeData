@@ -311,9 +311,9 @@ namespace Faithlife.Data.Tests
 		[Test]
 		[TestCase(typeof(ItemRecord), true)]
 		[TestCase(typeof(ItemDto), false)]
-		public void IsRecordLikeTests(Type type, bool isRecordLike)
+		public void IsPositionalRecordTests(Type type, bool isPositionalRecord)
 		{
-			Assert.AreEqual(isRecordLike, DbValueTypeInfo.IsRecordLike(type));
+			Assert.AreEqual(isPositionalRecord, DbValueTypeInfo.IsPositionalRecord(type));
 		}
 
 		[Test]

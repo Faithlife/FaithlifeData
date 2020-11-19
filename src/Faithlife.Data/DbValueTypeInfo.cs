@@ -30,23 +30,22 @@ namespace Faithlife.Data
 			if (type.GetTypeInfo().IsEnum)
 				return DbValueTypeStrategy.Enum;
 
-			if (IsRecordLike(type))
-				return DbValueTypeStrategy.Record;
+			if (IsPositionalRecord(type))
+				return DbValueTypeStrategy.PositionalRecord;
 
 			return DbValueTypeStrategy.DtoProperties;
 		}
 
-		internal static bool IsRecordLike(Type type)
+		internal static bool IsPositionalRecord(Type type)
 		{
 			var constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 			if (constructors.Length != 1)
 				return false;
 			var constructorParameters = constructors[0].GetParameters();
-			var properties = type.GetProperties();
-			if (constructorParameters.Length != properties.Length)
+			var properties = DtoInfo.GetInfo(type).Properties;
+			if (constructorParameters.Length != properties.Count)
 				return false;
-			var propertyNames = properties.Select(x => x.Name).ToList();
-			return constructorParameters.All(x => propertyNames.Contains(x.Name));
+			return constructorParameters.All(parameter => properties.Any(property => property.Name == parameter.Name && property.ValueType == parameter.ParameterType));
 		}
 
 		private static IDbValueTypeInfo CreateInfo(Type type) =>
@@ -112,7 +111,7 @@ namespace Faithlife.Data
 				}
 				return notNull ? dto : default!;
 			}
-			else if (m_strategy == DbValueTypeStrategy.Record)
+			else if (m_strategy == DbValueTypeStrategy.PositionalRecord)
 			{
 				var arguments = new object?[m_constructorParameters!.Count];
 				var notNull = false;
@@ -313,7 +312,7 @@ namespace Faithlife.Data
 					x => (x, DbValueTypeInfo.GetInfo(x.ValueType)),
 					StringComparer.OrdinalIgnoreCase);
 			}
-			else if (m_strategy == DbValueTypeStrategy.Record)
+			else if (m_strategy == DbValueTypeStrategy.PositionalRecord)
 			{
 				m_constructorInfo = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Single();
 				m_constructorParameters = m_constructorInfo.GetParameters().ToDictionary(
