@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
 using FluentAssertions;
 using NUnit.Framework;
+using static Faithlife.Data.DbParameterizer;
 using static FluentAssertions.FluentActions;
 
 namespace Faithlife.Data.Tests
@@ -101,6 +102,18 @@ namespace Faithlife.Data.Tests
 			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 			connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 				("item1", "one"), ("item2", "two")).Execute().Should().Be(2);
+			connector.Command("select Name from Items where Name like @like;",
+				DbParameters.Create("like", "t%")).QueryFirst<string>().Should().Be("two");
+		}
+
+		[Test]
+		public void ParameterizerTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			var item1 = "one";
+			var item2 = "two";
+			connector.Command(Sql($"insert into Items (Name) values ({item1}); insert into Items (Name) values ({item2});")).Execute().Should().Be(2);
 			connector.Command("select Name from Items where Name like @like;",
 				DbParameters.Create("like", "t%")).QueryFirst<string>().Should().Be("two");
 		}
