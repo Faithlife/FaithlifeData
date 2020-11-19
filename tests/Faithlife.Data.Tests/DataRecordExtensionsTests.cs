@@ -561,9 +561,9 @@ namespace Faithlife.Data.Tests
 		}
 
 #if NET5_0
-#pragma warning disable SA1313
-		private record ItemRecord(string? TheString, int TheInt32, long TheInt64, bool TheBool, float TheSingle, double TheDouble, byte[]? TheBlob);
-#pragma warning restore SA1313
+#pragma warning disable CA1801,SA1313
+		private record ItemRecord(string? TheString, int TheInt32, long TheInt64, bool TheBool, float TheSingle, double TheDouble, byte[]? TheBlob, int TheOptionalInt32 = 42);
+#pragma warning restore CA1801,SA1313
 #endif
 
 		private enum Answer

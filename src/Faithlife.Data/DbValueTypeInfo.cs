@@ -114,6 +114,8 @@ namespace Faithlife.Data
 			else if (m_strategy == DbValueTypeStrategy.PositionalRecord)
 			{
 				var arguments = new object?[m_constructorParameters!.Count];
+				foreach (var parameter in m_constructorParameters.Values.Select(x => x.Parameter).Where(x => x.HasDefaultValue))
+					arguments[parameter.Position] = parameter.DefaultValue;
 				var notNull = false;
 				for (var i = index; i < index + count; i++)
 				{
