@@ -38,9 +38,9 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Creates a list of parameters from a collection of values.
+		/// </summary>
 		/// <param name="name">A function taking the index of the value in the collection as an argument and returning the name of its parameter.</param>
 		/// <param name="values">The collection of values to add.</param>
-		/// </summary>
 		public static DbParameters Create(Func<int, string> name, IEnumerable<object?> values)
 		{
 			int index = 0;
@@ -88,10 +88,10 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
+		/// </summary>
 		/// <param name="name">A function taking the name of a DTO property as an argument and returning the name of its database parameter.</param>
 		/// <param name="dto">The DTO to retrieve parameters from.</param>
 		/// <param name="suffix">An optional suffix to add to the end of each parameter name after adding an underscore.</param>
-		/// </summary>
 		public static DbParameters FromDto(Func<string, string> name, object dto, string? suffix = null) =>
 			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (name(x.Name) + (suffix == null ? "" : $"_{suffix}"), x.GetValue(dto))));
 
@@ -121,9 +121,9 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Creates a list of parameters from the collective properties of a sequence of DTOs.
+		/// </summary>
 		/// <param name="name">A function taking the name of a DTO property and the index of the DTO in the collection as arguments and returning the name of its database parameter.</param>
 		/// <param name="dtos">The collection of DTOs to retrieve parameters from.</param>
-		/// </summary>
 		public static DbParameters FromDtos(Func<string, int, string> name, IEnumerable<object> dtos)
 		{
 			int index = 0;
@@ -163,9 +163,9 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Adds parameters from a collection of values.
+		/// </summary>
 		/// <param name="name">A function taking the index of the value in the collection as an argument and returning the name of its parameter.</param>
 		/// <param name="values">The collection of values to add.</param>
-		/// </summary>
 		public DbParameters Add(Func<int, string> name, IEnumerable<object?> values) => Add(Create(name, values));
 
 		/// <summary>
@@ -200,10 +200,10 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Adds parameters from the properties of a DTO.
+		/// </summary>
 		/// <param name="name">A function taking the name of a DTO property as an argument and returning the name of its database parameter.</param>
 		/// <param name="dto">The DTO to retrieve parameters from.</param>
 		/// <param name="suffix">An optional suffix to add to the end of each parameter name after adding an underscore.</param>
-		/// </summary>
 		public DbParameters AddDto(Func<string, string> name, object dto, string? suffix = null) => Add(FromDto(name, dto, suffix));
 
 		/// <summary>
@@ -218,9 +218,9 @@ namespace Faithlife.Data
 
 		/// <summary>
 		/// Adds parameters from the collective properties of a sequence of DTOs.
+		/// </summary>
 		/// <param name="name">A function taking the name of a DTO property and the index of the DTO in the collection as arguments and returning the name of its database parameter.</param>
 		/// <param name="dtos">The collection of DTOs to retrieve parameters from.</param>
-		/// </summary>
 		public DbParameters AddDtos(Func<string, int, string> name, IEnumerable<object> dtos) => Add(FromDtos(name, dtos));
 
 		/// <summary>
