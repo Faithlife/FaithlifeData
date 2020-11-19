@@ -24,6 +24,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+    - name: Set up .NET 5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
     - name: Build Windows
       if: runner.os == 'Windows' && github.ref != 'refs/heads/master'
       run: .\build.cmd package
