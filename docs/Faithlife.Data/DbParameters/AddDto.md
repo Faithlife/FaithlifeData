@@ -1,9 +1,44 @@
-# DbParameters.AddDto method
+# DbParameters.AddDto method (1 of 3)
 
 Adds parameters from the properties of a DTO.
 
 ```csharp
 public DbParameters AddDto(object dto)
+```
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.AddDto method (2 of 3)
+
+Adds parameters from the properties of a DTO.
+
+```csharp
+public DbParameters AddDto(Func<string, string> name, object dto)
+```
+
+| parameter | description |
+| --- | --- |
+| name | A function taking the name of a DTO property as an argument and returning the name of its database parameter. |
+| dto | The DTO to retrieve parameters from. |
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.AddDto method (3 of 3)
+
+Adds parameters from the properties of a DTO.
+
+```csharp
+public DbParameters AddDto(string name, object dto)
 ```
 
 ## See Also

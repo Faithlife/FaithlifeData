@@ -1,9 +1,44 @@
-# DbParameters.FromDto method
+# DbParameters.FromDto method (1 of 3)
 
 Creates a list of parameters from the properties of a DTO.
 
 ```csharp
 public static DbParameters FromDto(object dto)
+```
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.FromDto method (2 of 3)
+
+Creates a list of parameters from the properties of a DTO.
+
+```csharp
+public static DbParameters FromDto(Func<string, string> name, object dto)
+```
+
+| parameter | description |
+| --- | --- |
+| name | A function taking the name of a DTO property as an argument and returning the name of its database parameter. |
+| dto | The DTO to retrieve parameters from. |
+
+## See Also
+
+* struct [DbParameters](../DbParameters.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbParameters.FromDto method (3 of 3)
+
+Creates a list of parameters from the properties of a DTO.
+
+```csharp
+public static DbParameters FromDto(string name, object dto)
 ```
 
 ## See Also
