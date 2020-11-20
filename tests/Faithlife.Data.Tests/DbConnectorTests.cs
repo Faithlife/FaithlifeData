@@ -354,6 +354,27 @@ namespace Faithlife.Data.Tests
 			connector.StoredProcedure("values (@two);", ("two", 2)).CommandType.Should().Be(CommandType.StoredProcedure);
 		}
 
+		[Test]
+		public void TimeoutUnitTests()
+		{
+			var command = CreateConnector().Command("values (0);");
+
+			command.Timeout.Should().Be(null);
+
+			Invoking(() => command.WithTimeout(TimeSpan.FromSeconds(-10))).Should().Throw<ArgumentOutOfRangeException>();
+			Invoking(() => command.WithTimeout(TimeSpan.FromSeconds(0))).Should().Throw<ArgumentOutOfRangeException>();
+
+			var oneMinuteCommand = command.WithTimeout(TimeSpan.FromMinutes(1));
+			oneMinuteCommand.Timeout.Should().Be(TimeSpan.FromMinutes(1));
+			oneMinuteCommand.Create().CommandTimeout.Should().Be(60);
+			var halfSecondCommand = command.WithTimeout(TimeSpan.FromMilliseconds(500));
+			halfSecondCommand.Timeout.Should().Be(TimeSpan.FromMilliseconds(500));
+			halfSecondCommand.Create().CommandTimeout.Should().Be(1);
+			var noTimeoutCommand = command.WithTimeout(System.Threading.Timeout.InfiniteTimeSpan);
+			noTimeoutCommand.Timeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
+			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
