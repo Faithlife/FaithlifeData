@@ -31,6 +31,11 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
+		/// The <c><see cref="CommandType"/></c> of the command.
+		/// </summary>
+		public CommandType CommandType { get; }
+
+		/// <summary>
 		/// True after <see cref="Cache"/> is called.
 		/// </summary>
 		public bool IsCached { get; }
@@ -267,7 +272,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, isCached: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -291,11 +296,12 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType = CommandType.Text, bool isCached = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
+			CommandType = commandType;
 			IsCached = isCached;
 		}
 
@@ -308,6 +314,7 @@ namespace Faithlife.Data
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
 			var commandText = Text;
+			var commandType = CommandType;
 
 			var parameters = Parameters;
 			var index = 0;
@@ -400,6 +407,7 @@ namespace Faithlife.Data
 			{
 				var newCommand = connection.CreateCommand();
 				newCommand.CommandText = commandText;
+				newCommand.CommandType = commandType;
 				if (transaction != null)
 					newCommand.Transaction = transaction;
 				return newCommand;
