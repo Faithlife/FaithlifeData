@@ -26,6 +26,7 @@ public abstract class DbConnector : IAsyncDisposable, IDisposable
 | abstract [OpenConnectionAsync](DbConnector/OpenConnectionAsync.md)(…) | Opens the connection. |
 | abstract [RollbackTransaction](DbConnector/RollbackTransaction.md)() | Rolls back the current transaction. |
 | abstract [RollbackTransactionAsync](DbConnector/RollbackTransactionAsync.md)(…) | Rolls back the current transaction. |
+| [StoredProcedure](DbConnector/StoredProcedure.md)(…) | Creates a new command to access a stored procedure. (3 methods) |
 
 ## Protected Members
 

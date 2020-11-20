@@ -10,8 +10,10 @@ public struct DbConnectorCommand
 
 | name | description |
 | --- | --- |
+| [CommandType](DbConnectorCommand/CommandType.md) { get; } | The  of the command. |
 | [Connector](DbConnectorCommand/Connector.md) { get; } | The connector of the command. |
 | [IsCached](DbConnectorCommand/IsCached.md) { get; } | True after [`Cache`](DbConnectorCommand/Cache.md) is called. |
+| [IsPrepared](DbConnectorCommand/IsPrepared.md) { get; } | True after [`Prepare`](DbConnectorCommand/Prepare.md) is called. |
 | [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
 | [Text](DbConnectorCommand/Text.md) { get; } | The text of the command. |
 | [Cache](DbConnectorCommand/Cache.md)() | Caches the command. |
@@ -22,6 +24,7 @@ public struct DbConnectorCommand
 | [EnumerateAsync&lt;T&gt;](DbConnectorCommand/EnumerateAsync.md)(…) | Executes the query, reading one record at a time and converting it to the specified type. (2 methods) |
 | [Execute](DbConnectorCommand/Execute.md)() | Executes the command, returning the number of rows affected. |
 | [ExecuteAsync](DbConnectorCommand/ExecuteAsync.md)(…) | Executes the command, returning the number of rows affected. |
+| [Prepare](DbConnectorCommand/Prepare.md)() | Prepares the command. |
 | [Query&lt;T&gt;](DbConnectorCommand/Query.md)() | Executes the query, reading every record and converting it to the specified type. |
 | [Query&lt;T&gt;](DbConnectorCommand/Query.md)(…) | Executes the query, reading every record and converting it to the specified type with the specified delegate. |
 | [QueryAsync&lt;T&gt;](DbConnectorCommand/QueryAsync.md)(…) | Executes the query, converting each record to the specified type. (2 methods) |

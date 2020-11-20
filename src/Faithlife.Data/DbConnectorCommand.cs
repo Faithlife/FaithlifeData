@@ -31,6 +31,11 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
+		/// The <c><see cref="CommandType"/></c> of the command.
+		/// </summary>
+		public CommandType CommandType { get; }
+
+		/// <summary>
 		/// The timeout length of the command.
 		/// </summary>
 		/// <remarks>A value of <c>null</c> will use the database connection's default timeout.</remarks>
@@ -40,6 +45,11 @@ namespace Faithlife.Data
 		/// True after <see cref="Cache"/> is called.
 		/// </summary>
 		public bool IsCached { get; }
+
+		/// <summary>
+		/// True after <see cref="Prepare"/> is called.
+		/// </summary>
+		public bool IsPrepared { get; }
 
 		/// <summary>
 		/// Executes the command, returning the number of rows affected.
@@ -279,13 +289,18 @@ namespace Faithlife.Data
 			if (timeSpan <= TimeSpan.Zero && timeSpan != System.Threading.Timeout.InfiniteTimeSpan)
 				throw new ArgumentOutOfRangeException(nameof(timeSpan), "Must be positive or 'Timeout.InfiniteTimeSpan'.");
 
-			return new DbConnectorCommand(Connector, Text, Parameters, timeSpan, IsCached);
+			return new DbConnectorCommand(Connector, Text, Parameters, CommandType, timeSpan, IsCached, IsPrepared);
 		}
 
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, Timeout, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, Timeout, isCached: true, IsPrepared);
+
+		/// <summary>
+		/// Prepares the command.
+		/// </summary>
+		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, Timeout, IsCached, isPrepared: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -309,13 +324,15 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, TimeSpan? timeout = null, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType = CommandType.Text, TimeSpan? timeout = null, bool isCached = false, bool isPrepared = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
+			CommandType = commandType;
 			Timeout = timeout;
 			IsCached = isCached;
+			IsPrepared = isPrepared;
 		}
 
 		private void Validate()
@@ -327,6 +344,7 @@ namespace Faithlife.Data
 		private IDbCommand DoCreate(IDbConnection connection)
 		{
 			var commandText = Text;
+			var commandType = CommandType;
 			var timeout = Timeout;
 
 			var parameters = Parameters;
@@ -382,6 +400,7 @@ namespace Faithlife.Data
 			IDbCommand command;
 			var transaction = Connector.Transaction;
 
+			bool wasCached = false;
 			var cache = IsCached ? Connector.CommandCache : null;
 			if (cache != null)
 			{
@@ -389,6 +408,7 @@ namespace Faithlife.Data
 				{
 					command.Parameters.Clear();
 					command.Transaction = transaction;
+					wasCached = true;
 				}
 				else
 				{
@@ -414,12 +434,16 @@ namespace Faithlife.Data
 				command.Parameters.Add(dbParameter);
 			}
 
+			if (IsPrepared && !wasCached)
+				command.Prepare();
+
 			return command;
 
 			IDbCommand CreateNewCommand()
 			{
 				var newCommand = connection.CreateCommand();
 				newCommand.CommandText = commandText;
+				newCommand.CommandType = commandType;
 				if (timeout != null)
 				{
 					if (timeout == System.Threading.Timeout.InfiniteTimeSpan)
