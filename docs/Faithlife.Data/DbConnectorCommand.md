@@ -10,6 +10,7 @@ public struct DbConnectorCommand
 
 | name | description |
 | --- | --- |
+| [CommandType](DbConnectorCommand/CommandType.md) { get; } | The  of the command. |
 | [Connector](DbConnectorCommand/Connector.md) { get; } | The connector of the command. |
 | [IsCached](DbConnectorCommand/IsCached.md) { get; } | True after [`Cache`](DbConnectorCommand/Cache.md) is called. |
 | [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
