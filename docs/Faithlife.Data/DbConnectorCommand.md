@@ -16,6 +16,7 @@ public struct DbConnectorCommand
 | [IsPrepared](DbConnectorCommand/IsPrepared.md) { get; } | True after [`Prepare`](DbConnectorCommand/Prepare.md) is called. |
 | [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
 | [Text](DbConnectorCommand/Text.md) { get; } | The text of the command. |
+| [Timeout](DbConnectorCommand/Timeout.md) { get; } | The timeout length of the command. |
 | [Cache](DbConnectorCommand/Cache.md)() | Caches the command. |
 | [Create](DbConnectorCommand/Create.md)() | Creates an IDbCommand from the text and parameters. |
 | [CreateAsync](DbConnectorCommand/CreateAsync.md)(…) | Creates an IDbCommand from the text and parameters. |
@@ -42,6 +43,7 @@ public struct DbConnectorCommand
 | [QuerySingleOrDefault&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefault.md)() | Executes the query, converting the first record to the specified type. |
 | [QuerySingleOrDefault&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefault.md)(…) | Executes the query, converting the first record to the specified type with the specified delegate. |
 | [QuerySingleOrDefaultAsync&lt;T&gt;](DbConnectorCommand/QuerySingleOrDefaultAsync.md)(…) | Executes the query, converting the first record to the specified type. (2 methods) |
+| [WithTimeout](DbConnectorCommand/WithTimeout.md)(…) | Sets the command's timeout. |
 
 ## See Also
 
