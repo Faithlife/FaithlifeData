@@ -449,12 +449,7 @@ namespace Faithlife.Data
 					newCommand.CommandType = commandType;
 
 				if (timeout != null)
-				{
-					if (timeout == System.Threading.Timeout.InfiniteTimeSpan)
-						newCommand.CommandTimeout = 0;
-					else
-						newCommand.CommandTimeout = (int) Math.Ceiling(((TimeSpan) timeout).TotalSeconds);
-				}
+					newCommand.CommandTimeout = timeout == System.Threading.Timeout.InfiniteTimeSpan ? 0 : (int) Math.Ceiling(timeout.Value.TotalSeconds);
 
 				if (transaction != null)
 					newCommand.Transaction = transaction;
