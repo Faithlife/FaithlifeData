@@ -51,8 +51,13 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates a list of parameters from a single name and a collection of values.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_index</c>, where <c>name</c> is as specified and <c>index</c>
+		/// is the zero-based index of the value.</remarks>
 		public static DbParameters FromMany(string name, IEnumerable values)
 		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
 			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (var value in values ?? throw new ArgumentNullException(nameof(values)))
@@ -63,10 +68,12 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates a list of parameters from a collection of values.
 		/// </summary>
-		/// <param name="name">A function taking the index of the value in the collection as an argument and returning the name of its parameter.</param>
-		/// <param name="values">The collection of values to add.</param>
+		/// <remarks>The name of each parameter is determined by calling the specified function with the zero-based index of the value.</remarks>
 		public static DbParameters FromMany(Func<int, string> name, IEnumerable values)
 		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
 			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (var value in values ?? throw new ArgumentNullException(nameof(values)))
@@ -77,33 +84,47 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
 		/// </summary>
+		/// <remarks>The name of each parameter is the name of the corresponding DTO property.</remarks>
 		public static DbParameters FromDto(object dto) =>
 			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (x.Name, x.GetValue(dto))));
 
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
 		/// </summary>
-		public static DbParameters FromDto(string name, object dto) =>
-			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => ($"{name}_{x.Name}", x.GetValue(dto))));
+		/// <remarks>The name of each parameter is <c>name_prop</c>, where <c>name</c> is as specified and <c>prop</c> is the
+		/// name of the corresponding DTO property.</remarks>
+		public static DbParameters FromDto(string name, object dto)
+		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
+			return new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => ($"{name}_{x.Name}", x.GetValue(dto))));
+		}
 
 		/// <summary>
 		/// Creates a list of parameters from the properties of a DTO.
 		/// </summary>
-		/// <param name="name">A function taking the name of a DTO property as an argument and returning the name of its database parameter.</param>
-		/// <param name="dto">The DTO to retrieve parameters from.</param>
-		public static DbParameters FromDto(Func<string, string> name, object dto) =>
-			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (name(x.Name), x.GetValue(dto))));
+		/// <remarks>The name of each parameter is determined by calling the function with the name of the corresponding DTO property.</remarks>
+		public static DbParameters FromDto(Func<string, string> name, object dto)
+		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
+			return new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Select(x => (name(x.Name), x.GetValue(dto))));
+		}
 
 		/// <summary>
 		/// Creates a list of parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>prop_index</c>, where <c>prop</c> is the name of the corresponding DTO property
+		/// and <c>index</c> is the zero-based index of the DTO.</remarks>
 		public static DbParameters FromDtos(IEnumerable dtos)
 		{
 			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (var dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 			{
-				parameters.AddRange(DtoInfo.GetInfo(dto.GetType()).Properties.Select(x => ($"{x.Name}_{index}", x.GetValue(dto))));
+				parameters.AddRange(DtoInfo.GetInfo((dto ?? throw new ArgumentException("DTO is null.", nameof(dtos))).GetType()).Properties.Select(x => ($"{x.Name}_{index}", x.GetValue(dto))));
 				index++;
 			}
 			return new DbParameters(parameters);
@@ -112,13 +133,18 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates a list of parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_prop_index</c>, where <c>name</c> is as specified and <c>prop</c> is the name
+		/// of the corresponding DTO property and <c>index</c> is the zero-based index of the DTO.</remarks>
 		public static DbParameters FromDtos(string name, IEnumerable dtos)
 		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
 			var index = 0;
 			var parameters = new List<(string, object?)>();
-			foreach (object dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
+			foreach (var dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 			{
-				parameters.AddRange(DtoInfo.GetInfo(dto.GetType()).Properties.Select(x => ($"{name}_{x.Name}_{index}", x.GetValue(dto))));
+				parameters.AddRange(DtoInfo.GetInfo((dto ?? throw new ArgumentException("DTO is null.", nameof(dtos))).GetType()).Properties.Select(x => ($"{name}_{x.Name}_{index}", x.GetValue(dto))));
 				index++;
 			}
 			return new DbParameters(parameters);
@@ -127,15 +153,18 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Creates a list of parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
-		/// <param name="name">A function taking the name of a DTO property and the index of the DTO in the collection as arguments and returning the name of its database parameter.</param>
-		/// <param name="dtos">The collection of DTOs to retrieve parameters from.</param>
+		/// <remarks>The name of each parameter is determined by calling the specified function with the name of the corresponding DTO property
+		/// and the zero-based index of the DTO.</remarks>
 		public static DbParameters FromDtos(Func<string, int, string> name, IEnumerable dtos)
 		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
 			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (object dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 			{
-				parameters.AddRange(DtoInfo.GetInfo(dto.GetType()).Properties.Select(x => (name(x.Name, index), x.GetValue(dto))));
+				parameters.AddRange(DtoInfo.GetInfo((dto ?? throw new ArgumentException("DTO is null.", nameof(dtos))).GetType()).Properties.Select(x => (name(x.Name, index), x.GetValue(dto))));
 				index++;
 			}
 			return new DbParameters(parameters);
@@ -184,47 +213,54 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Adds parameters from a single name and a collection of values.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_index</c>, where <c>name</c> is as specified and <c>index</c>
+		/// is the zero-based index of the value.</remarks>
 		public DbParameters AddMany(string name, IEnumerable values) => Add(FromMany(name, values));
 
 		/// <summary>
 		/// Adds parameters from a collection of values.
 		/// </summary>
-		/// <param name="name">A function taking the index of the value in the collection as an argument and returning the name of its parameter.</param>
-		/// <param name="values">The collection of values to add.</param>
+		/// <remarks>The name of each parameter is determined by calling the specified function with the zero-based index of the value.</remarks>
 		public DbParameters AddMany(Func<int, string> name, IEnumerable values) => Add(FromMany(name, values));
 
 		/// <summary>
 		/// Adds parameters from the properties of a DTO.
 		/// </summary>
+		/// <remarks>The name of each parameter is the name of the corresponding DTO property.</remarks>
 		public DbParameters AddDto(object dto) => Add(FromDto(dto));
 
 		/// <summary>
 		/// Adds parameters from the properties of a DTO.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_prop</c>, where <c>name</c> is as specified and <c>prop</c> is the
+		/// name of the corresponding DTO property.</remarks>
 		public DbParameters AddDto(string name, object dto) => Add(FromDto(name, dto));
 
 		/// <summary>
 		/// Adds parameters from the properties of a DTO.
 		/// </summary>
-		/// <param name="name">A function taking the name of a DTO property as an argument and returning the name of its database parameter.</param>
-		/// <param name="dto">The DTO to retrieve parameters from.</param>
+		/// <remarks>The name of each parameter is determined by calling the function with the name of the corresponding DTO property.</remarks>
 		public DbParameters AddDto(Func<string, string> name, object dto) => Add(FromDto(name, dto));
 
 		/// <summary>
 		/// Adds parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>prop_index</c>, where <c>prop</c> is the name of the corresponding DTO property
+		/// and <c>index</c> is the zero-based index of the DTO.</remarks>
 		public DbParameters AddDtos(IEnumerable dtos) => Add(FromDtos(dtos));
 
 		/// <summary>
 		/// Adds parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_prop_index</c>, where <c>name</c> is as specified and <c>prop</c> is the name
+		/// of the corresponding DTO property and <c>index</c> is the zero-based index of the DTO.</remarks>
 		public DbParameters AddDtos(string name, IEnumerable dtos) => Add(FromDtos(name, dtos));
 
 		/// <summary>
 		/// Adds parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
-		/// <param name="name">A function taking the name of a DTO property and the index of the DTO in the collection as arguments and returning the name of its database parameter.</param>
-		/// <param name="dtos">The collection of DTOs to retrieve parameters from.</param>
+		/// <remarks>The name of each parameter is determined by calling the specified function with the name of the corresponding DTO property
+		/// and the zero-based index of the DTO.</remarks>
 		public DbParameters AddDtos(Func<string, int, string> name, IEnumerable dtos) => Add(FromDtos(name, dtos));
 
 		/// <summary>

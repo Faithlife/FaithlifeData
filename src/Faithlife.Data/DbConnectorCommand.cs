@@ -31,14 +31,14 @@ namespace Faithlife.Data
 		public DbConnector Connector { get; }
 
 		/// <summary>
-		/// The <c><see cref="CommandType"/></c> of the command.
+		/// The <see cref="CommandType"/> of the command.
 		/// </summary>
 		public CommandType CommandType { get; }
 
 		/// <summary>
-		/// The timeout length of the command.
+		/// The timeout of the command.
 		/// </summary>
-		/// <remarks>A value of <c>null</c> will use the database connection's default timeout.</remarks>
+		/// <remarks>If not specified, the default timeout for the connection is used.</remarks>
 		public TimeSpan? Timeout { get; }
 
 		/// <summary>
@@ -281,9 +281,10 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Sets the command's timeout.
+		/// Sets the timeout of the command.
 		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException"><c>timeSpan</c> is not positive or <c><see cref="System.Threading.Timeout.InfiniteTimeSpan"/></c>.</exception>
+		/// <remarks>Use <see cref="System.Threading.Timeout.InfiniteTimeSpan" /> (not <see cref="TimeSpan.Zero" />) for infinite timeout.</remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><c>timeSpan</c> is not positive or <see cref="System.Threading.Timeout.InfiniteTimeSpan" />.</exception>
 		public DbConnectorCommand WithTimeout(TimeSpan timeSpan)
 		{
 			if (timeSpan <= TimeSpan.Zero && timeSpan != System.Threading.Timeout.InfiniteTimeSpan)
