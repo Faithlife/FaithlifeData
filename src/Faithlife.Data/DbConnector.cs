@@ -115,7 +115,7 @@ namespace Faithlife.Data
 		/// Creates a new command.
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
-		public DbConnectorCommand Command(string text) => new DbConnectorCommand(this, text, default);
+		public DbConnectorCommand Command(string text) => Command(text, DbParameters.Empty);
 
 		/// <summary>
 		/// Creates a new command.
@@ -129,13 +129,13 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, text, DbParameters.Create(parameters));
+		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => Command(text, DbParameters.Create(parameters));
 
 		/// <summary>
 		/// Creates a new command to access a stored procedure.
 		/// </summary>
 		/// <param name="name">The name of the stored procedure.</param>
-		public DbConnectorCommand StoredProcedure(string name) => new DbConnectorCommand(this, name, default, CommandType.StoredProcedure);
+		public DbConnectorCommand StoredProcedure(string name) => StoredProcedure(name, DbParameters.Empty);
 
 		/// <summary>
 		/// Creates a new command.
@@ -149,7 +149,7 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="name">The name of the stored procedure.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand StoredProcedure(string name, params (string Name, object? Value)[] parameters) => new DbConnectorCommand(this, name, DbParameters.Create(parameters), CommandType.StoredProcedure);
+		public DbConnectorCommand StoredProcedure(string name, params (string Name, object? Value)[] parameters) => StoredProcedure(name, DbParameters.Create(parameters));
 
 		/// <summary>
 		/// Disposes the connector.
