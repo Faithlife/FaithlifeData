@@ -122,7 +122,8 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="text">The text of the command.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand Command(string text, DbParameters parameters) => new DbConnectorCommand(this, text, parameters);
+		public DbConnectorCommand Command(string text, DbParameters parameters) =>
+			new DbConnectorCommand(this, text, parameters, CommandType.Text, timeout: null, isCached: false, isPrepared: false);
 
 		/// <summary>
 		/// Creates a new command.
@@ -142,7 +143,8 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <param name="name">The name of the stored procedure.</param>
 		/// <param name="parameters">The command parameters.</param>
-		public DbConnectorCommand StoredProcedure(string name, DbParameters parameters) => new DbConnectorCommand(this, name, parameters, CommandType.StoredProcedure);
+		public DbConnectorCommand StoredProcedure(string name, DbParameters parameters) =>
+			new DbConnectorCommand(this, name, parameters, CommandType.StoredProcedure, timeout: null, isCached: false, isPrepared: false);
 
 		/// <summary>
 		/// Creates a new command.

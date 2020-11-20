@@ -296,12 +296,12 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, Timeout, isCached: true, IsPrepared);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, Timeout, isCached: true, isPrepared: IsPrepared);
 
 		/// <summary>
 		/// Prepares the command.
 		/// </summary>
-		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, Timeout, IsCached, isPrepared: true);
+		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, Timeout, isCached: IsCached, isPrepared: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -325,7 +325,7 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType = CommandType.Text, TimeSpan? timeout = null, bool isCached = false, bool isPrepared = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType, TimeSpan? timeout, bool isCached, bool isPrepared)
 		{
 			Connector = connector;
 			Text = text;
