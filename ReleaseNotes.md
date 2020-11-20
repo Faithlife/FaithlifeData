@@ -1,5 +1,9 @@
 # Release Notes
 
+## Unreleased
+
+* Support mapping data records to C# 9 positional records.
+
 ## 1.5.0
 
 * Support reading a blob as a `Stream`.
