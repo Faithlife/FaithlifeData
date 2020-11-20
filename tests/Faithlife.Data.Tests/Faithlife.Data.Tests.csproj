@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net472;net5.0</TargetFrameworks>
-    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Windows'))">win7-x64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX'))">macos-x64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</RuntimeIdentifier>
