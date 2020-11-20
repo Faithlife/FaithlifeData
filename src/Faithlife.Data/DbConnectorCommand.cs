@@ -283,7 +283,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Sets the command's timeout.
 		/// </summary>
-		/// <exception>Throws <c><see cref="ArgumentOutOfRangeException"/></c> if <c>timeSpan</c> is not positive or <c><see cref="Timeout.InfiniteTimeSpan"/></c>.</exception>
+		/// <exception>Throws <c><see cref="ArgumentOutOfRangeException"/></c> if <c>timeSpan</c> is not positive or <c><see cref="System.Threading.Timeout.InfiniteTimeSpan"/></c>.</exception>
 		public DbConnectorCommand WithTimeout(TimeSpan timeSpan)
 		{
 			if (timeSpan <= TimeSpan.Zero && timeSpan != System.Threading.Timeout.InfiniteTimeSpan)
