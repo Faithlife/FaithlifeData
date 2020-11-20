@@ -328,19 +328,16 @@ namespace Faithlife.Data.Tests
 			// get non-nulls
 			reader.Read().Should().BeTrue();
 
-			// compare by members because the TheBlob is compared by reference in .Equals()
-			Func<EquivalencyAssertionOptions<ItemRecord>, EquivalencyAssertionOptions<ItemRecord>> configureEquivalency = options => options.ComparingByMembers<ItemRecord>();
-
-			// record
-			reader.Get<ItemRecord>(0, 7).Should().BeEquivalentTo(s_record, configureEquivalency);
-			reader.Get<ItemRecord>(0, 1).Should().BeEquivalentTo(new ItemRecord(s_record.TheString, default, default, default, default, default, default), configureEquivalency);
+			// record (compare by members because the TheBlob is compared by reference in .Equals())
+			reader.Get<ItemRecord>(0, 7).Should().BeEquivalentTo(s_record, x => x.ComparingByMembers<ItemRecord>());
+			reader.Get<ItemRecord>(0, 1).Should().BeEquivalentTo(new ItemRecord(s_record.TheString, default, default, default, default, default, default), x => x.ComparingByMembers<ItemRecord>());
 			reader.Get<ItemRecord>(0, 0).Should().BeNull();
 			reader.Get<ItemRecord>(7, 0).Should().BeNull();
 
 			// tuple with record
 			var tuple = reader.Get<(string, ItemRecord, bool)>(0, 4);
 			tuple.Item1.Should().Be(s_record.TheString);
-			tuple.Item2.Should().BeEquivalentTo(new ItemRecord(default, s_record.TheInt32, s_record.TheInt64, default, default, default, default), configureEquivalency);
+			tuple.Item2.Should().BeEquivalentTo(new ItemRecord(default, s_record.TheInt32, s_record.TheInt64, default, default, default, default), x => x.ComparingByMembers<ItemRecord>());
 			tuple.Item3.Should().BeTrue();
 
 			// tuple with two records (needs NULL terminator)
