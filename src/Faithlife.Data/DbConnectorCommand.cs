@@ -444,7 +444,10 @@ namespace Faithlife.Data
 			{
 				var newCommand = connection.CreateCommand();
 				newCommand.CommandText = commandText;
-				newCommand.CommandType = commandType;
+
+				if (commandType != CommandType.Text)
+					newCommand.CommandType = commandType;
+
 				if (timeout != null)
 				{
 					if (timeout == System.Threading.Timeout.InfiniteTimeSpan)
@@ -452,8 +455,10 @@ namespace Faithlife.Data
 					else
 						newCommand.CommandTimeout = (int) Math.Ceiling(((TimeSpan) timeout).TotalSeconds);
 				}
+
 				if (transaction != null)
 					newCommand.Transaction = transaction;
+
 				return newCommand;
 			}
 		}
