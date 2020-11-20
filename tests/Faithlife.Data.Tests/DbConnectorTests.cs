@@ -129,6 +129,23 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void PrepareTests()
+		{
+			using var connector = CreateConnector();
+			var createCmd = connector.Command("create table Items (ItemId integer primary key, Name text not null);");
+			createCmd.IsPrepared.Should().Be(false);
+			createCmd.Execute().Should().Be(0);
+
+			string insertStmt = "insert into Items (Name) values (@item);";
+			var preparedCmd = connector.Command(insertStmt, ("item", "one")).Prepare();
+			preparedCmd.IsPrepared.Should().Be(true);
+			preparedCmd.Execute().Should().Be(1);
+
+			connector.Command(insertStmt, ("item", "two")).Execute().Should().Be(1);
+			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one", "two");
+		}
+
+		[Test]
 		public void TransactionTests([Values] bool? commit)
 		{
 			using var connector = CreateConnector();

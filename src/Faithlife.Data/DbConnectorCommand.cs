@@ -41,6 +41,11 @@ namespace Faithlife.Data
 		public bool IsCached { get; }
 
 		/// <summary>
+		/// True after <see cref="Prepare"/> is called.
+		/// </summary>
+		public bool IsPrepared { get; }
+
+		/// <summary>
 		/// Executes the command, returning the number of rows affected.
 		/// </summary>
 		/// <seealso cref="ExecuteAsync" />
@@ -272,7 +277,12 @@ namespace Faithlife.Data
 		/// <summary>
 		/// Caches the command.
 		/// </summary>
-		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, isCached: true);
+		public DbConnectorCommand Cache() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, isCached: true, IsPrepared);
+
+		/// <summary>
+		/// Prepares the command.
+		/// </summary>
+		public DbConnectorCommand Prepare() => new DbConnectorCommand(Connector, Text, Parameters, CommandType, IsCached, isPrepared: true);
 
 		/// <summary>
 		/// Creates an <see cref="IDbCommand" /> from the text and parameters.
@@ -296,13 +306,14 @@ namespace Faithlife.Data
 			return DoCreate(connection);
 		}
 
-		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType = CommandType.Text, bool isCached = false)
+		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType = CommandType.Text, bool isCached = false, bool isPrepared = false)
 		{
 			Connector = connector;
 			Text = text;
 			Parameters = parameters;
 			CommandType = commandType;
 			IsCached = isCached;
+			IsPrepared = isPrepared;
 		}
 
 		private void Validate()
@@ -369,6 +380,7 @@ namespace Faithlife.Data
 			IDbCommand command;
 			var transaction = Connector.Transaction;
 
+			bool wasCached = false;
 			var cache = IsCached ? Connector.CommandCache : null;
 			if (cache != null)
 			{
@@ -376,6 +388,7 @@ namespace Faithlife.Data
 				{
 					command.Parameters.Clear();
 					command.Transaction = transaction;
+					wasCached = true;
 				}
 				else
 				{
@@ -400,6 +413,9 @@ namespace Faithlife.Data
 
 				command.Parameters.Add(dbParameter);
 			}
+
+			if (IsPrepared && !wasCached)
+				command.Prepare();
 
 			return command;
 
