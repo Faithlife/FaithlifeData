@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
 using FluentAssertions;
@@ -370,8 +371,8 @@ namespace Faithlife.Data.Tests
 			var halfSecondCommand = command.WithTimeout(TimeSpan.FromMilliseconds(500));
 			halfSecondCommand.Timeout.Should().Be(TimeSpan.FromMilliseconds(500));
 			halfSecondCommand.Create().CommandTimeout.Should().Be(1);
-			var noTimeoutCommand = command.WithTimeout(System.Threading.Timeout.InfiniteTimeSpan);
-			noTimeoutCommand.Timeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
+			var noTimeoutCommand = command.WithTimeout(Timeout.InfiniteTimeSpan);
+			noTimeoutCommand.Timeout.Should().Be(Timeout.InfiniteTimeSpan);
 			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
 		}
 

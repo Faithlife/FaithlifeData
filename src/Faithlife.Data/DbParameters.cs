@@ -53,9 +53,9 @@ namespace Faithlife.Data
 		/// </summary>
 		public static DbParameters FromMany(string name, IEnumerable values)
 		{
-			int index = 0;
+			var index = 0;
 			var parameters = new List<(string, object?)>();
-			foreach (object? value in values ?? throw new ArgumentNullException(nameof(values)))
+			foreach (var value in values ?? throw new ArgumentNullException(nameof(values)))
 				parameters.Add(($"{name}_{index++}", value));
 			return new DbParameters(parameters);
 		}
@@ -67,9 +67,9 @@ namespace Faithlife.Data
 		/// <param name="values">The collection of values to add.</param>
 		public static DbParameters FromMany(Func<int, string> name, IEnumerable values)
 		{
-			int index = 0;
+			var index = 0;
 			var parameters = new List<(string, object?)>();
-			foreach (object? value in values ?? throw new ArgumentNullException(nameof(values)))
+			foreach (var value in values ?? throw new ArgumentNullException(nameof(values)))
 				parameters.Add((name(index++), value));
 			return new DbParameters(parameters);
 		}
@@ -99,7 +99,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public static DbParameters FromDtos(IEnumerable dtos)
 		{
-			int index = 0;
+			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (var dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 			{
@@ -114,7 +114,7 @@ namespace Faithlife.Data
 		/// </summary>
 		public static DbParameters FromDtos(string name, IEnumerable dtos)
 		{
-			int index = 0;
+			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (object dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 			{
@@ -131,7 +131,7 @@ namespace Faithlife.Data
 		/// <param name="dtos">The collection of DTOs to retrieve parameters from.</param>
 		public static DbParameters FromDtos(Func<string, int, string> name, IEnumerable dtos)
 		{
-			int index = 0;
+			var index = 0;
 			var parameters = new List<(string, object?)>();
 			foreach (object dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 			{

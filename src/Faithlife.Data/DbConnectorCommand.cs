@@ -400,7 +400,7 @@ namespace Faithlife.Data
 			IDbCommand command;
 			var transaction = Connector.Transaction;
 
-			bool wasCached = false;
+			var wasCached = false;
 			var cache = IsCached ? Connector.CommandCache : null;
 			if (cache != null)
 			{
