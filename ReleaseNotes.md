@@ -1,8 +1,14 @@
 # Release Notes
 
-## Unreleased
+## 1.6.0
 
+* Create parameters from collections of values or DTOs.
+* Customize parameter names when created from DTOs or collections.
+* Support stored procedures.
+* Support command timeout.
+* Support prepared commands.
 * Support mapping data records to C# 9 positional records.
+* Thanks to [tywmick](https://github.com/tywmick) for contributing!
 
 ## 1.5.0
 
