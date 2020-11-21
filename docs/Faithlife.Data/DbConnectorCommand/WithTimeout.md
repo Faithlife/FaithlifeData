@@ -1,6 +1,6 @@
 # DbConnectorCommand.WithTimeout method
 
-Sets the command's timeout.
+Sets the timeout of the command.
 
 ```csharp
 public DbConnectorCommand WithTimeout(TimeSpan timeSpan)
@@ -10,7 +10,11 @@ public DbConnectorCommand WithTimeout(TimeSpan timeSpan)
 
 | exception | condition |
 | --- | --- |
-| ArgumentOutOfRangeException | `timeSpan` is not positive or . |
+| ArgumentOutOfRangeException | `timeSpan` is not positive or InfiniteTimeSpan. |
+
+## Remarks
+
+Use InfiniteTimeSpan (not Zero) for infinite timeout.
 
 ## See Also
 

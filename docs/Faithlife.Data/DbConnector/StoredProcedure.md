@@ -3,12 +3,12 @@
 Creates a new command to access a stored procedure.
 
 ```csharp
-public DbConnectorCommand StoredProcedure(string text)
+public DbConnectorCommand StoredProcedure(string name)
 ```
 
 | parameter | description |
 | --- | --- |
-| text | The name of the stored procedure. |
+| name | The name of the stored procedure. |
 
 ## See Also
 
@@ -23,12 +23,12 @@ public DbConnectorCommand StoredProcedure(string text)
 Creates a new command.
 
 ```csharp
-public DbConnectorCommand StoredProcedure(string text, DbParameters parameters)
+public DbConnectorCommand StoredProcedure(string name, DbParameters parameters)
 ```
 
 | parameter | description |
 | --- | --- |
-| text | The name of the stored procedure. |
+| name | The name of the stored procedure. |
 | parameters | The command parameters. |
 
 ## See Also
@@ -45,13 +45,13 @@ public DbConnectorCommand StoredProcedure(string text, DbParameters parameters)
 Creates a new command.
 
 ```csharp
-public DbConnectorCommand StoredProcedure(string text, 
+public DbConnectorCommand StoredProcedure(string name, 
     params ValueTuple<string, object>[] parameters)
 ```
 
 | parameter | description |
 | --- | --- |
-| text | The name of the stored procedure. |
+| name | The name of the stored procedure. |
 | parameters | The command parameters. |
 
 ## See Also

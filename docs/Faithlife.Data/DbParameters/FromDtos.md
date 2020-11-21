@@ -6,6 +6,10 @@ Creates a list of parameters from the collective properties of a sequence of DTO
 public static DbParameters FromDtos(IEnumerable dtos)
 ```
 
+## Remarks
+
+The name of each parameter is `prop_index`, where `prop` is the name of the corresponding DTO property and `index` is the zero-based index of the DTO.
+
 ## See Also
 
 * struct [DbParameters](../DbParameters.md)
@@ -21,10 +25,9 @@ Creates a list of parameters from the collective properties of a sequence of DTO
 public static DbParameters FromDtos(Func<string, int, string> name, IEnumerable dtos)
 ```
 
-| parameter | description |
-| --- | --- |
-| name | A function taking the name of a DTO property and the index of the DTO in the collection as arguments and returning the name of its database parameter. |
-| dtos | The collection of DTOs to retrieve parameters from. |
+## Remarks
+
+The name of each parameter is determined by calling the specified function with the name of the corresponding DTO property and the zero-based index of the DTO.
 
 ## See Also
 
@@ -40,6 +43,10 @@ Creates a list of parameters from the collective properties of a sequence of DTO
 ```csharp
 public static DbParameters FromDtos(string name, IEnumerable dtos)
 ```
+
+## Remarks
+
+The name of each parameter is `name_prop_index`, where `name` is as specified and `prop` is the name of the corresponding DTO property and `index` is the zero-based index of the DTO.
 
 ## See Also
 

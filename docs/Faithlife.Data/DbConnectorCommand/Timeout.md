@@ -1,6 +1,6 @@
 # DbConnectorCommand.Timeout property
 
-The timeout length of the command.
+The timeout of the command.
 
 ```csharp
 public TimeSpan? Timeout { get; }
@@ -8,7 +8,7 @@ public TimeSpan? Timeout { get; }
 
 ## Remarks
 
-A value of `null` will use the database connection's default timeout.
+If not specified, the default timeout for the connection is used.
 
 ## See Also
 

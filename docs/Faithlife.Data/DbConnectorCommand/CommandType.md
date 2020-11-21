@@ -1,6 +1,6 @@
 # DbConnectorCommand.CommandType property
 
-The  of the command.
+The `CommandType` of the command.
 
 ```csharp
 public CommandType CommandType { get; }

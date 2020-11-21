@@ -6,6 +6,10 @@ Adds parameters from the properties of a DTO.
 public DbParameters AddDto(object dto)
 ```
 
+## Remarks
+
+The name of each parameter is the name of the corresponding DTO property.
+
 ## See Also
 
 * struct [DbParameters](../DbParameters.md)
@@ -21,10 +25,9 @@ Adds parameters from the properties of a DTO.
 public DbParameters AddDto(Func<string, string> name, object dto)
 ```
 
-| parameter | description |
-| --- | --- |
-| name | A function taking the name of a DTO property as an argument and returning the name of its database parameter. |
-| dto | The DTO to retrieve parameters from. |
+## Remarks
+
+The name of each parameter is determined by calling the function with the name of the corresponding DTO property.
 
 ## See Also
 
@@ -40,6 +43,10 @@ Adds parameters from the properties of a DTO.
 ```csharp
 public DbParameters AddDto(string name, object dto)
 ```
+
+## Remarks
+
+The name of each parameter is `name_prop`, where `name` is as specified and `prop` is the name of the corresponding DTO property.
 
 ## See Also
 

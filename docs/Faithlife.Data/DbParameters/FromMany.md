@@ -6,10 +6,9 @@ Creates a list of parameters from a collection of values.
 public static DbParameters FromMany(Func<int, string> name, IEnumerable values)
 ```
 
-| parameter | description |
-| --- | --- |
-| name | A function taking the index of the value in the collection as an argument and returning the name of its parameter. |
-| values | The collection of values to add. |
+## Remarks
+
+The name of each parameter is determined by calling the specified function with the zero-based index of the value.
 
 ## See Also
 
@@ -25,6 +24,10 @@ Creates a list of parameters from a single name and a collection of values.
 ```csharp
 public static DbParameters FromMany(string name, IEnumerable values)
 ```
+
+## Remarks
+
+The name of each parameter is `name_index`, where `name` is as specified and `index` is the zero-based index of the value.
 
 ## See Also
 
