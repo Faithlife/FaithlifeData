@@ -162,26 +162,6 @@ namespace Faithlife.Data
 		public DbConnectorCommand Command(Sql sql, params (string Name, object? Value)[] parameters) => Command(sql, DbParameters.Create(parameters));
 
 		/// <summary>
-		/// Creates a new command.
-		/// </summary>
-		/// <param name="sql">The parameterized SQL.</param>
-		public DbConnectorCommand CommandFormat(FormattableString sql) => Command(Sql.Format(sql));
-
-		/// <summary>
-		/// Creates a new command.
-		/// </summary>
-		/// <param name="sql">The parameterized SQL.</param>
-		/// <param name="parameters">Additional command parameters.</param>
-		public DbConnectorCommand CommandFormat(FormattableString sql, DbParameters parameters) => Command(Sql.Format(sql), parameters);
-
-		/// <summary>
-		/// Creates a new command.
-		/// </summary>
-		/// <param name="sql">The parameterized SQL.</param>
-		/// <param name="parameters">Additional command parameters.</param>
-		public DbConnectorCommand CommandFormat(FormattableString sql, params (string Name, object? Value)[] parameters) => Command(Sql.Format(sql), parameters);
-
-		/// <summary>
 		/// Creates a new command to access a stored procedure.
 		/// </summary>
 		/// <param name="name">The name of the stored procedure.</param>
