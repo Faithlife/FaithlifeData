@@ -70,7 +70,7 @@ namespace Faithlife.Data.SqlText
 							throw new FormatException($"Format '{format}' is not supported.");
 						if (arg is Sql sql)
 							return sql.Render(m_context);
-						throw new FormatException("Argument requires a format, e.g. {value:raw}.");
+						throw new FormatException("Argument requires a format, e.g. {value:param}.");
 				}
 			}
 
