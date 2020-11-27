@@ -27,6 +27,14 @@ namespace Faithlife.Data.Tests.SqlText
 		}
 
 		[Test]
+		public void ParamSql()
+		{
+			var (text, parameters) = Render(Sql.Param("xyzzy"));
+			text.Should().Be("@fdp0");
+			parameters.Should().Equal(("fdp0", "xyzzy"));
+		}
+
+		[Test]
 		public void FormatEmpty()
 		{
 			var (text, parameters) = Render(Sql.Format($""));
@@ -43,7 +51,7 @@ namespace Faithlife.Data.Tests.SqlText
 		}
 
 		[Test]
-		public void FormatRawArg()
+		public void FormatRaw()
 		{
 			var tableName = "widgets";
 			var (text, parameters) = Render(Sql.Format($"select * from {tableName:raw}"));
@@ -52,30 +60,37 @@ namespace Faithlife.Data.Tests.SqlText
 		}
 
 		[Test]
-		public void FormatRawArgNoFormat()
-		{
-			var tableName = "widgets";
-			Invoking(() => Render(Sql.Format($"select * from {tableName}"))).Should().Throw<FormatException>();
-		}
-
-		[Test]
-		public void FormatSqlRawArgNotString()
+		public void FormatSqlRawNotString()
 		{
 			var tableName = Sql.Raw("widgets");
 			Invoking(() => Render(Sql.Format($"select * from {tableName:raw}"))).Should().Throw<FormatException>();
 		}
 
 		[Test]
-		public void FormatSqlArg()
+		public void FormatParams()
 		{
-			var tableName = Sql.Raw("widgets");
-			var (text, parameters) = Render(Sql.Format($"select * from {tableName}"));
-			text.Should().Be("select * from widgets");
-			parameters.Should().BeEmpty();
+			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42:param}, {-42:param})"));
+			text.Should().Be("select * from widgets where id in (@fdp0, @fdp1)");
+			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
 		}
 
 		[Test]
-		public void FormatSqlBadFormat()
+		public void FormatSql()
+		{
+			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} where id = {Sql.Param(42)}"));
+			text.Should().Be("select * from widgets where id = @fdp0");
+			parameters.Should().Equal(("fdp0", 42));
+		}
+
+		[Test]
+		public void FormatMissingFormat()
+		{
+			var tableName = "widgets";
+			Invoking(() => Render(Sql.Format($"select * from {tableName}"))).Should().Throw<FormatException>();
+		}
+
+		[Test]
+		public void FormatBadFormat()
 		{
 			var tableName = "widgets";
 			Invoking(() => Render(Sql.Format($"select * from {tableName:xyzzy}"))).Should().Throw<FormatException>();

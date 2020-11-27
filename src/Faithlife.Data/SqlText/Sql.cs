@@ -15,6 +15,11 @@ namespace Faithlife.Data.SqlText
 		public static Sql Raw(string text) => new RawSql(text);
 
 		/// <summary>
+		/// Creates SQL for an arbitrarily named parameter with the specified value.
+		/// </summary>
+		public static Sql Param(object? value) => new ParamSql(value);
+
+		/// <summary>
 		/// Creates SQL from a formatted string.
 		/// </summary>
 		public static Sql Format(FormattableString formattableString) => new FormattableSql(formattableString);
@@ -35,6 +40,13 @@ namespace Faithlife.Data.SqlText
 			private readonly FormattableString m_formattableString;
 		}
 
+		private sealed class ParamSql : Sql
+		{
+			public ParamSql(object? value) => m_value = value;
+			internal override string Render(SqlContext context) => context.RenderParam(m_value);
+			private readonly object? m_value;
+		}
+
 		private sealed class SqlFormatProvider : IFormatProvider, ICustomFormatter
 		{
 			public SqlFormatProvider(SqlContext context) => m_context = context;
@@ -45,6 +57,9 @@ namespace Faithlife.Data.SqlText
 			{
 				switch (format)
 				{
+					case "param":
+						return m_context.RenderParam(arg);
+
 					case "raw":
 						if (arg is string stringValue)
 							return stringValue;

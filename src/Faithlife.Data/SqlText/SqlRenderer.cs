@@ -13,6 +13,11 @@ namespace Faithlife.Data.SqlText
 		public static readonly SqlRenderer Default = new DefaultSqlRenderer();
 
 		/// <summary>
+		/// The prefix for named parameters.
+		/// </summary>
+		public char ParameterPrefix { get; } = '@';
+
+		/// <summary>
 		/// Renders SQL as text and parameters.
 		/// </summary>
 		public (string Text, DbParameters Parameters) Render(Sql sql)
