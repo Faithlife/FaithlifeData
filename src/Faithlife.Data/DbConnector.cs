@@ -139,7 +139,7 @@ namespace Faithlife.Data
 		/// <param name="sql">The parameterized SQL.</param>
 		public DbConnectorCommand Command(Sql sql)
 		{
-			var (sqlText, sqlParameters) = SqlRenderer.Default.Render(sql);
+			var (sqlText, sqlParameters) = SqlSyntax.Default.Render(sql);
 			return Command(sqlText, sqlParameters);
 		}
 
@@ -150,7 +150,7 @@ namespace Faithlife.Data
 		/// <param name="parameters">Additional command parameters.</param>
 		public DbConnectorCommand Command(Sql sql, DbParameters parameters)
 		{
-			var (text, sqlParameters) = SqlRenderer.Default.Render(sql);
+			var (text, sqlParameters) = SqlSyntax.Default.Render(sql);
 			return Command(text, sqlParameters.Add(parameters));
 		}
 

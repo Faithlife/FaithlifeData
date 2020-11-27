@@ -3,14 +3,14 @@ using System;
 namespace Faithlife.Data.SqlText
 {
 	/// <summary>
-	/// Controls how SQL strings are rendered.
+	/// The syntax used by a particular SQL dialect.
 	/// </summary>
-	public abstract class SqlRenderer
+	public abstract class SqlSyntax
 	{
 		/// <summary>
-		/// The default renderer.
+		/// The default syntax.
 		/// </summary>
-		public static readonly SqlRenderer Default = new DefaultSqlRenderer();
+		public static readonly SqlSyntax Default = new DefaultSqlSyntax();
 
 		/// <summary>
 		/// The prefix for named parameters.
@@ -27,7 +27,7 @@ namespace Faithlife.Data.SqlText
 			return (text, context.Parameters);
 		}
 
-		private sealed class DefaultSqlRenderer : SqlRenderer
+		private sealed class DefaultSqlSyntax : SqlSyntax
 		{
 		}
 	}

@@ -9,7 +9,7 @@ namespace Faithlife.Data.Tests.SqlText
 {
 	[TestFixture]
 	[SuppressMessage("ReSharper", "InterpolatedStringExpressionIsNotIFormattable", Justification = "Custom formatting.")]
-	public class SqlRendererTests
+	public class SqlSyntaxTests
 	{
 		[Test]
 		public void NullSqlThrows()
@@ -96,6 +96,6 @@ namespace Faithlife.Data.Tests.SqlText
 			Invoking(() => Render(Sql.Format($"select * from {tableName:xyzzy}"))).Should().Throw<FormatException>();
 		}
 
-		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlRenderer.Default.Render(sql);
+		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
 	}
 }
