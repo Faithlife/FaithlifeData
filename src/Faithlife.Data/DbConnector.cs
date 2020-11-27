@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Faithlife.Data.SqlText;
+using Faithlife.Data.SqlFormatting;
 
 namespace Faithlife.Data
 {

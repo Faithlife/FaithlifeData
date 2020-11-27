@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
-using Faithlife.Data.SqlText;
+using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using NUnit.Framework;
 using static FluentAssertions.FluentActions;

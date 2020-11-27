@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Faithlife.Data.SqlText
+namespace Faithlife.Data.SqlFormatting
 {
 	/// <summary>
 	/// Encapsulates parameterized SQL.

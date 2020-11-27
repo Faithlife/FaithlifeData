@@ -1,6 +1,6 @@
 using System;
 
-namespace Faithlife.Data.SqlText
+namespace Faithlife.Data.SqlFormatting
 {
 	/// <summary>
 	/// The syntax used by a particular SQL dialect.

@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Faithlife.Data.SqlText;
+using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using NUnit.Framework;
 using static FluentAssertions.FluentActions;
 
-namespace Faithlife.Data.Tests.SqlText
+namespace Faithlife.Data.Tests.SqlFormatting
 {
 	[TestFixture]
 	[SuppressMessage("ReSharper", "InterpolatedStringExpressionIsNotIFormattable", Justification = "Custom formatting.")]

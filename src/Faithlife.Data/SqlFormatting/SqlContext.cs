@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using static System.FormattableString;
 
-namespace Faithlife.Data.SqlText
+namespace Faithlife.Data.SqlFormatting
 {
 	internal sealed class SqlContext
 	{
