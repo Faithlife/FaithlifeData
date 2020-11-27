@@ -74,12 +74,23 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
 		}
 
-		[Test]
-		public void FormatSql()
+		[TestCase(null)]
+		[TestCase(42)]
+		public void FormatSql(int? id)
 		{
-			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} where id = {Sql.Param(42)}"));
-			text.Should().Be("select * from widgets where id = @fdp0");
-			parameters.Should().Equal(("fdp0", 42));
+			var whereSql = id is null ? Sql.Raw("") : Sql.Format($"where id = {Sql.Param(id)}");
+			var limit = 10;
+			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} {whereSql} limit {limit:param}"));
+			if (id is null)
+			{
+				text.Should().Be("select * from widgets  limit @fdp0");
+				parameters.Should().Equal(("fdp0", limit));
+			}
+			else
+			{
+				text.Should().Be("select * from widgets where id = @fdp0 limit @fdp1");
+				parameters.Should().Equal(("fdp0", id), ("fdp1", limit));
+			}
 		}
 
 		[Test]
