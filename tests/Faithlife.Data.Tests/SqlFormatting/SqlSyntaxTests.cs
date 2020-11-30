@@ -67,9 +67,17 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		}
 
 		[Test]
-		public void FormatParams()
+		public void FormatExplicitParam()
 		{
 			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42:param}, {-42:param})"));
+			text.Should().Be("select * from widgets where id in (@fdp0, @fdp1)");
+			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
+		}
+
+		[Test]
+		public void FormatImplicitParam()
+		{
+			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42}, {-42})"));
 			text.Should().Be("select * from widgets where id in (@fdp0, @fdp1)");
 			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
 		}
@@ -80,7 +88,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		{
 			var whereSql = id is null ? Sql.Raw("") : Sql.Format($"where id = {Sql.Param(id)}");
 			var limit = 10;
-			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} {whereSql} limit {limit:param}"));
+			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} {whereSql} limit {limit}"));
 			if (id is null)
 			{
 				text.Should().Be("select * from widgets  limit @fdp0");
@@ -91,13 +99,6 @@ namespace Faithlife.Data.Tests.SqlFormatting
 				text.Should().Be("select * from widgets where id = @fdp0 limit @fdp1");
 				parameters.Should().Equal(("fdp0", id), ("fdp1", limit));
 			}
-		}
-
-		[Test]
-		public void FormatMissingFormat()
-		{
-			var tableName = "widgets";
-			Invoking(() => Render(Sql.Format($"select * from {tableName}"))).Should().Throw<FormatException>();
 		}
 
 		[Test]

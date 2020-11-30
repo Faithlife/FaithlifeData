@@ -68,9 +68,7 @@ namespace Faithlife.Data.SqlFormatting
 					default:
 						if (format is object)
 							throw new FormatException($"Format '{format}' is not supported.");
-						if (arg is Sql sql)
-							return sql.Render(m_context);
-						throw new FormatException("Argument requires a format, e.g. {value:param}.");
+						return arg is Sql sql ? sql.Render(m_context) : m_context.RenderParam(arg);
 				}
 			}
 
