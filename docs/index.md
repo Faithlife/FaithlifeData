@@ -326,7 +326,7 @@ connector.Command(
 
 ### Formatting SQL
 
-Typing parameter names in the SQL command text and parameters objects can sometimes be redundant. [`FormattableString`](https://docs.microsoft.com/en-us/dotnet/api/system.formattablestring) can be used
+Typing parameter names in the SQL command text and parameters objects can sometimes be redundant. [String interpolation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated) can be used
 to put the parameters in the SQL safely by using [`Sql.Format()`](Faithlife.Data.SqlFormatting/Sql/Format.md) to format a `FormattableString` into command text and parameters.
 
 ```csharp
@@ -347,7 +347,7 @@ connector.Command(
     ("param0", name), ("param1", height)).Execute();
 ```
 
-Note that using `FormattableString` without `Sql.Format()` is still a SQL injection vulnerability:
+Note that using an interpolated string without `Sql.Format()` is still a SQL injection vulnerability:
 
 ```csharp
 // Don't do this!
