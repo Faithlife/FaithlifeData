@@ -1,4 +1,25 @@
-# DbConnector.Command method (1 of 3)
+# DbConnector.Command method (1 of 6)
+
+Creates a new command.
+
+```csharp
+public DbConnectorCommand Command(Sql sql)
+```
+
+| parameter | description |
+| --- | --- |
+| sql | The parameterized SQL. |
+
+## See Also
+
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
+* class [Sql](../../Faithlife.Data.SqlFormatting/Sql.md)
+* class [DbConnector](../DbConnector.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbConnector.Command method (2 of 6)
 
 Creates a new command.
 
@@ -18,7 +39,52 @@ public DbConnectorCommand Command(string text)
 
 ---
 
-# DbConnector.Command method (2 of 3)
+# DbConnector.Command method (3 of 6)
+
+Creates a new command.
+
+```csharp
+public DbConnectorCommand Command(Sql sql, DbParameters parameters)
+```
+
+| parameter | description |
+| --- | --- |
+| sql | The parameterized SQL. |
+| parameters | Additional command parameters. |
+
+## See Also
+
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
+* class [Sql](../../Faithlife.Data.SqlFormatting/Sql.md)
+* struct [DbParameters](../DbParameters.md)
+* class [DbConnector](../DbConnector.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbConnector.Command method (4 of 6)
+
+Creates a new command.
+
+```csharp
+public DbConnectorCommand Command(Sql sql, params ValueTuple<string, object>[] parameters)
+```
+
+| parameter | description |
+| --- | --- |
+| sql | The parameterized SQL. |
+| parameters | Additional command parameters. |
+
+## See Also
+
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
+* class [Sql](../../Faithlife.Data.SqlFormatting/Sql.md)
+* class [DbConnector](../DbConnector.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbConnector.Command method (5 of 6)
 
 Creates a new command.
 
@@ -40,7 +106,7 @@ public DbConnectorCommand Command(string text, DbParameters parameters)
 
 ---
 
-# DbConnector.Command method (3 of 3)
+# DbConnector.Command method (6 of 6)
 
 Creates a new command.
 

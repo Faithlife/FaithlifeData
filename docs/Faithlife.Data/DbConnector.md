@@ -16,7 +16,7 @@ public abstract class DbConnector : IAsyncDisposable, IDisposable
 | abstract [BeginTransaction](DbConnector/BeginTransaction.md)() | Begins a transaction. |
 | abstract [BeginTransaction](DbConnector/BeginTransaction.md)(…) | Begins a transaction. |
 | abstract [BeginTransactionAsync](DbConnector/BeginTransactionAsync.md)(…) | Begins a transaction. (2 methods) |
-| [Command](DbConnector/Command.md)(…) | Creates a new command. (3 methods) |
+| [Command](DbConnector/Command.md)(…) | Creates a new command. (6 methods) |
 | abstract [CommitTransaction](DbConnector/CommitTransaction.md)() | Commits the current transaction. |
 | abstract [CommitTransactionAsync](DbConnector/CommitTransactionAsync.md)(…) | Commits the current transaction. |
 | abstract [Dispose](DbConnector/Dispose.md)() | Disposes the connector. |
