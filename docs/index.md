@@ -324,6 +324,59 @@ connector.Command(
 
 **Important note:** If the collection is empty, an `InvalidOperationException` will be thrown, since omitting the parameter entirely may not be valid (or intended) SQL.
 
+### Formatting SQL
+
+Typing parameter names in the SQL command text and parameters objects can sometimes be redundant. [String interpolation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated) can be used
+to put the parameters in the SQL safely by using [`Sql.Format()`](Faithlife.Data.SqlFormatting/Sql/Format.md) to format a `FormattableString` into command text and parameters.
+
+```csharp
+var name = "First";
+var height = 6.875;
+connector.Command(Sql.Format(
+    $"insert into widgets (name, height) values ({name}, {height});"
+    )).Execute();
+```
+
+This is equivalent to:
+
+```csharp
+var name = "First";
+var height = 6.875;
+connector.Command(
+    "insert into widgets (name, height) values (@param0, @param1);",
+    ("param0", name), ("param1", height)).Execute();
+```
+
+Note that using an interpolated string without `Sql.Format()` is still a SQL injection vulnerability:
+
+```csharp
+// Don't do this!
+connector.Command(
+    $"insert into widgets (name, height) values ({name}, {height});"
+    ).Execute();
+```
+
+
+SQL text and paramters can be composed using the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class. Non-parameterized SQL can be expressed using [`Sql.Raw()`](Faithlife.Data.SqlFormatting/Sql/Raw.md) or the `raw` format specifier.
+
+```csharp
+IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector, double? minHeight = default)
+{
+    var whereSql = minHeight is null ? Sql.Raw("") : Sql.Format($"where height >= {minHeight}");
+    return connector.Command(Sql.Format($"select * from widgets {whereSql};"))
+        .Query<WidgetDto>();
+}
+```
+
+```csharp
+IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector, string[]? fields = default)
+{
+    var fieldsFragment = fields is null ? "*" : string.Join(", ", fields);
+    return connector.Command(Sql.Format($"select {fieldsFragment:raw} from widgets;"))
+        .Query<WidgetDto>();
+}
+```
+
 ## Single-record queries
 
 If your query is for a single record, call [`QuerySingle()`](Faithlife.Data/DbConnectorCommand/QuerySingle.md), which throws an exception if the query returns multiple records, or [`QueryFirst()`](Faithlife.Data/DbConnectorCommand/QueryFirst.md), which does not check for additional records and therefore may be more efficient.
