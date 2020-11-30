@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.7.0
+
+* `Sql.Format` creates parameters via string interpolation.
+* Support mapping data records to DTOs with read-only properties. (Uses [Faithlife.Reflection](https://github.com/Faithlife/FaithlifeReflection)).
+
 ## 1.6.0
 
 * Create parameters from collections of values or DTOs.
