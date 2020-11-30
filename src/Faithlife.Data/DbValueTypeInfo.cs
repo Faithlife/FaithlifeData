@@ -30,22 +30,7 @@ namespace Faithlife.Data
 			if (type.GetTypeInfo().IsEnum)
 				return DbValueTypeStrategy.Enum;
 
-			if (IsPositionalRecord(type))
-				return DbValueTypeStrategy.PositionalRecord;
-
 			return DbValueTypeStrategy.DtoProperties;
-		}
-
-		internal static bool IsPositionalRecord(Type type)
-		{
-			var constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
-			if (constructors.Length != 1)
-				return false;
-			var constructorParameters = constructors[0].GetParameters();
-			var properties = DtoInfo.GetInfo(type).Properties;
-			if (constructorParameters.Length != properties.Count)
-				return false;
-			return constructorParameters.All(parameter => properties.Any(property => property.Name == parameter.Name && property.ValueType == parameter.ParameterType));
 		}
 
 		private static IDbValueTypeInfo CreateInfo(Type type) =>
@@ -96,39 +81,20 @@ namespace Faithlife.Data
 
 			if (m_strategy == DbValueTypeStrategy.DtoProperties)
 			{
-				var dto = DtoInfo.GetInfo<T>().CreateNew();
-				var notNull = false;
+				List<(IDtoProperty<T> Property, object? Value)>? propertyValues = null;
 				for (var i = index; i < index + count; i++)
 				{
-					string name = record.GetName(i);
-					if (!m_properties!.TryGetValue(NormalizeFieldName(name), out var property))
-						throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
 					if (!record.IsDBNull(i))
 					{
-						property.Dto.SetValue(dto, property.Db.GetValue(record, i, 1));
-						notNull = true;
+						var name = record.GetName(i);
+						if (!m_properties!.TryGetValue(NormalizeFieldName(name), out var property))
+							throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
+
+						propertyValues ??= new List<(IDtoProperty<T> Property, object? Value)>(capacity: count);
+						propertyValues.Add((property.Dto, property.Db.GetValue(record, i, 1)));
 					}
 				}
-				return notNull ? dto : default!;
-			}
-			else if (m_strategy == DbValueTypeStrategy.PositionalRecord)
-			{
-				var arguments = new object?[m_constructorParameters!.Count];
-				foreach (var parameter in m_constructorParameters.Values.Select(x => x.Parameter).Where(x => x.HasDefaultValue))
-					arguments[parameter.Position] = parameter.DefaultValue;
-				var notNull = false;
-				for (var i = index; i < index + count; i++)
-				{
-					string name = record.GetName(i);
-					if (!m_constructorParameters!.TryGetValue(NormalizeFieldName(name), out var parameter))
-						throw new InvalidOperationException($"Type does not have a property for '{name}': {Type.FullName}");
-					if (!record.IsDBNull(i))
-					{
-						arguments[parameter.Parameter.Position] = parameter.Db.GetValue(record, i, 1);
-						notNull = true;
-					}
-				}
-				return notNull ? (T) m_constructorInfo!.Invoke(arguments) : default!;
+				return propertyValues != null ? DtoInfo.GetInfo<T>().CreateNew(propertyValues) : default!;
 			}
 			else if (m_strategy == DbValueTypeStrategy.Dynamic && count > 1)
 			{
@@ -314,14 +280,6 @@ namespace Faithlife.Data
 					x => (x, DbValueTypeInfo.GetInfo(x.ValueType)),
 					StringComparer.OrdinalIgnoreCase);
 			}
-			else if (m_strategy == DbValueTypeStrategy.PositionalRecord)
-			{
-				m_constructorInfo = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Single();
-				m_constructorParameters = m_constructorInfo.GetParameters().ToDictionary(
-					x => NormalizeFieldName(x.Name),
-					x => (x, DbValueTypeInfo.GetInfo(x.ParameterType)),
-					StringComparer.OrdinalIgnoreCase);
-			}
 			else if (m_strategy == DbValueTypeStrategy.Tuple)
 			{
 				m_tupleInfo = TupleInfo.GetInfo<T>();
@@ -346,8 +304,6 @@ namespace Faithlife.Data
 		private readonly Type? m_nullableType;
 		private readonly DbValueTypeStrategy m_strategy;
 		private readonly Dictionary<string, (IDtoProperty<T> Dto, IDbValueTypeInfo Db)>? m_properties;
-		private readonly ConstructorInfo? m_constructorInfo;
-		private readonly Dictionary<string, (ParameterInfo Parameter, IDbValueTypeInfo Db)>? m_constructorParameters;
 		private readonly TupleInfo<T>? m_tupleInfo;
 		private readonly IReadOnlyList<IDbValueTypeInfo>? m_tupleTypeInfos;
 	}

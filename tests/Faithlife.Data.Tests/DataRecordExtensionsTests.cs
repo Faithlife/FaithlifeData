@@ -306,17 +306,6 @@ namespace Faithlife.Data.Tests
 			tuple.Item2.Should().BeNull();
 		}
 
-#if NET5_0
-		[Test]
-		[TestCase(typeof(ItemRecord), true)]
-		[TestCase(typeof(ItemDto), false)]
-		[TestCase(typeof(NonPositionalRecord), false)]
-		[TestCase(typeof(DtoWithConstructors), false)]
-		public void IsPositionalRecordTests(Type type, bool isPositionalRecord)
-		{
-			Assert.AreEqual(isPositionalRecord, DbValueTypeInfo.IsPositionalRecord(type));
-		}
-
 		[Test]
 		public void RecordTests()
 		{
@@ -349,7 +338,6 @@ namespace Faithlife.Data.Tests
 			// all nulls returns null record
 			reader.Get<ItemRecord>(0, 7).Should().BeNull();
 		}
-#endif
 
 		[Test]
 		public void CaseInsensitivePropertyName()
@@ -558,7 +546,6 @@ namespace Faithlife.Data.Tests
 			public byte[]? TheBlob { get; set; }
 		}
 
-#if NET5_0
 #pragma warning disable CA1801, SA1313
 		private record ItemRecord(string? TheString, int TheInt32, long TheInt64, bool TheBool, float TheSingle, double TheDouble, byte[]? TheBlob, int TheOptionalInt32 = 42);
 #pragma warning restore CA1801, SA1313
@@ -581,7 +568,6 @@ namespace Faithlife.Data.Tests
 
 			public string? TheString { get; set; }
 		}
-#endif
 
 		private enum Answer
 		{
@@ -599,7 +585,6 @@ namespace Faithlife.Data.Tests
 			TheBlob = new byte[] { 0x01, 0xFE },
 		};
 
-#if NET5_0
 		private static readonly ItemRecord s_record = new ItemRecord(
 			TheString: "hey",
 			TheInt32: 42,
@@ -608,6 +593,5 @@ namespace Faithlife.Data.Tests
 			TheSingle: 3.14f,
 			TheDouble: 3.1415,
 			TheBlob: new byte[] { 0x01, 0xFE });
-#endif
 	}
 }

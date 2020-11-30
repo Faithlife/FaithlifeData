@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net472;net5.0</TargetFrameworks>
+    <LangVersion>9.0</LangVersion>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Windows'))">win7-x64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX'))">macos-x64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</RuntimeIdentifier>
     <AutoGenerateBindingRedirects Condition=" '$(TargetFramework)' == 'net472' ">true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType Condition=" '$(TargetFramework)' == 'net472' ">true</GenerateBindingRedirectsOutputType>
-    <LangVersion Condition=" '$(TargetFramework)' == 'net5.0' ">latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,7 @@
     <PackageReference Include="SQLite" Version="3.13.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
     <PackageReference Include="Faithlife.System.Data.SQLite" Version="3.1.0" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

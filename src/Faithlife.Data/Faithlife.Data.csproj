@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Faithlife.Reflection" Version="1.0.1" />
+    <PackageReference Include="Faithlife.Reflection" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">

@@ -10,6 +10,5 @@ namespace Faithlife.Data
 		Dynamic,
 		Dictionary,
 		Stream,
-		PositionalRecord,
 	}
 }
