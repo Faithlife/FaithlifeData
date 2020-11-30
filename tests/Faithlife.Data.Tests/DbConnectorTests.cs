@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
+using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using NUnit.Framework;
 using static FluentAssertions.FluentActions;
@@ -13,6 +15,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests
 {
 	[TestFixture]
+	[SuppressMessage("ReSharper", "InterpolatedStringExpressionIsNotIFormattable", Justification = "Custom formatting.")]
 	public class DbConnectorTests
 	{
 		[Test]
@@ -127,6 +130,19 @@ namespace Faithlife.Data.Tests
 			connector.Command("insert into Items (Name) values (@item1); insert into Items (Name) values (@item2);",
 				DbParameters.FromDto(new { item1, item2 })).Execute().Should().Be(2);
 			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal(item1, item2);
+		}
+
+		[Test]
+		public void ParametersFromSqlTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
+			var item1 = "one";
+			var item2 = "two";
+			connector.Command(Sql.Format(
+				$"insert into Items (Name) values ({item1:param}); insert into Items (Name) values ({item2:param});")).Execute().Should().Be(2);
+			connector.Command("select Name from Items where Name like @like;",
+				DbParameters.Create("like", "t%")).QueryFirst<string>().Should().Be("two");
 		}
 
 		[Test]

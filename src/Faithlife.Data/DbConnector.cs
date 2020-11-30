@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Faithlife.Data.SqlFormatting;
 
 namespace Faithlife.Data
 {
@@ -131,6 +132,34 @@ namespace Faithlife.Data
 		/// <param name="text">The text of the command.</param>
 		/// <param name="parameters">The command parameters.</param>
 		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => Command(text, DbParameters.Create(parameters));
+
+		/// <summary>
+		/// Creates a new command.
+		/// </summary>
+		/// <param name="sql">The parameterized SQL.</param>
+		public DbConnectorCommand Command(Sql sql)
+		{
+			var (sqlText, sqlParameters) = SqlSyntax.Default.Render(sql);
+			return Command(sqlText, sqlParameters);
+		}
+
+		/// <summary>
+		/// Creates a new command.
+		/// </summary>
+		/// <param name="sql">The parameterized SQL.</param>
+		/// <param name="parameters">Additional command parameters.</param>
+		public DbConnectorCommand Command(Sql sql, DbParameters parameters)
+		{
+			var (text, sqlParameters) = SqlSyntax.Default.Render(sql);
+			return Command(text, sqlParameters.Add(parameters));
+		}
+
+		/// <summary>
+		/// Creates a new command.
+		/// </summary>
+		/// <param name="sql">The parameterized SQL.</param>
+		/// <param name="parameters">Additional command parameters.</param>
+		public DbConnectorCommand Command(Sql sql, params (string Name, object? Value)[] parameters) => Command(sql, DbParameters.Create(parameters));
 
 		/// <summary>
 		/// Creates a new command to access a stored procedure.
