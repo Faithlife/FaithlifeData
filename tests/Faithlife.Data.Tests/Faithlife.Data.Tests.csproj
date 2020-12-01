@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net472;net5.0</TargetFrameworks>
+    <TargetFrameworks>net5.0;net472</TargetFrameworks>
     <LangVersion>9.0</LangVersion>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Windows'))">win7-x64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX'))">macos-x64</RuntimeIdentifier>

@@ -20,10 +20,6 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v1
-    - name: Set up .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.100
     - name: Set up .NET 5
       uses: actions/setup-dotnet@v1
       with:
