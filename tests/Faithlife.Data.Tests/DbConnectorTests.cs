@@ -388,6 +388,21 @@ namespace Faithlife.Data.Tests
 			noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
 		}
 
+		[Test, Timeout(15000)]
+		public void TimeoutTest()
+		{
+			using var connector1 = DbConnector.Create(
+				new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = "shiny", Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString),
+				new DbConnectorSettings { AutoOpen = true });
+			using var connector2 = DbConnector.Create(
+				new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = "shiny", Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString),
+				new DbConnectorSettings { AutoOpen = true });
+			connector1.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+			connector2.Command("insert into Items (Name) values ('xyzzy');").Execute();
+			using var transaction1 = connector1.BeginTransaction();
+			Invoking(() => connector2.Command("insert into Items (Name) values ('querty');").WithTimeout(TimeSpan.FromSeconds(1)).Execute()).Should().Throw<SqliteException>();
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
