@@ -407,8 +407,6 @@ namespace Faithlife.Data
 			{
 				if (cache.TryGetCommand(commandText, out command))
 				{
-					command.Parameters.Clear();
-					command.Transaction = transaction;
 					wasCached = true;
 				}
 				else
@@ -422,21 +420,52 @@ namespace Faithlife.Data
 				command = CreateNewCommand();
 			}
 
-			foreach (var (name, value) in parameters)
+			if (wasCached)
 			{
-				if (!(value is IDbDataParameter dbParameter))
+				command.Transaction = transaction;
+
+				var parameterCount = parameters.Count;
+				if (command.Parameters.Count != parameterCount)
+					throw new InvalidOperationException($"Cached commands must always be executed with the same number of parameters (was {command.Parameters.Count}, now {parameters.Count}).");
+
+				for (var parameterIndex = 0; parameterIndex < parameterCount; parameterIndex++)
 				{
-					dbParameter = command.CreateParameter();
-					dbParameter.Value = value ?? DBNull.Value;
+					var (name, value) = parameters[parameterIndex];
+					var dbParameter = command.Parameters[parameterIndex] as IDataParameter;
+					if (dbParameter is null || dbParameter.ParameterName != name)
+					{
+						try
+						{
+							dbParameter = command.Parameters[name] as IDataParameter;
+						}
+						catch (Exception exception)
+						{
+							throw new InvalidOperationException($"Cached commands must always be executed with the same parameters (missing '{name}').", exception);
+						}
+						if (dbParameter is null)
+							throw new InvalidOperationException($"Cached commands must always be executed with the same parameters (missing '{name}').");
+					}
+					dbParameter.Value = value is IDataParameter ddp ? ddp.Value : value;
+				}
+			}
+			else
+			{
+				foreach (var (name, value) in parameters)
+				{
+					if (!(value is IDbDataParameter dbParameter))
+					{
+						dbParameter = command.CreateParameter();
+						dbParameter.Value = value ?? DBNull.Value;
+					}
+
+					dbParameter.ParameterName = name;
+
+					command.Parameters.Add(dbParameter);
 				}
 
-				dbParameter.ParameterName = name;
-
-				command.Parameters.Add(dbParameter);
+				if (IsPrepared)
+					command.Prepare();
 			}
-
-			if (IsPrepared && !wasCached)
-				command.Prepare();
 
 			return command;
 

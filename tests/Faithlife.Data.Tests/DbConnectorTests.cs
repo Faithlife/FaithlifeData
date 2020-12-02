@@ -159,6 +159,19 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void PrepareCacheTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+
+			string insertStmt = "insert into Items (Name) values (@item);";
+			connector.Command(insertStmt, ("item", "one")).Prepare().Cache().Execute().Should().Be(1);
+			connector.Command(insertStmt, ("item", "two")).Prepare().Cache().Execute().Should().Be(1);
+
+			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one", "two");
+		}
+
+		[Test]
 		public void TransactionTests([Values] bool? commit)
 		{
 			using var connector = CreateConnector();
@@ -222,6 +235,27 @@ namespace Faithlife.Data.Tests
 			}
 
 			connector.Command("select count(*) from Items;").QueryFirst<long>().Should().Be(1);
+		}
+
+		[Test]
+		public void CachedWithTransaction()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+
+			// make sure correct transaction is used in cached command
+			foreach (var item in new[] { "one", "two" })
+			{
+				using (connector.BeginTransaction())
+				{
+					connector.Command("insert into Items (Name) values (@item);", ("item", item)).Prepare().Cache().Execute().Should().Be(1);
+					connector.CommitTransaction();
+				}
+			}
+
+			connector.Command("insert into Items (Name) values (@item);", ("item", "three")).Prepare().Cache().Execute().Should().Be(1);
+
+			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one", "two", "three");
 		}
 
 		[Test]
@@ -340,6 +374,18 @@ namespace Faithlife.Data.Tests
 			foreach (var name in new[] { "one", "two", "three" })
 				connector.Command("insert into Items (Name) values (@name);", ("name", name)).Cache().Execute().Should().Be(1);
 			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one", "two", "three");
+		}
+
+		[Test]
+		public void CachedParameterErrors()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+			var sql = "insert into Items (Name) values (@name);";
+			connector.Command(sql, ("name", "one")).Cache().Execute().Should().Be(1);
+			Invoking(() => connector.Command(sql, ("name", "two"), ("three", "four")).Cache().Execute()).Should().Throw<InvalidOperationException>();
+			Invoking(() => connector.Command(sql, ("title", "three")).Cache().Execute()).Should().Throw<InvalidOperationException>();
+			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one");
 		}
 
 		[Test]
