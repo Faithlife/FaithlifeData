@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
+using Microsoft.Data.Sqlite;
 using NUnit.Framework;
 using static FluentAssertions.FluentActions;
 
@@ -27,9 +27,7 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void OpenConnection()
 		{
-			using var connector = DbConnector.Create(
-				new SQLiteConnection("Data Source=:memory:"),
-				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
+			using var connector = DbConnector.Create(new SqliteConnection("Data Source=:memory:"));
 			using (connector.OpenConnection())
 				connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").Execute().Should().Be(0);
 		}
@@ -37,9 +35,7 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public async Task OpenConnectionAsync()
 		{
-			await using var connector = DbConnector.Create(
-				new SQLiteConnection("Data Source=:memory:"),
-				new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods() });
+			await using var connector = DbConnector.Create(new SqliteConnection("Data Source=:memory:"));
 			await using (await connector.OpenConnectionAsync())
 				(await connector.Command("create table Items1 (ItemId integer primary key, Name text not null);").ExecuteAsync()).Should().Be(0);
 		}
@@ -408,8 +404,8 @@ namespace Faithlife.Data.Tests
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
-			new SQLiteConnection("Data Source=:memory:"),
-			new DbConnectorSettings { ProviderMethods = new SqliteProviderMethods(), AutoOpen = true, LazyOpen = true });
+			new SqliteConnection("Data Source=:memory:"),
+			new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 
 		private static string ToUpper(IDataRecord x) => x.Get<string>().ToUpperInvariant();
 	}
