@@ -95,6 +95,13 @@ namespace Faithlife.Data
 			return new TransactionDisposer(this);
 		}
 
+		public override DbTransactionDisposer AttachTransaction(IDbTransaction transaction)
+		{
+			VerifyCanBeginTransaction();
+			m_transaction = transaction;
+			return new TransactionDisposer(this);
+		}
+
 		public override void CommitTransaction()
 		{
 			VerifyGetTransaction().Commit();

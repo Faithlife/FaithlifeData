@@ -87,6 +87,12 @@ namespace Faithlife.Data
 		public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
 
 		/// <summary>
+		/// Attaches a transaction.
+		/// </summary>
+		/// <returns>An <see cref="IDisposable" /> that should be disposed when the transaction has been committed or should be rolled back.</returns>
+		public virtual DbTransactionDisposer AttachTransaction(IDbTransaction transaction) => throw new NotImplementedException();
+
+		/// <summary>
 		/// Commits the current transaction.
 		/// </summary>
 		/// <seealso cref="CommitTransactionAsync" />

@@ -272,6 +272,23 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void DeferredTransaction()
+		{
+			var connectionString = new SqliteConnectionStringBuilder { DataSource = nameof(DeferredTransaction), Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString;
+			using var connector1 = DbConnector.Create(new SqliteConnection(connectionString), new DbConnectorSettings { AutoOpen = true });
+			using var connector2 = DbConnector.Create(new SqliteConnection(connectionString), new DbConnectorSettings { AutoOpen = true });
+			((SqliteConnection) connector1.Connection).DefaultTimeout = 5;
+			((SqliteConnection) connector2.Connection).DefaultTimeout = 5;
+			connector1.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
+			connector1.Command("insert into Items (Name) values ('xyzzy');").Execute();
+			using var transaction1 = connector1.AttachTransaction(((SqliteConnection) connector1.Connection).BeginTransaction(deferred: true));
+			using var transaction2 = connector2.AttachTransaction(((SqliteConnection) connector2.Connection).BeginTransaction(deferred: true));
+			connector1.Command("select count(*) from Items;").QuerySingle<long>().Should().Be(1);
+			connector2.Command("select count(*) from Items;").QuerySingle<long>().Should().Be(1);
+			connector1.CommitTransaction();
+		}
+
+		[Test]
 		public void QueryMultipleTests()
 		{
 			using var connector = CreateConnector();
@@ -450,12 +467,9 @@ namespace Faithlife.Data.Tests
 		[Test, Timeout(15000)]
 		public void TimeoutTest()
 		{
-			using var connector1 = DbConnector.Create(
-				new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = "shiny", Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString),
-				new DbConnectorSettings { AutoOpen = true });
-			using var connector2 = DbConnector.Create(
-				new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = "shiny", Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString),
-				new DbConnectorSettings { AutoOpen = true });
+			var connectionString = new SqliteConnectionStringBuilder { DataSource = nameof(TimeoutTest), Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString;
+			using var connector1 = DbConnector.Create(new SqliteConnection(connectionString), new DbConnectorSettings { AutoOpen = true });
+			using var connector2 = DbConnector.Create(new SqliteConnection(connectionString), new DbConnectorSettings { AutoOpen = true });
 			connector1.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 			connector2.Command("insert into Items (Name) values ('xyzzy');").Execute();
 			using var transaction1 = connector1.BeginTransaction();
