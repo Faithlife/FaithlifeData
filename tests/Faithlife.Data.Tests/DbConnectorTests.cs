@@ -164,11 +164,24 @@ namespace Faithlife.Data.Tests
 			using var connector = CreateConnector();
 			connector.Command("create table Items (ItemId integer primary key, Name text not null);").Execute();
 
-			string insertStmt = "insert into Items (Name) values (@item);";
+			var insertStmt = "insert into Items (Name) values (@item);";
 			connector.Command(insertStmt, ("item", "one")).Prepare().Cache().Execute().Should().Be(1);
 			connector.Command(insertStmt, ("item", "two")).Prepare().Cache().Execute().Should().Be(1);
 
 			connector.Command("select Name from Items order by ItemId;").Query<string>().Should().Equal("one", "two");
+		}
+
+		[Test]
+		public async Task PrepareCacheTestsAsync()
+		{
+			await using var connector = CreateConnector();
+			await connector.Command("create table Items (ItemId integer primary key, Name text not null);").ExecuteAsync();
+
+			var insertStmt = "insert into Items (Name) values (@item);";
+			(await connector.Command(insertStmt, ("item", "one")).Prepare().Cache().ExecuteAsync()).Should().Be(1);
+			(await connector.Command(insertStmt, ("item", "two")).Prepare().Cache().ExecuteAsync()).Should().Be(1);
+
+			(await connector.Command("select Name from Items order by ItemId;").QueryAsync<string>()).Should().Equal("one", "two");
 		}
 
 		[Test]

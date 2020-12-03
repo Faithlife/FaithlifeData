@@ -311,7 +311,10 @@ namespace Faithlife.Data
 		{
 			Validate();
 			var connection = Connector.Connection;
-			return DoCreate(connection);
+			var command = DoCreate(connection, out var needsPrepare);
+			if (needsPrepare)
+				command.Prepare();
+			return command;
 		}
 
 		/// <summary>
@@ -322,7 +325,10 @@ namespace Faithlife.Data
 		{
 			Validate();
 			var connection = await Connector.GetConnectionAsync(cancellationToken).ConfigureAwait(false);
-			return DoCreate(connection);
+			var command = DoCreate(connection, out var needsPrepare);
+			if (needsPrepare)
+				await Connector.ProviderMethods.PrepareCommandAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			return command;
 		}
 
 		internal DbConnectorCommand(DbConnector connector, string text, DbParameters parameters, CommandType commandType, TimeSpan? timeout, bool isCached, bool isPrepared)
@@ -342,7 +348,7 @@ namespace Faithlife.Data
 				throw new InvalidOperationException("Use DbConnector to create commands.");
 		}
 
-		private IDbCommand DoCreate(IDbConnection connection)
+		private IDbCommand DoCreate(IDbConnection connection, out bool needsPrepare)
 		{
 			var commandText = Text;
 			var commandType = CommandType;
@@ -447,6 +453,8 @@ namespace Faithlife.Data
 					}
 					dbParameter.Value = value is IDataParameter ddp ? ddp.Value : value;
 				}
+
+				needsPrepare = false;
 			}
 			else
 			{
@@ -463,8 +471,7 @@ namespace Faithlife.Data
 					command.Parameters.Add(dbParameter);
 				}
 
-				if (IsPrepared)
-					command.Prepare();
+				needsPrepare = IsPrepared;
 			}
 
 			return command;

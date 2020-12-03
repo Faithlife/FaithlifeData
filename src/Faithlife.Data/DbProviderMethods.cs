@@ -182,6 +182,20 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Prepares a command asynchronously.
+		/// </summary>
+		public virtual ValueTask PrepareCommandAsync(IDbCommand command, CancellationToken cancellationToken)
+		{
+#if !NETSTANDARD2_0
+			if (command is DbCommand dbCommand)
+				return new ValueTask(dbCommand.PrepareAsync(cancellationToken));
+#endif
+
+			command.Prepare();
+			return default;
+		}
+
+		/// <summary>
 		/// Disposes a command asynchronously.
 		/// </summary>
 		public virtual ValueTask DisposeCommandAsync(IDbCommand command)
