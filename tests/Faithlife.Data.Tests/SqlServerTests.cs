@@ -28,7 +28,7 @@ namespace Faithlife.Data.Tests
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
-			new SqlConnection("data source=localhost;user id=sa;password=P@ssw0rd;initial catalog=mssqlclient2"),
+			new SqlConnection("data source=localhost;user id=sa;password=P@ssw0rd;initial catalog=test"),
 			new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 	}
 }

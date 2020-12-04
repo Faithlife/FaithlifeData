@@ -24,7 +24,7 @@ namespace Faithlife.Data.Tests
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
-			new NpgsqlConnection("host=localhost;user id=root;password=test;database=npgsql5"),
+			new NpgsqlConnection("host=localhost;user id=root;password=test;database=test"),
 			new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 	}
 }

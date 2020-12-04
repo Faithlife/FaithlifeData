@@ -27,7 +27,7 @@ namespace Benchmarks
 		public class MySqlBulkInsertBenchmark : BulkInsertBenchmark
 		{
 			public MySqlBulkInsertBenchmark()
-				: base(new MySqlConnection("Server=localhost;User Id=root;Password=test;SSL Mode=none;Database=mysqlconnector;Ignore Prepare=false"),
+				: base(new MySqlConnection("Server=localhost;User Id=root;Password=test;SSL Mode=none;Database=test;Ignore Prepare=false"),
 					columnsSql: "ItemId int not null auto_increment primary key, Value int not null",
 					recordCount: 10000)
 			{
@@ -37,7 +37,7 @@ namespace Benchmarks
 		public class SqlServerBulkInsertBenchmark : BulkInsertBenchmark
 		{
 			public SqlServerBulkInsertBenchmark()
-				: base(new SqlConnection("data source=localhost;user id=sa;password=P@ssw0rd;initial catalog=mssqlclient2"),
+				: base(new SqlConnection("data source=localhost;user id=sa;password=P@ssw0rd;initial catalog=test"),
 					columnsSql: "ItemId int not null identity primary key, Value int not null",
 					recordCount: 5000,
 					createParameter: x => new SqlParameter { Value = x, DbType = DbType.Int32 })
@@ -48,7 +48,7 @@ namespace Benchmarks
 		public class NpgsqlBulkInsertBenchmark : BulkInsertBenchmark
 		{
 			public NpgsqlBulkInsertBenchmark()
-				: base(new NpgsqlConnection("host=localhost;user id=root;password=test;database=npgsql5"),
+				: base(new NpgsqlConnection("host=localhost;user id=root;password=test;database=test"),
 					columnsSql: "ItemId serial primary key, Value int not null",
 					recordCount: 10000)
 			{
