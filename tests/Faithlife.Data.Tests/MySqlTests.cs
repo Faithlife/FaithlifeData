@@ -1,3 +1,4 @@
+using System.Data;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using MySqlConnector;
@@ -5,10 +6,10 @@ using NUnit.Framework;
 
 namespace Faithlife.Data.Tests
 {
-	[TestFixture]
+	[TestFixture, Explicit("Requires 'docker-compose up' from '/docker'.")]
 	public class MySqlTests
 	{
-		[Test, Explicit("Requires 'docker-compose up' from '/docker'.")]
+		[Test]
 		public void PrepareCacheTests()
 		{
 			var tableName = Sql.Raw(nameof(PrepareCacheTests));
@@ -23,6 +24,32 @@ namespace Faithlife.Data.Tests
 			connector.Command(insertSql, ("itemB", "six"), ("itemA", "five")).Prepare().Cache().Execute().Should().Be(2);
 
 			connector.Command(Sql.Format($"select Name from {tableName} order by Id;")).Query<string>().Should().Equal("one", "two", "three", "four", "five", "six");
+		}
+
+		[Test]
+		public void SprocInOutTest()
+		{
+			var sprocName = nameof(SprocInOutTest);
+
+			using var connector = CreateConnector();
+			connector.Command(Sql.Format($"drop procedure if exists {sprocName:raw};")).Execute();
+			connector.Command(Sql.Format($"create procedure {sprocName:raw} (inout Value int) begin set Value = Value * Value; end;")).Execute();
+
+			var param = new MySqlParameter { DbType = DbType.Int32, Direction = ParameterDirection.InputOutput, Value = 11 };
+			connector.StoredProcedure(sprocName, ("Value", param)).Execute();
+			param.Value.Should().Be(121);
+		}
+
+		[Test]
+		public void SprocInTest()
+		{
+			var sprocName = nameof(SprocInTest);
+
+			using var connector = CreateConnector();
+			connector.Command(Sql.Format($"drop procedure if exists {sprocName:raw};")).Execute();
+			connector.Command(Sql.Format($"create procedure {sprocName:raw} (in Value int) begin select Value, Value * Value; end;")).Execute();
+
+			connector.StoredProcedure(sprocName, ("Value", 11)).QuerySingle<(int, long)>().Should().Be((11, 121));
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
