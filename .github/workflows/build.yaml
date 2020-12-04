@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
     steps:
     - name: Check out code
       uses: actions/checkout@v1
@@ -33,6 +33,6 @@ jobs:
         BUILD_BOT_PASSWORD: ${{ secrets.BUILD_BOT_PASSWORD }}
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: .\build.cmd publish
-    - name: Build Linux/macOS
-      if: runner.os == 'Linux' || runner.os == 'macOS'
+    - name: Build Linux
+      if: runner.os == 'Linux'
       run: ./build.sh package
