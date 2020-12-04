@@ -23,6 +23,7 @@ public class DbProviderMethods
 | virtual [ExecuteReaderAsync](DbProviderMethods/ExecuteReaderAsync.md)(…) | Executes a command query asynchronously. (2 methods) |
 | virtual [NextResultAsync](DbProviderMethods/NextResultAsync.md)(…) | Reads the next result asynchronously. |
 | virtual [OpenConnectionAsync](DbProviderMethods/OpenConnectionAsync.md)(…) | Opens the connection asynchronously. |
+| virtual [PrepareCommandAsync](DbProviderMethods/PrepareCommandAsync.md)(…) | Prepares a command asynchronously. |
 | virtual [ReadAsync](DbProviderMethods/ReadAsync.md)(…) | Reads the next record asynchronously. |
 | virtual [RollbackTransactionAsync](DbProviderMethods/RollbackTransactionAsync.md)(…) | Rolls back a transaction asynchronously. |
 

@@ -13,6 +13,7 @@ public abstract class DbConnector : IAsyncDisposable, IDisposable
 | static [Create](DbConnector/Create.md)(…) | Creates a new DbConnector. |
 | abstract [Connection](DbConnector/Connection.md) { get; } | The database connection. |
 | abstract [Transaction](DbConnector/Transaction.md) { get; } | The current transaction, if any. |
+| virtual [AttachTransaction](DbConnector/AttachTransaction.md)(…) | Attaches a transaction. |
 | abstract [BeginTransaction](DbConnector/BeginTransaction.md)() | Begins a transaction. |
 | abstract [BeginTransaction](DbConnector/BeginTransaction.md)(…) | Begins a transaction. |
 | abstract [BeginTransactionAsync](DbConnector/BeginTransactionAsync.md)(…) | Begins a transaction. (2 methods) |
