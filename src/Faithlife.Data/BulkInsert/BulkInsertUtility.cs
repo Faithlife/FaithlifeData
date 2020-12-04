@@ -19,7 +19,7 @@ namespace Faithlife.Data.BulkInsert
 		{
 			var rowCount = 0;
 			foreach (var (sql, parameters) in GetBulkInsertCommands(command.Text, command.Parameters, rows, settings))
-				rowCount += command.Connector.Command(sql, parameters).Execute();
+				rowCount += CreateBatchCommand(command, sql, parameters).Execute();
 			return rowCount;
 		}
 
@@ -36,7 +36,7 @@ namespace Faithlife.Data.BulkInsert
 		{
 			var rowCount = 0;
 			foreach (var (sql, parameters) in GetBulkInsertCommands(command.Text, command.Parameters, rows, settings))
-				rowCount += await command.Connector.Command(sql, parameters).ExecuteAsync(cancellationToken).ConfigureAwait(false);
+				rowCount += await CreateBatchCommand(command, sql, parameters).ExecuteAsync(cancellationToken).ConfigureAwait(false);
 			return rowCount;
 		}
 
@@ -111,6 +111,18 @@ namespace Faithlife.Data.BulkInsert
 
 			if (batchSqls.Count != 0)
 				yield return (GetBatchSql(), DbParameters.Create(batchParameters!));
+		}
+
+		private static DbConnectorCommand CreateBatchCommand(DbConnectorCommand command, string sql, DbParameters parameters)
+		{
+			var batchCommand = command.Connector.Command(sql, parameters);
+			if (command.IsCached)
+				batchCommand = batchCommand.Cache();
+			if (command.IsPrepared)
+				batchCommand = batchCommand.Prepare();
+			if (command.Timeout != null)
+				batchCommand = batchCommand.WithTimeout(command.Timeout.Value);
+			return batchCommand;
 		}
 
 		private const int c_defaultMaxParametersPerBatch = 999;
