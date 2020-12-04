@@ -53,7 +53,7 @@ namespace Faithlife.Data.Tests
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
-			new MySqlConnection("Server=localhost;User Id=root;Password=test;SSL Mode=none;Database=test;Ignore Prepare=false"),
+			new MySqlConnection("Server=localhost;User Id=root;Password=test;SSL Mode=none;Database=test;Ignore Prepare=false;AllowPublicKeyRetrieval=true"),
 			new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 	}
 }
