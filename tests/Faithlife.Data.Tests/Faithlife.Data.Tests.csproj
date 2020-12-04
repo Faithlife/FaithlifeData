@@ -3,9 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0;net472</TargetFrameworks>
     <LangVersion>9.0</LangVersion>
-    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Windows'))">win7-x64</RuntimeIdentifier>
-    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX'))">osx-x64</RuntimeIdentifier>
-    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</RuntimeIdentifier>
     <AutoGenerateBindingRedirects Condition=" '$(TargetFramework)' == 'net472' ">true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType Condition=" '$(TargetFramework)' == 'net472' ">true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
