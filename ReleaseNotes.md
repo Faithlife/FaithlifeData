@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.8.0
+
+* Reuse parameter objects in cached commands to maximize performance and meet the requirements of some ADO.NET providers for prepared commands.
+* Bulk insert respects command timeout, caching, and preparing.
+* Support attaching a native transaction.
+* Prepare commands asynchronously.
+
 ## 1.7.0
 
 * `Sql.Format` creates parameters via string interpolation.
