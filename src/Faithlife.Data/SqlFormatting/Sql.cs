@@ -12,7 +12,7 @@ namespace Faithlife.Data.SqlFormatting
 		/// <summary>
 		/// Creates SQL from a raw string.
 		/// </summary>
-		public static Sql Raw(string text) => new RawSql(text);
+		public static Sql Raw(string text) => new RawSql(text ?? throw new ArgumentNullException(nameof(text)));
 
 		/// <summary>
 		/// Creates SQL for an arbitrarily named parameter with the specified value.
@@ -22,7 +22,7 @@ namespace Faithlife.Data.SqlFormatting
 		/// <summary>
 		/// Creates SQL from a formatted string.
 		/// </summary>
-		public static Sql Format(FormattableString formattableString) => new FormattableSql(formattableString);
+		public static Sql Format(FormattableString formattableString) => new FormattableSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
 
 		internal abstract string Render(SqlContext context);
 
