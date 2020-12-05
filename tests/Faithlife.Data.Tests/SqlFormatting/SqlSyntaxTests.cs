@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using NUnit.Framework;
@@ -106,6 +107,22 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		{
 			var tableName = "widgets";
 			Invoking(() => Render(Sql.Format($"select * from {tableName:xyzzy}"))).Should().Throw<FormatException>();
+		}
+
+		[Test]
+		public void JoinParams()
+		{
+			var (text, parameters) = Render(Sql.Join(", ", Sql.Param(42), Sql.Param(-42)));
+			text.Should().Be("@fdp0, @fdp1");
+			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
+		}
+
+		[Test]
+		public void JoinEnumerable()
+		{
+			var (text, parameters) = Render(Sql.Join(", ", new[] { 42, -42 }.Select(x => Sql.Param(x))));
+			text.Should().Be("@fdp0, @fdp1");
+			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
 		}
 
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
