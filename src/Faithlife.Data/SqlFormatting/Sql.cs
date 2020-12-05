@@ -10,9 +10,9 @@ namespace Faithlife.Data.SqlFormatting
 	public abstract class Sql
 	{
 		/// <summary>
-		/// Creates SQL from a raw string.
+		/// Creates SQL from a formatted string.
 		/// </summary>
-		public static Sql Raw(string text) => new RawSql(text ?? throw new ArgumentNullException(nameof(text)));
+		public static Sql Format(FormattableString formattableString) => new FormatSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
 
 		/// <summary>
 		/// Creates SQL for an arbitrarily named parameter with the specified value.
@@ -20,22 +20,15 @@ namespace Faithlife.Data.SqlFormatting
 		public static Sql Param(object? value) => new ParamSql(value);
 
 		/// <summary>
-		/// Creates SQL from a formatted string.
+		/// Creates SQL from a raw string.
 		/// </summary>
-		public static Sql Format(FormattableString formattableString) => new FormattableSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
+		public static Sql Raw(string text) => new RawSql(text ?? throw new ArgumentNullException(nameof(text)));
 
 		internal abstract string Render(SqlContext context);
 
-		private sealed class RawSql : Sql
+		private sealed class FormatSql : Sql
 		{
-			public RawSql(string text) => m_text = text;
-			internal override string Render(SqlContext context) => m_text;
-			private readonly string m_text;
-		}
-
-		private sealed class FormattableSql : Sql
-		{
-			public FormattableSql(FormattableString formattableString) => m_formattableString = formattableString;
+			public FormatSql(FormattableString formattableString) => m_formattableString = formattableString;
 			internal override string Render(SqlContext context) => m_formattableString.ToString(new SqlFormatProvider(context));
 			private readonly FormattableString m_formattableString;
 		}
@@ -45,6 +38,13 @@ namespace Faithlife.Data.SqlFormatting
 			public ParamSql(object? value) => m_value = value;
 			internal override string Render(SqlContext context) => context.RenderParam(m_value);
 			private readonly object? m_value;
+		}
+
+		private sealed class RawSql : Sql
+		{
+			public RawSql(string text) => m_text = text;
+			internal override string Render(SqlContext context) => m_text;
+			private readonly string m_text;
 		}
 
 		private sealed class SqlFormatProvider : IFormatProvider, ICustomFormatter
