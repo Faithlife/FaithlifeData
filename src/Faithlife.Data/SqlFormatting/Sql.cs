@@ -34,6 +34,13 @@ namespace Faithlife.Data.SqlFormatting
 			new JoinSql(separator ?? throw new ArgumentNullException(nameof(separator)), AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))));
 
 		/// <summary>
+		/// Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing <c>%</c>.
+		/// </summary>
+		/// <remarks>The default implementation escapes <c>%</c> and <c>_</c> in the prefix with <c>\</c>. Depending on the database
+		/// and its settings, <c>escape '\'</c> may be needed after the parameter.</remarks>
+		public static Sql LikePrefixParam(string prefix) => new LikePrefixParamSql(prefix ?? throw new ArgumentNullException(nameof(prefix)));
+
+		/// <summary>
 		/// Creates SQL for an arbitrarily named parameter with the specified value.
 		/// </summary>
 		public static Sql Param(object? value) => new ParamSql(value);
@@ -60,6 +67,13 @@ namespace Faithlife.Data.SqlFormatting
 			internal override string Render(SqlContext context) => string.Join(m_separator, m_sqls.Select(x => x.Render(context)));
 			private readonly string m_separator;
 			private readonly IReadOnlyList<Sql> m_sqls;
+		}
+
+		private sealed class LikePrefixParamSql : Sql
+		{
+			public LikePrefixParamSql(string prefix) => m_prefix = prefix;
+			internal override string Render(SqlContext context) => context.RenderParam(context.Syntax.EscapeLikeFragment(m_prefix) + "%");
+			private readonly string m_prefix;
 		}
 
 		private sealed class ParamSql : Sql

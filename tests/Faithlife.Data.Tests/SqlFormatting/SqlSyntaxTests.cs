@@ -121,6 +121,14 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			}
 		}
 
+		[Test]
+		public void LikePrefixParamSql()
+		{
+			var (text, parameters) = Render(Sql.LikePrefixParam("xy_zy"));
+			text.Should().Be("@fdp0");
+			parameters.Should().Equal(("fdp0", "xy\\_zy%"));
+		}
+
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
 	}
 }
