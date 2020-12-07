@@ -19,6 +19,14 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			Invoking(() => Render(null!)).Should().Throw<ArgumentNullException>();
 		}
 
+		[Test]
+		public void EmptySql()
+		{
+			var (text, parameters) = Render(Sql.Empty);
+			text.Should().Be("");
+			parameters.Should().BeEmpty();
+		}
+
 		[TestCase("")]
 		[TestCase("select * from widgets")]
 		public void RawSql(string raw)
@@ -88,7 +96,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		[TestCase(42)]
 		public void FormatSql(int? id)
 		{
-			var whereSql = id is null ? Sql.Raw("") : Sql.Format($"where id = {Sql.Param(id)}");
+			var whereSql = id is null ? Sql.Empty : Sql.Format($"where id = {Sql.Param(id)}");
 			var limit = 10;
 			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} {whereSql} limit {limit}"));
 			if (id is null)
@@ -132,7 +140,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 					sqls.Add(Sql.Format($"width = {width}"));
 				if (height != null)
 					sqls.Add(Sql.Format($"height = {height}"));
-				var whereSql = sqls.Count == 0 ? Sql.Raw("") : Sql.Format($"where {Sql.Join(" and ", sqls)}");
+				var whereSql = sqls.Count == 0 ? Sql.Empty : Sql.Format($"where {Sql.Join(" and ", sqls)}");
 				return Sql.Format($"select * from widgets {whereSql};");
 			}
 		}

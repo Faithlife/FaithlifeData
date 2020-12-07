@@ -12,6 +12,11 @@ namespace Faithlife.Data.SqlFormatting
 	public abstract class Sql
 	{
 		/// <summary>
+		/// An empty SQL string.
+		/// </summary>
+		public static readonly Sql Empty = Sql.Raw("");
+
+		/// <summary>
 		/// Creates SQL from a formatted string.
 		/// </summary>
 		public static Sql Format(FormattableString formattableString) => new FormatSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
