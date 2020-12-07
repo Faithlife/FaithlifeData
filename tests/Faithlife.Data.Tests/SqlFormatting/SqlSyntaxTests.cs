@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using NUnit.Framework;
@@ -15,6 +17,14 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		public void NullSqlThrows()
 		{
 			Invoking(() => Render(null!)).Should().Throw<ArgumentNullException>();
+		}
+
+		[Test]
+		public void EmptySql()
+		{
+			var (text, parameters) = Render(Sql.Empty);
+			text.Should().Be("");
+			parameters.Should().BeEmpty();
 		}
 
 		[TestCase("")]
@@ -51,30 +61,6 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		}
 
 		[Test]
-		public void FormatRaw()
-		{
-			var tableName = "widgets";
-			var (text, parameters) = Render(Sql.Format($"select * from {tableName:raw}"));
-			text.Should().Be("select * from widgets");
-			parameters.Should().BeEmpty();
-		}
-
-		[Test]
-		public void FormatSqlRawNotString()
-		{
-			var tableName = Sql.Raw("widgets");
-			Invoking(() => Render(Sql.Format($"select * from {tableName:raw}"))).Should().Throw<FormatException>();
-		}
-
-		[Test]
-		public void FormatExplicitParam()
-		{
-			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42:param}, {-42:param})"));
-			text.Should().Be("select * from widgets where id in (@fdp0, @fdp1)");
-			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
-		}
-
-		[Test]
 		public void FormatImplicitParam()
 		{
 			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42}, {-42})"));
@@ -86,7 +72,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		[TestCase(42)]
 		public void FormatSql(int? id)
 		{
-			var whereSql = id is null ? Sql.Raw("") : Sql.Format($"where id = {Sql.Param(id)}");
+			var whereSql = id is null ? Sql.Empty : Sql.Format($"where id = {Sql.Param(id)}");
 			var limit = 10;
 			var (text, parameters) = Render(Sql.Format($"select * from {Sql.Raw("widgets")} {whereSql} limit {limit}"));
 			if (id is null)
@@ -106,6 +92,33 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		{
 			var tableName = "widgets";
 			Invoking(() => Render(Sql.Format($"select * from {tableName:xyzzy}"))).Should().Throw<FormatException>();
+		}
+
+		[Test]
+		public void JoinParams()
+		{
+			var (text, parameters) = Render(Sql.Join(", ", Sql.Param(42), Sql.Param(-42)));
+			text.Should().Be("@fdp0, @fdp1");
+			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
+		}
+
+		[Test]
+		public void JoinEnumerable()
+		{
+			Render(CreateSql(42, 24)).Text.Should().Be("select * from widgets where width = @fdp0 and height = @fdp1;");
+			Render(CreateSql(null, 24)).Text.Should().Be("select * from widgets where height = @fdp0;");
+			Render(CreateSql(null, null)).Text.Should().Be("select * from widgets ;");
+
+			Sql CreateSql(int? width, int? height)
+			{
+				var sqls = new List<Sql>();
+				if (width != null)
+					sqls.Add(Sql.Format($"width = {width}"));
+				if (height != null)
+					sqls.Add(Sql.Format($"height = {height}"));
+				var whereSql = sqls.Count == 0 ? Sql.Empty : Sql.Format($"where {Sql.Join(" and ", sqls)}");
+				return Sql.Format($"select * from widgets {whereSql};");
+			}
 		}
 
 		[Test]
