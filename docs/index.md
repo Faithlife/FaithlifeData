@@ -356,23 +356,15 @@ connector.Command(
     ).Execute();
 ```
 
-
-SQL text and paramters can be composed using the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class. Non-parameterized SQL can be expressed using [`Sql.Raw()`](Faithlife.Data.SqlFormatting/Sql/Raw.md) or the `raw` format specifier.
+SQL text and paramters can be composed using the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class. Non-parameterized SQL can be expressed using [`Sql.Raw()`](Faithlife.Data.SqlFormatting/Sql/Raw.md).
 
 ```csharp
-IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector, double? minHeight = default)
+IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
+    double? minHeight = null, string[]? fields = null)
 {
     var whereSql = minHeight is null ? Sql.Raw("") : Sql.Format($"where height >= {minHeight}");
-    return connector.Command(Sql.Format($"select * from widgets {whereSql};"))
-        .Query<WidgetDto>();
-}
-```
-
-```csharp
-IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector, string[]? fields = default)
-{
-    var fieldsFragment = fields is null ? "*" : string.Join(", ", fields);
-    return connector.Command(Sql.Format($"select {fieldsFragment:raw} from widgets;"))
+    var fieldsSql = Sql.Raw(fields is null ? "*" : string.Join(", ", fields));
+    return connector.Command(Sql.Format($"select {fieldsSql} from widgets {whereSql};"))
         .Query<WidgetDto>();
 }
 ```

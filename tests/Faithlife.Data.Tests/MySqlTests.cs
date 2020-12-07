@@ -32,8 +32,8 @@ namespace Faithlife.Data.Tests
 			var sprocName = nameof(SprocInOutTest);
 
 			using var connector = CreateConnector();
-			connector.Command(Sql.Format($"drop procedure if exists {sprocName:raw};")).Execute();
-			connector.Command(Sql.Format($"create procedure {sprocName:raw} (inout Value int) begin set Value = Value * Value; end;")).Execute();
+			connector.Command(Sql.Format($"drop procedure if exists {Sql.Raw(sprocName)};")).Execute();
+			connector.Command(Sql.Format($"create procedure {Sql.Raw(sprocName)} (inout Value int) begin set Value = Value * Value; end;")).Execute();
 
 			var param = new MySqlParameter { DbType = DbType.Int32, Direction = ParameterDirection.InputOutput, Value = 11 };
 			connector.StoredProcedure(sprocName, ("Value", param)).Execute();
@@ -46,8 +46,8 @@ namespace Faithlife.Data.Tests
 			var sprocName = nameof(SprocInTest);
 
 			using var connector = CreateConnector();
-			connector.Command(Sql.Format($"drop procedure if exists {sprocName:raw};")).Execute();
-			connector.Command(Sql.Format($"create procedure {sprocName:raw} (in Value int) begin select Value, Value * Value; end;")).Execute();
+			connector.Command(Sql.Format($"drop procedure if exists {Sql.Raw(sprocName)};")).Execute();
+			connector.Command(Sql.Format($"create procedure {Sql.Raw(sprocName)} (in Value int) begin select Value, Value * Value; end;")).Execute();
 
 			connector.StoredProcedure(sprocName, ("Value", 11)).QuerySingle<(int, long)>().Should().Be((11, 121));
 		}

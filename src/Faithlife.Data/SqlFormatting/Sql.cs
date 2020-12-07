@@ -55,21 +55,9 @@ namespace Faithlife.Data.SqlFormatting
 
 			public string Format(string? format, object? arg, IFormatProvider formatProvider)
 			{
-				switch (format)
-				{
-					case "param":
-						return m_context.RenderParam(arg);
-
-					case "raw":
-						if (arg is string stringValue)
-							return stringValue;
-						throw new FormatException("Format 'raw' can only be used with strings.");
-
-					default:
-						if (format is object)
-							throw new FormatException($"Format '{format}' is not supported.");
-						return arg is Sql sql ? sql.Render(m_context) : m_context.RenderParam(arg);
-				}
+				if (format is object)
+					throw new FormatException($"Format specifier '{format}' is not supported.");
+				return arg is Sql sql ? sql.Render(m_context) : m_context.RenderParam(arg);
 			}
 
 			private readonly SqlContext m_context;
