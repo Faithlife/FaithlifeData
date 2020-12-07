@@ -17,8 +17,8 @@ namespace Faithlife.Data.SqlFormatting
 		/// <summary>
 		/// Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing <c>%</c>.
 		/// </summary>
-		/// <remarks>The default implementation escapes <c>%</c> and <c>_</c> in the prefix with a backslash. In SQLite, <c>escape '\'</c>
-		/// must follow the parameter to specify the escape character.</remarks>
+		/// <remarks>The default implementation escapes <c>%</c> and <c>_</c> in the prefix with <c>\</c>. Depending on the database
+		/// and its settings, <c>escape '\'</c> may be needed after the parameter.</remarks>
 		public static Sql LikePrefixParam(string prefix) => new LikePrefixParamSql(prefix ?? throw new ArgumentNullException(nameof(prefix)));
 
 		/// <summary>
