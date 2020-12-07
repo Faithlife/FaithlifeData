@@ -11,7 +11,8 @@ public abstract class SqlSyntax
 | name | description |
 | --- | --- |
 | static readonly [Default](SqlSyntax/Default.md) | The default syntax. |
-| [ParameterPrefix](SqlSyntax/ParameterPrefix.md) { get; } | The prefix for named parameters. |
+| virtual [ParameterPrefix](SqlSyntax/ParameterPrefix.md) { get; } | The prefix for named parameters. |
+| virtual [EscapeLikeFragment](SqlSyntax/EscapeLikeFragment.md)(…) | Escapes a fragment of a LIKE pattern. |
 | [Render](SqlSyntax/Render.md)(…) | Renders SQL as text and parameters. |
 
 ## Protected Members

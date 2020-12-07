@@ -3,7 +3,7 @@
 The prefix for named parameters.
 
 ```csharp
-public char ParameterPrefix { get; }
+public virtual char ParameterPrefix { get; }
 ```
 
 ## See Also
