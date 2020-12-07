@@ -51,30 +51,6 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		}
 
 		[Test]
-		public void FormatRaw()
-		{
-			var tableName = "widgets";
-			var (text, parameters) = Render(Sql.Format($"select * from {tableName:raw}"));
-			text.Should().Be("select * from widgets");
-			parameters.Should().BeEmpty();
-		}
-
-		[Test]
-		public void FormatSqlRawNotString()
-		{
-			var tableName = Sql.Raw("widgets");
-			Invoking(() => Render(Sql.Format($"select * from {tableName:raw}"))).Should().Throw<FormatException>();
-		}
-
-		[Test]
-		public void FormatExplicitParam()
-		{
-			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42:param}, {-42:param})"));
-			text.Should().Be("select * from widgets where id in (@fdp0, @fdp1)");
-			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
-		}
-
-		[Test]
 		public void FormatImplicitParam()
 		{
 			var (text, parameters) = Render(Sql.Format($"select * from widgets where id in ({42}, {-42})"));

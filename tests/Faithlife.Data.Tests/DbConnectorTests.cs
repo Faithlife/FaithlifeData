@@ -136,7 +136,7 @@ namespace Faithlife.Data.Tests
 			var item1 = "one";
 			var item2 = "two";
 			connector.Command(Sql.Format(
-				$"insert into Items (Name) values ({item1:param}); insert into Items (Name) values ({item2:param});")).Execute().Should().Be(2);
+				$"insert into Items (Name) values ({item1}); insert into Items (Name) values ({item2});")).Execute().Should().Be(2);
 			connector.Command("select Name from Items where Name like @like;",
 				DbParameters.Create("like", "t%")).QueryFirst<string>().Should().Be("two");
 		}
