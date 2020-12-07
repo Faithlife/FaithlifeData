@@ -15,6 +15,13 @@ namespace Faithlife.Data.SqlFormatting
 		public static Sql Format(FormattableString formattableString) => new FormatSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
 
 		/// <summary>
+		/// Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing <c>%</c>.
+		/// </summary>
+		/// <remarks>The default implementation escapes <c>%</c> and <c>_</c> in the prefix with a backslash. In SQLite, <c>escape '_'</c>
+		/// must follow the parameter to specify the escape character.</remarks>
+		public static Sql LikePrefixParam(string prefix) => new LikePrefixParamSql(prefix ?? throw new ArgumentNullException(nameof(prefix)));
+
+		/// <summary>
 		/// Creates SQL for an arbitrarily named parameter with the specified value.
 		/// </summary>
 		public static Sql Param(object? value) => new ParamSql(value);
@@ -31,6 +38,13 @@ namespace Faithlife.Data.SqlFormatting
 			public FormatSql(FormattableString formattableString) => m_formattableString = formattableString;
 			internal override string Render(SqlContext context) => m_formattableString.ToString(new SqlFormatProvider(context));
 			private readonly FormattableString m_formattableString;
+		}
+
+		private sealed class LikePrefixParamSql : Sql
+		{
+			public LikePrefixParamSql(string prefix) => m_prefix = prefix;
+			internal override string Render(SqlContext context) => context.RenderParam(context.Syntax.EscapeLikeFragment(m_prefix) + "%");
+			private readonly string m_prefix;
 		}
 
 		private sealed class ParamSql : Sql
