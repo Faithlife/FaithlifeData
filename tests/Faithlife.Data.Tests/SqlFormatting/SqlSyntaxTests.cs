@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Faithlife.Data.SqlFormatting;
@@ -120,9 +121,20 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		[Test]
 		public void JoinEnumerable()
 		{
-			var (text, parameters) = Render(Sql.Join(", ", new[] { 42, -42 }.Select(x => Sql.Param(x))));
-			text.Should().Be("@fdp0, @fdp1");
-			parameters.Should().Equal(("fdp0", 42), ("fdp1", -42));
+			Render(CreateSql(42, 24)).Text.Should().Be("select * from widgets where width = @fdp0 and height = @fdp1;");
+			Render(CreateSql(null, 24)).Text.Should().Be("select * from widgets where height = @fdp0;");
+			Render(CreateSql(null, null)).Text.Should().Be("select * from widgets ;");
+
+			Sql CreateSql(int? width, int? height)
+			{
+				var sqls = new List<Sql>();
+				if (width != null)
+					sqls.Add(Sql.Format($"width = {width}"));
+				if (height != null)
+					sqls.Add(Sql.Format($"height = {height}"));
+				var whereSql = sqls.Count == 0 ? Sql.Raw("") : Sql.Format($"where {Sql.Join(" and ", sqls)}");
+				return Sql.Format($"select * from widgets {whereSql};");
+			}
 		}
 
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
