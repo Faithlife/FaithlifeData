@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Faithlife.Data.SqlFormatting;
 
 namespace Faithlife.Data
 {
@@ -19,6 +20,7 @@ namespace Faithlife.Data
 			m_noDisposeConnection = m_noDisposeTransaction || settings.NoDispose;
 			m_whenDisposed = settings.WhenDisposed;
 			m_providerMethods = settings.ProviderMethods ?? DbProviderMethods.Default;
+			SqlSyntax = settings.SqlSyntax ?? SqlSyntax.Default;
 
 			if (settings.AutoOpen && !m_isConnectionOpen)
 				OpenConnection();
@@ -34,6 +36,8 @@ namespace Faithlife.Data
 		}
 
 		public override IDbTransaction? Transaction => m_transaction;
+
+		public override SqlSyntax SqlSyntax { get; }
 
 		public override ValueTask<IDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
 		{
