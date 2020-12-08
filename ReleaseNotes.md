@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.9.0
+
+* Use `Sql.Empty` for empty SQL fragments.
+* Use `Sql.Join` to join SQL fragments.
+* Use `Sql.LikePrefixParam` to match a prefix with `LIKE`.
+* Use `Sql.Name` to quote identifiers. Use with `SqlSyntax.MySql`, `SqlSyntax.Sqlite`, etc., for the proper quoting syntax.
+* Add `SqlSyntax` to `DbConnector` and `DbConnectorSettings`.
+* Add `DelegatingDbConnector` and `DelegatingSqlSyntax`.
+* Drop support for format specifiers in formatted SQL. (Minor breaking change.)
+
 ## 1.8.0
 
 * Reuse parameter objects in cached commands to maximize performance and meet the requirements of some ADO.NET providers for prepared commands.
