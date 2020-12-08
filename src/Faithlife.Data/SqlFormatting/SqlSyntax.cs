@@ -90,7 +90,7 @@ namespace Faithlife.Data.SqlFormatting
 			}
 
 			public override string QuoteName(string name) =>
-				m_nameQuoteStart + name.Replace(m_nameQuoteEnd!, m_nameQuoteEndEscape!) + m_nameQuoteEnd;
+				m_nameQuoteStart + name.Replace(m_nameQuoteEnd, m_nameQuoteEndEscape) + m_nameQuoteEnd;
 
 			private readonly string m_nameQuoteStart;
 			private readonly string m_nameQuoteEnd;
