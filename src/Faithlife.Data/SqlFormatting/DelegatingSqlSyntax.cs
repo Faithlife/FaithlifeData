@@ -1,7 +1,7 @@
 namespace Faithlife.Data.SqlFormatting
 {
 	/// <summary>
-	/// Delegates methods to an inner SQL syntax.
+	/// Delegates to an inner SQL syntax.
 	/// </summary>
 	public class DelegatingSqlSyntax : SqlSyntax
 	{
