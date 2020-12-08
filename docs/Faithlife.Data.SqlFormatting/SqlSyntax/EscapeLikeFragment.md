@@ -8,7 +8,7 @@ public virtual string EscapeLikeFragment(string fragment)
 
 ## Return Value
 
-The string fragment, with the special characters `%` and `_` escaped as needed. This string is not raw SQL, but rather a fragment of a LIKE pattern that should be concatenated with the rest of the LIKE pattern and sent to the database via a string parameter.
+The string fragment, with wildcard characters such as `%` and `_` escaped as needed. This string is not raw SQL, but rather a fragment of a LIKE pattern that should be concatenated with the rest of the LIKE pattern and sent to the database via a string parameter.
 
 ## See Also
 

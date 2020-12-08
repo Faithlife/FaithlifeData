@@ -10,9 +10,14 @@ public abstract class SqlSyntax
 
 | name | description |
 | --- | --- |
-| static readonly [Default](SqlSyntax/Default.md) | The default syntax. |
+| static [Default](SqlSyntax/Default.md) { get; } | The default syntax. |
+| static [MySql](SqlSyntax/MySql.md) { get; } | The syntax for MySQL. |
+| static [Postgres](SqlSyntax/Postgres.md) { get; } | The syntax for PostgreSQL. |
+| static [Sqlite](SqlSyntax/Sqlite.md) { get; } | The syntax for SQLite. |
+| static [SqlServer](SqlSyntax/SqlServer.md) { get; } | The syntax for Microsoft SQL Server. |
 | virtual [ParameterPrefix](SqlSyntax/ParameterPrefix.md) { get; } | The prefix for named parameters. |
 | virtual [EscapeLikeFragment](SqlSyntax/EscapeLikeFragment.md)(…) | Escapes a fragment of a LIKE pattern. |
+| virtual [QuoteName](SqlSyntax/QuoteName.md)(…) | Quotes the specified identifier so that it can be used as a schema/table/column name even if it matches a keyword or has special characters. |
 | [Render](SqlSyntax/Render.md)(…) | Renders SQL as text and parameters. |
 
 ## Protected Members

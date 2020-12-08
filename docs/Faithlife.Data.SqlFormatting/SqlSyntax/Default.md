@@ -1,10 +1,14 @@
-# SqlSyntax.Default field
+# SqlSyntax.Default property
 
 The default syntax.
 
 ```csharp
-public static readonly SqlSyntax Default;
+public static SqlSyntax Default { get; }
 ```
+
+## Remarks
+
+The default syntax does not support quoted identifiers, since the syntax is highly dependent on the type of database and its settings.
 
 ## See Also
 

@@ -26,6 +26,7 @@
 
 | public type | description |
 | --- | --- |
+| class [DelegatingSqlSyntax](Faithlife.Data.SqlFormatting/DelegatingSqlSyntax.md) | Delegates methods to an inner SQL syntax. |
 | abstract class [Sql](Faithlife.Data.SqlFormatting/Sql.md) | Encapsulates parameterized SQL. |
 | abstract class [SqlSyntax](Faithlife.Data.SqlFormatting/SqlSyntax.md) | The syntax used by a particular SQL dialect. |
 

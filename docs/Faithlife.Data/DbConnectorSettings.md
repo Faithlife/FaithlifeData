@@ -16,6 +16,7 @@ public class DbConnectorSettings
 | [LazyOpen](DbConnectorSettings/LazyOpen.md) { get; set; } | If true, does not actually open the connection until it is needed. |
 | [NoDispose](DbConnectorSettings/NoDispose.md) { get; set; } | If true, does not dispose the connection when the connector is disposed. |
 | [ProviderMethods](DbConnectorSettings/ProviderMethods.md) { get; set; } | Provider-specific database methods. |
+| [SqlSyntax](DbConnectorSettings/SqlSyntax.md) { get; set; } | The SQL syntax to use when formatting SQL. |
 | [WhenDisposed](DbConnectorSettings/WhenDisposed.md) { get; set; } | Called when the connector is disposed. |
 
 ## See Also
