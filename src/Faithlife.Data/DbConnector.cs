@@ -31,6 +31,11 @@ namespace Faithlife.Data
 		public abstract IDbTransaction? Transaction { get; }
 
 		/// <summary>
+		/// The SQL syntax used when formatting SQL.
+		/// </summary>
+		public virtual SqlSyntax SqlSyntax => SqlSyntax.Default;
+
+		/// <summary>
 		/// Returns the database connection.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
@@ -145,7 +150,7 @@ namespace Faithlife.Data
 		/// <param name="sql">The parameterized SQL.</param>
 		public DbConnectorCommand Command(Sql sql)
 		{
-			var (sqlText, sqlParameters) = SqlSyntax.Default.Render(sql);
+			var (sqlText, sqlParameters) = SqlSyntax.Render(sql);
 			return Command(sqlText, sqlParameters);
 		}
 
@@ -156,7 +161,7 @@ namespace Faithlife.Data
 		/// <param name="parameters">Additional command parameters.</param>
 		public DbConnectorCommand Command(Sql sql, DbParameters parameters)
 		{
-			var (text, sqlParameters) = SqlSyntax.Default.Render(sql);
+			var (text, sqlParameters) = SqlSyntax.Render(sql);
 			return Command(text, sqlParameters.Add(parameters));
 		}
 

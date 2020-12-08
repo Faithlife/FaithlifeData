@@ -41,6 +41,11 @@ namespace Faithlife.Data.SqlFormatting
 		public static Sql LikePrefixParam(string prefix) => new LikePrefixParamSql(prefix ?? throw new ArgumentNullException(nameof(prefix)));
 
 		/// <summary>
+		/// Creates SQL for a quoted identifier.
+		/// </summary>
+		public static Sql Name(string identifier) => new NameSql(identifier ?? throw new ArgumentNullException(nameof(identifier)));
+
+		/// <summary>
 		/// Creates SQL for an arbitrarily named parameter with the specified value.
 		/// </summary>
 		public static Sql Param(object? value) => new ParamSql(value);
@@ -74,6 +79,13 @@ namespace Faithlife.Data.SqlFormatting
 			public LikePrefixParamSql(string prefix) => m_prefix = prefix;
 			internal override string Render(SqlContext context) => context.RenderParam(context.Syntax.EscapeLikeFragment(m_prefix) + "%");
 			private readonly string m_prefix;
+		}
+
+		private sealed class NameSql : Sql
+		{
+			public NameSql(string identifier) => m_identifier = identifier;
+			internal override string Render(SqlContext context) => context.Syntax.QuoteName(m_identifier);
+			private readonly string m_identifier;
 		}
 
 		private sealed class ParamSql : Sql

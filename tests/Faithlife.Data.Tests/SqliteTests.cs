@@ -1,21 +1,21 @@
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
-using Npgsql;
+using Microsoft.Data.Sqlite;
 using NUnit.Framework;
 
 namespace Faithlife.Data.Tests
 {
 	[TestFixture]
-	public class NpgsqlTests
+	public class SqliteTests
 	{
-		[Test, Explicit("Requires 'docker-compose up' from '/docker'.")]
+		[Test]
 		public void PrepareCacheTests()
 		{
 			var tableName = Sql.Name(nameof(PrepareCacheTests));
 
 			using var connector = CreateConnector();
 			connector.Command(Sql.Format($"drop table if exists {tableName};")).Execute();
-			connector.Command(Sql.Format($"create table {tableName} (ItemId serial primary key, Name varchar not null);")).Execute();
+			connector.Command(Sql.Format($"create table {tableName} (ItemId integer primary key, Name text not null);")).Execute();
 
 			var insertSql = Sql.Format($"insert into {tableName} (Name) values (@itemA); insert into {tableName} (Name) values (@itemB);");
 			connector.Command(insertSql, ("itemA", "one"), ("itemB", "two")).Prepare().Cache().Execute().Should().Be(2);
@@ -28,7 +28,7 @@ namespace Faithlife.Data.Tests
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
-			new NpgsqlConnection("host=localhost;user id=root;password=test;database=test"),
-			new DbConnectorSettings { AutoOpen = true, LazyOpen = true, SqlSyntax = SqlSyntax.Postgres });
+			new SqliteConnection("Data Source=:memory:"),
+			new DbConnectorSettings { AutoOpen = true, LazyOpen = true, SqlSyntax = SqlSyntax.Sqlite });
 	}
 }

@@ -12,7 +12,7 @@ namespace Faithlife.Data.Tests
 		[Test]
 		public void PrepareCacheTests()
 		{
-			var tableName = Sql.Raw(nameof(PrepareCacheTests));
+			var tableName = Sql.Name(nameof(PrepareCacheTests));
 
 			using var connector = CreateConnector();
 			connector.Command(Sql.Format($"drop table if exists {tableName};")).Execute();
@@ -32,8 +32,8 @@ namespace Faithlife.Data.Tests
 			var sprocName = nameof(SprocInOutTest);
 
 			using var connector = CreateConnector();
-			connector.Command(Sql.Format($"drop procedure if exists {Sql.Raw(sprocName)};")).Execute();
-			connector.Command(Sql.Format($"create procedure {Sql.Raw(sprocName)} (inout Value int) begin set Value = Value * Value; end;")).Execute();
+			connector.Command(Sql.Format($"drop procedure if exists {Sql.Name(sprocName)};")).Execute();
+			connector.Command(Sql.Format($"create procedure {Sql.Name(sprocName)} (inout Value int) begin set Value = Value * Value; end;")).Execute();
 
 			var param = new MySqlParameter { DbType = DbType.Int32, Direction = ParameterDirection.InputOutput, Value = 11 };
 			connector.StoredProcedure(sprocName, ("Value", param)).Execute();
@@ -46,14 +46,14 @@ namespace Faithlife.Data.Tests
 			var sprocName = nameof(SprocInTest);
 
 			using var connector = CreateConnector();
-			connector.Command(Sql.Format($"drop procedure if exists {Sql.Raw(sprocName)};")).Execute();
-			connector.Command(Sql.Format($"create procedure {Sql.Raw(sprocName)} (in Value int) begin select Value, Value * Value; end;")).Execute();
+			connector.Command(Sql.Format($"drop procedure if exists {Sql.Name(sprocName)};")).Execute();
+			connector.Command(Sql.Format($"create procedure {Sql.Name(sprocName)} (in Value int) begin select Value, Value * Value; end;")).Execute();
 
 			connector.StoredProcedure(sprocName, ("Value", 11)).QuerySingle<(int, long)>().Should().Be((11, 121));
 		}
 
 		private static DbConnector CreateConnector() => DbConnector.Create(
 			new MySqlConnection("Server=localhost;User Id=root;Password=test;SSL Mode=none;Database=test;Ignore Prepare=false;AllowPublicKeyRetrieval=true"),
-			new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+			new DbConnectorSettings { AutoOpen = true, LazyOpen = true, SqlSyntax = SqlSyntax.MySql });
 	}
 }

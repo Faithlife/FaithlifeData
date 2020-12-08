@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using Faithlife.Data.SqlFormatting;
 
 namespace Faithlife.Data
 {
@@ -41,5 +42,10 @@ namespace Faithlife.Data
 		/// Provider-specific database methods.
 		/// </summary>
 		public DbProviderMethods? ProviderMethods { get; set; }
+
+		/// <summary>
+		/// The SQL syntax to use when formatting SQL.
+		/// </summary>
+		public SqlSyntax? SqlSyntax { get; set; }
 	}
 }
