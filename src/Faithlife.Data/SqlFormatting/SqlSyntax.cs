@@ -85,7 +85,7 @@ namespace Faithlife.Data.SqlFormatting
 					'"' => ("\"", "\"", "\"\""),
 					'`' => ("`", "`", "``"),
 					'[' => ("[", "]", "]]"),
-					_ => throw new InvalidOperationException(),
+					_ => throw new ArgumentOutOfRangeException(nameof(nameQuote)),
 				};
 			}
 
