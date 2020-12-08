@@ -10,7 +10,6 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests.SqlFormatting
 {
 	[TestFixture]
-	[SuppressMessage("ReSharper", "InterpolatedStringExpressionIsNotIFormattable", Justification = "Custom formatting.")]
 	public class SqlSyntaxTests
 	{
 		[Test]
