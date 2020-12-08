@@ -1,6 +1,6 @@
 # DelegatingSqlSyntax class
 
-Delegates methods to an inner SQL syntax.
+Delegates to an inner SQL syntax.
 
 ```csharp
 public class DelegatingSqlSyntax : SqlSyntax

@@ -14,6 +14,7 @@
 | struct [DbParameters](Faithlife.Data/DbParameters.md) | An immutable list of parameters. |
 | class [DbProviderMethods](Faithlife.Data/DbProviderMethods.md) | Provides provider-specific database access methods. |
 | abstract class [DbTransactionDisposer](Faithlife.Data/DbTransactionDisposer.md) | Disposes the transaction when disposed. |
+| class [DelegatingDbConnector](Faithlife.Data/DelegatingDbConnector.md) | Delegates to an inner connector. |
 
 ## Faithlife.Data.BulkInsert namespace
 
@@ -26,7 +27,7 @@
 
 | public type | description |
 | --- | --- |
-| class [DelegatingSqlSyntax](Faithlife.Data.SqlFormatting/DelegatingSqlSyntax.md) | Delegates methods to an inner SQL syntax. |
+| class [DelegatingSqlSyntax](Faithlife.Data.SqlFormatting/DelegatingSqlSyntax.md) | Delegates to an inner SQL syntax. |
 | abstract class [Sql](Faithlife.Data.SqlFormatting/Sql.md) | Encapsulates parameterized SQL. |
 | abstract class [SqlSyntax](Faithlife.Data.SqlFormatting/SqlSyntax.md) | The syntax used by a particular SQL dialect. |
 
