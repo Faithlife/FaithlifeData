@@ -23,6 +23,9 @@ With a `DbConnector`, you can:
 * Read multiple result sets from multi-statement commands with [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md).
 * Expand [collection parameters](#parameters-from-collections) to a list of numbered parameters for easier `IN` support.
 * Use [bulk insert](#bulk-insert) to easily and efficiently insert multiple rows into a table.
+* Execute stored procedures with [`DbConnector.StoredProcedure()`](Faithlife.Data/DbConnector/StoredProcedure.md).
+* [Cache](#cached-commands) and/or [prepare](#prepared-commands) commands for possible performance improvements.
+* Use [formatted SQL](#formatted-sql) to use automatically named parameters and safely assemble SQL statements from SQL fragments.
 
 Consult the [reference documentation](Faithlife.Data.md) for additional details.
 
@@ -50,6 +53,14 @@ DbConnector CreateConnector() =>
     DbConnector.Create(new SQLiteConnection("Data Source=:memory:"));
 ```
 
+If you use [formatted SQL](#formatted-sql), be sure to specify your SQL syntax with the [`SqlSyntax`](Faithlife.Data/DbConnectorSettings/SqlSyntax.md) setting
+
+```csharp
+DbConnector CreateConnector() =>
+    DbConnector.Create(new SQLiteConnection("Data Source=:memory:"),
+    new DbConnectorSettings { SqlSyntax = SqlSyntax.Sqlite });
+```
+
 ## Executing a command
 
 Once you have a connector, you can open the connection with [`OpenConnection()`](Faithlife.Data/DbConnector/OpenConnection.md), create a command with [`Command()`](Faithlife.Data/DbConnector/Command.md), and execute the command with [`Execute()`](Faithlife.Data/DbConnectorCommand/Execute.md).
@@ -67,7 +78,7 @@ create table widgets (
 
 ## Accessing the database asynchronously
 
-Every method that has communicates with the database has an asynchronous equivalent, e.g. [`ExecuteAsync()`](Faithlife.Data/DbConnectorCommand/ExecuteAsync.md).
+Every method that has communicates with the database has an asynchronous equivalent, e.g. [`ExecuteAsync()`](Faithlife.Data/DbConnectorCommand/ExecuteAsync.md). Before using the asynchronous methods, make sure that your ADO.NET provider actually supports asynchronous I/O.
 
 ```csharp
 using (var connector = CreateConnector())
@@ -269,12 +280,12 @@ IReadOnlyList<(WidgetDto Widget, dynamic Etc)> GetWidgetAndDynamic2(DbConnector 
 
 ## Parameterized queries
 
-When executing parameterized queries, the parameter values are specified with the [`DbConnector.Command()`](Faithlife.Data/DbConnector/Command.md) method. The simplest way to specify command parameters is via one or more string/object tuples after the command SQL.
+When executing parameterized queries, the parameter values are specified with the [`DbConnector.Command()`](Faithlife.Data/DbConnector/Command.md) method. One way to specify command parameters is via one or more string/object tuples after the command SQL.
 
 ```csharp
 var tallWidgets = connector.Command(
     "select id from widgets where height >= @minHeight and height <= @maxHeight;",
-    ("minHeight", 1.0), ("maxHeight", 100.0)).Query<long>();
+    ("minHeight", minHeight), ("maxHeight", maxHeight)).Query<long>();
 ```
 
 The [`DbParameters`](Faithlife.Data/DbParameters.md) structure can be used to build a list of parameters by calling one of the [`Create()`](Faithlife.Data/DbParameters/Create.md) methods.
@@ -284,7 +295,15 @@ You can add additional parameters by calling the [`Add()`](Faithlife.Data/DbPara
 ```csharp
 var tallWidgets = connector.Command(
     "select id from widgets where height >= @minHeight and height <= @maxHeight;",
-    DbParameters.Create("minHeight", 1.0).Add("maxHeight", 100.0)).Query<long>();
+    DbParameters.Create("minHeight", minHeight).Add("maxHeight", maxHeight)).Query<long>();
+```
+
+The simplest way to specify command parameters is to use [formatted SQL](#formatted-sql).
+
+```csharp
+var tallWidgets = connector.Command(Sql.Format(
+    $"select id from widgets where height >= {minHeight} and height <= {maxHeight};"
+    )).Query<long>();
 ```
 
 ### Parameters from DTOs
@@ -299,15 +318,16 @@ connector.Command(
 
 var tallWidgets = connector.Command(
     "select id from widgets where height >= @minHeight and height <= @maxHeight;",
-    DbParameters.FromDto(new { minHeight = 1.0, maxHeight - 100.0 })).Query<long>();
+    DbParameters.FromDto(new { minHeight = 1.0, maxHeight = 100.0 })).Query<long>();
 ```
+
+Use [`DbParameters.FromDtos()`](Faithlife.Data/DbParameters/FromDtos.md) or [`DbParameters.AddDtos()`](Faithlife.Data/DbParameters/AddDto.md) to create parameters for many DTOs at once.
 
 ### Parameters from collections
 
 Database providers do not typically support collections as parameter values, which makes it difficult to run queries that use the `IN` operator. To expand a collection into a set of numbered parameters, use `...` after the parameter name in the SQL and Faithlife.Data will make the necessary substitutions.
 
 ```csharp
-var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
 connector.Command(
     "select id from widgets where name in (@names...);",
     ("names", new[] { "one", "two", "three" })).Execute();
@@ -316,18 +336,27 @@ connector.Command(
 This is equivalent to:
 
 ```csharp
-var newWidget = new WidgetDto { Name = "Third", Height = 1.414 };
 connector.Command(
     "select id from widgets where name in (@names_0, @names_1, @names_2);",
     ("names_0", "one"), ("names_1", "two"), ("names_2", "three")).Execute();
 ```
 
+This works with [formatted SQL](#formatted-sql) as well.
+
+```csharp
+var names = new[] { "one", "two", "three" };
+connector.Command(Sql.Format(
+    $"select id from widgets where name in ({new[] { "one", "two", "three" }}...);"
+    )).Execute();
+```
+
+Use [`DbParameters.FromMany()`](Faithlife.Data/DbParameters/FromMany.md) or [`DbParameters.AddMany()`](Faithlife.Data/DbParameters/AddMany.md) to explicitly create parameters from a collection.
+
 **Important note:** If the collection is empty, an `InvalidOperationException` will be thrown, since omitting the parameter entirely may not be valid (or intended) SQL.
 
-### Formatting SQL
+## Formatted SQL
 
-Typing parameter names in the SQL command text and parameters objects can sometimes be redundant. [String interpolation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated) can be used
-to put the parameters in the SQL safely by using [`Sql.Format()`](Faithlife.Data.SqlFormatting/Sql/Format.md) to format a `FormattableString` into command text and parameters.
+Typing parameter names in the SQL command text and parameters objects seems redundant. [String interpolation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated) can be used to put the parameters in the SQL safely by using [`Sql.Format()`](Faithlife.Data.SqlFormatting/Sql/Format.md) to format an interpolated string into command text and parameters.
 
 ```csharp
 var name = "First";
@@ -337,15 +366,17 @@ connector.Command(Sql.Format(
     )).Execute();
 ```
 
-This is equivalent to:
+This is equivalent to the following:
 
 ```csharp
 var name = "First";
 var height = 6.875;
 connector.Command(
-    "insert into widgets (name, height) values (@param0, @param1);",
-    ("param0", name), ("param1", height)).Execute();
+    "insert into widgets (name, height) values (@fdp0, @fdp1);",
+    ("fdp0", name), ("fdp1", height)).Execute();
 ```
+
+(`fdp` is just an arbitrary prefix for the automatically named parameters; it stands for "Faithlife.Data parameter".)
 
 Note that using an interpolated string without `Sql.Format()` is still a SQL injection vulnerability:
 
@@ -356,18 +387,20 @@ connector.Command(
     ).Execute();
 ```
 
-SQL text and paramters can be composed using the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class. Non-parameterized SQL can be expressed using [`Sql.Raw()`](Faithlife.Data.SqlFormatting/Sql/Raw.md).
+SQL text and parameters can be composed using instances of the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class with `Sql.Format`. `Sql` instances in interpolated strings are used to build the SQL statement. (They are not converted into parameters like any other value would be.) `Sql.Format` returns a `Sql` instance, so `Sql.Format` can be composed with `Sql.Format` as needed.
 
 ```csharp
 IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
     double? minHeight = null, string[]? fields = null)
 {
-    var whereSql = minHeight is null ? Sql.Raw("") : Sql.Format($"where height >= {minHeight}");
-    var fieldsSql = Sql.Raw(fields is null ? "*" : string.Join(", ", fields));
+    var fieldsSql = fields is null ? Sql.Raw("*") : Sql.Join(", ", fields.Select(Sql.Name)));
+    var whereSql = minHeight is null ? Sql.Empty : Sql.Format($"where height >= {minHeight}");
     return connector.Command(Sql.Format($"select {fieldsSql} from widgets {whereSql};"))
         .Query<WidgetDto>();
 }
 ```
+
+To create a `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class.
 
 ## Single-record queries
 
@@ -411,15 +444,59 @@ var averageHeight = connector.Command("select height from widgets;")
     .Enumerate<double>().Average();
 ```
 
+## Cached commands
+
+Use `Cache()` to potentially improve performance when executing the same query, possibly with different parameters. Cached commands can particularly help with SQLite, which typically doesn't have as much I/O overhead as other databases. The `IDbCommand` object is cached indefinitely with the `DbConnector` object, so avoid caching commands that will only be executed once.
+
+```csharp
+foreach (var (name, size) in widgets)
+{
+    connector.Command(Sql.Format(
+        $"insert into widgets (name, size) values ({name}, {size});"
+    )).Cache().Execute();
+}
+```
+
+## Prepared commands
+
+Use `Prepare()` to automatically call `Prepare` on the `IDbCommand` before it is executed. This can be particularly beneficial with the Npgsql provider for PostgreSQL. Consider using `Cache()` as well, which caches the prepared command and then reuses it without preparing it again. Be sure to measure any performance advantage of caching and/or preparing commands; in particular, preparing the command may *hurt* performance in some scenarios.
+
+```csharp
+foreach (var (name, size) in widgets)
+{
+    connector.Command(Sql.Format(
+        $"insert into widgets (name, size) values ({name}, {size});"
+    )).Prepare().Cache().Execute();
+}
+```
+
+## Command timeout
+
+To override the default timeout for a particular command, use `WithTimeout()`.
+
+```csharp
+connector.Command(Sql.Format(
+    $"insert into widgets (name, size) values ({name}, {size});"
+)).WithTimeout(TimeSpan.FromMinutes(1)).Execute();
+```
+
+## Stored procedures
+
+`DbConnector` also works with stored procedures. Simply call [`StoredProcedure()`](Faithlife.Data/DbConnector/StoredProcedure.md) instead of `Command()` and pass the name of the stored procedure instead of a SQL query.
+
+```csharp
+connector.StoredProcedure("CreateWidget", ("name", name), ("size", size)).Execute();
+```
+
 ## Bulk insert
 
 The [`BulkInsert()`](Faithlife.Data.BulkInsert/BulkInsertUtility/BulkInsert.md) and [`BulkInsertAsync()`](Faithlife.Data.BulkInsert/BulkInsertUtility/BulkInsertAsync.md) extension methods allow simple and efficient insertion of many rows into a database table.
 
-The simplest way to insert many rows into a database table is to execute `INSERT` commands in a loop. Unfortunately, this can be extremely slow, even when the commands are all executed in a single transaction.
+The simplest way to insert many rows into a database table is to execute `INSERT` commands in a loop. Unfortunately, this can be extremely slow, even when the commands are all executed in a single transaction. (SQLite is a notable exception here; inserting one row at a time in a loop can be considerably *faster* than doing a bulk insert.)
 
 Each DBMS has its own preferred approaches for efficiently inserting many rows into a database, but the most portable way is to execute an `INSERT` command with multiple rows in the `VALUES` clause, like so:
 
-```
+```sql
 INSERT INTO widgets (name, size) VALUES ('foo', 22), ('bar', 14), ('baz', 42)
 ```
 
