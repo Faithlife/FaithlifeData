@@ -129,6 +129,16 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			parameters.Should().Equal(("fdp0", "xy\\_zy%"));
 		}
 
+		[Test]
+		public void NameSql()
+		{
+			Invoking(() => SqlSyntax.Default.Render(Sql.Name("xyzzy"))).Should().Throw<InvalidOperationException>();
+			SqlSyntax.MySql.Render(Sql.Name("x`y[z]z\"y")).Text.Should().Be("`x``y[z]z\"y`");
+			SqlSyntax.Postgres.Render(Sql.Name("x`y[z]z\"y")).Text.Should().Be("\"x`y[z]z\"\"y\"");
+			SqlSyntax.SqlServer.Render(Sql.Name("x`y[z]z\"y")).Text.Should().Be("[x`y[z]]z\"y]");
+			SqlSyntax.Sqlite.Render(Sql.Name("x`y[z]z\"y")).Text.Should().Be("\"x`y[z]z\"\"y\"");
+		}
+
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
 	}
 }
