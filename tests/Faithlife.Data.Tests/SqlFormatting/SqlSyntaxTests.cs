@@ -121,6 +121,30 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		}
 
 		[Test]
+		public void AddFragments()
+		{
+			var (text, parameters) = Render(Sql.Format($"select {1};") + Sql.Format($"select {2};"));
+			text.Should().Be("select @fdp0;select @fdp1;");
+			parameters.Should().Equal(("fdp0", 1), ("fdp1", 2));
+		}
+
+		[Test]
+		public void ConcatParams()
+		{
+			var (text, parameters) = Render(Sql.Concat(Sql.Format($"select {1};") + Sql.Format($"select {2};")));
+			text.Should().Be("select @fdp0;select @fdp1;");
+			parameters.Should().Equal(("fdp0", 1), ("fdp1", 2));
+		}
+
+		[Test]
+		public void ConcatEnumerable()
+		{
+			var (text, parameters) = Render(Sql.Concat(Enumerable.Range(1, 2).Select(x => Sql.Format($"select {x};"))));
+			text.Should().Be("select @fdp0;select @fdp1;");
+			parameters.Should().Equal(("fdp0", 1), ("fdp1", 2));
+		}
+
+		[Test]
 		public void LikePrefixParamSql()
 		{
 			var (text, parameters) = Render(Sql.LikePrefixParam("xy_zy"));
