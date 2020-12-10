@@ -321,7 +321,7 @@ var tallWidgets = connector.Command(
     DbParameters.FromDto(new { minHeight = 1.0, maxHeight = 100.0 })).Query<long>();
 ```
 
-Use [`DbParameters.FromDtos()`](Faithlife.Data/DbParameters/FromDtos.md) or [`DbParameters.AddDtos()`](Faithlife.Data/DbParameters/AddDto.md) to create parameters for many DTOs at once.
+Use [`DbParameters.FromDtos()`](Faithlife.Data/DbParameters/FromDtos.md) or [`DbParameters.AddDtos()`](Faithlife.Data/DbParameters/AddDtos.md) to create parameters for many DTOs at once.
 
 ### Parameters from collections
 
@@ -344,7 +344,6 @@ connector.Command(
 This works with [formatted SQL](#formatted-sql) as well.
 
 ```csharp
-var names = new[] { "one", "two", "three" };
 connector.Command(Sql.Format(
     $"select id from widgets where name in ({new[] { "one", "two", "three" }}...);"
     )).Execute();
