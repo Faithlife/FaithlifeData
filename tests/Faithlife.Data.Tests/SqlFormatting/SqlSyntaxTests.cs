@@ -131,7 +131,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		[Test]
 		public void ConcatParams()
 		{
-			var (text, parameters) = Render(Sql.Concat(Sql.Format($"select {1};") + Sql.Format($"select {2};")));
+			var (text, parameters) = Render(Sql.Concat(Sql.Format($"select {1};"), Sql.Format($"select {2};")));
 			text.Should().Be("select @fdp0;select @fdp1;");
 			parameters.Should().Equal(("fdp0", 1), ("fdp1", 2));
 		}
