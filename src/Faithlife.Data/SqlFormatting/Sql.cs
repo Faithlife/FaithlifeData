@@ -20,7 +20,7 @@ namespace Faithlife.Data.SqlFormatting
 		/// Concatenates SQL fragments.
 		/// </summary>
 		public static Sql Concat(params Sql[] sqls) =>
-			new JoinSql("", sqls ?? throw new ArgumentNullException(nameof(sqls)));
+			new ConcatSql(sqls ?? throw new ArgumentNullException(nameof(sqls)));
 
 		/// <summary>
 		/// Concatenates SQL fragments.
