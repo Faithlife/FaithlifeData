@@ -11,12 +11,14 @@ public abstract class Sql
 | name | description |
 | --- | --- |
 | static readonly [Empty](Sql/Empty.md) | An empty SQL string. |
+| static [Concat](Sql/Concat.md)(…) | Concatenates SQL fragments. (2 methods) |
 | static [Format](Sql/Format.md)(…) | Creates SQL from a formatted string. |
 | static [Join](Sql/Join.md)(…) | Joins SQL fragments with the specified separator. (2 methods) |
 | static [LikePrefixParam](Sql/LikePrefixParam.md)(…) | Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing `%`. |
 | static [Name](Sql/Name.md)(…) | Creates SQL for a quoted identifier. |
 | static [Param](Sql/Param.md)(…) | Creates SQL for an arbitrarily named parameter with the specified value. |
 | static [Raw](Sql/Raw.md)(…) | Creates SQL from a raw string. |
+| [operator +](Sql/op_Addition.md) | Concatenates two SQL fragments. |
 
 ## Protected Members
 
