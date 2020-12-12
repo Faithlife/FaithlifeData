@@ -17,6 +17,18 @@ namespace Faithlife.Data.SqlFormatting
 		public static readonly Sql Empty = Sql.Raw("");
 
 		/// <summary>
+		/// Concatenates SQL fragments.
+		/// </summary>
+		public static Sql Concat(params Sql[] sqls) =>
+			new ConcatSql(sqls ?? throw new ArgumentNullException(nameof(sqls)));
+
+		/// <summary>
+		/// Concatenates SQL fragments.
+		/// </summary>
+		public static Sql Concat(IEnumerable<Sql> sqls) =>
+			new ConcatSql(AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))));
+
+		/// <summary>
 		/// Creates SQL from a formatted string.
 		/// </summary>
 		public static Sql Format(FormattableString formattableString) => new FormatSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
@@ -55,15 +67,36 @@ namespace Faithlife.Data.SqlFormatting
 		/// </summary>
 		public static Sql Raw(string text) => new RawSql(text ?? throw new ArgumentNullException(nameof(text)));
 
+		/// <summary>
+		/// Concatenates two SQL fragments.
+		/// </summary>
+		[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Use Concat.")]
+		public static Sql operator +(Sql a, Sql b) => new AddSql(a, b);
+
 		internal abstract string Render(SqlContext context);
 
 		private static IReadOnlyList<T> AsReadOnlyList<T>(IEnumerable<T> items) => (items as IReadOnlyList<T>) ?? items.ToList();
+
+		private sealed class AddSql : Sql
+		{
+			public AddSql(Sql a, Sql b) => (m_a, m_b) = (a, b);
+			internal override string Render(SqlContext context) => m_a.Render(context) + m_b.Render(context);
+			private readonly Sql m_a;
+			private readonly Sql m_b;
+		}
 
 		private sealed class FormatSql : Sql
 		{
 			public FormatSql(FormattableString formattableString) => m_formattableString = formattableString;
 			internal override string Render(SqlContext context) => m_formattableString.ToString(new SqlFormatProvider(context));
 			private readonly FormattableString m_formattableString;
+		}
+
+		private sealed class ConcatSql : Sql
+		{
+			public ConcatSql(IReadOnlyList<Sql> sqls) => m_sqls = sqls;
+			internal override string Render(SqlContext context) => string.Concat(m_sqls.Select(x => x.Render(context)));
+			private readonly IReadOnlyList<Sql> m_sqls;
 		}
 
 		private sealed class JoinSql : Sql
