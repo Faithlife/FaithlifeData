@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;net472</TargetFrameworks>
-    <LangVersion>9.0</LangVersion>
     <AutoGenerateBindingRedirects Condition=" '$(TargetFramework)' == 'net472' ">true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType Condition=" '$(TargetFramework)' == 'net472' ">true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
@@ -11,11 +10,11 @@
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
     <PackageReference Include="Microsoft.Data.SQLite" Version="5.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="MySqlConnector" Version="1.2.0" />
     <PackageReference Include="Npgsql" Version="5.0.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
