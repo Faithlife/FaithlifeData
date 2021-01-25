@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.10.0
+
+* Use `Sql.Concat` or `operator +` to concatenate SQL fragments.
+
 ## 1.9.0
 
 * Use `Sql.Empty` for empty SQL fragments.
