@@ -3,7 +3,7 @@
 The SQL syntax to use when formatting SQL.
 
 ```csharp
-public SqlSyntax SqlSyntax { get; set; }
+public SqlSyntax? SqlSyntax { get; set; }
 ```
 
 ## See Also

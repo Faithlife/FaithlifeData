@@ -3,7 +3,7 @@
 The current transaction, if any.
 
 ```csharp
-public abstract IDbTransaction Transaction { get; }
+public abstract IDbTransaction? Transaction { get; }
 ```
 
 ## See Also

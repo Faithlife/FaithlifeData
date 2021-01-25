@@ -1,8 +1,7 @@
 # DelegatingDbConnector.CommitTransactionAsync method
 
 ```csharp
-public override ValueTask CommitTransactionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+public override ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
 ```
 
 ## See Also

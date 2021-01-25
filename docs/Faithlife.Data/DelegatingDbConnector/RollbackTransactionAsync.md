@@ -1,8 +1,7 @@
 # DelegatingDbConnector.RollbackTransactionAsync method
 
 ```csharp
-public override ValueTask RollbackTransactionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+public override ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default)
 ```
 
 ## See Also

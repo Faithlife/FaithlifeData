@@ -2,7 +2,7 @@
 
 ```csharp
 public override ValueTask<DbTransactionDisposer> BeginTransactionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 ## See Also
@@ -17,7 +17,7 @@ public override ValueTask<DbTransactionDisposer> BeginTransactionAsync(
 
 ```csharp
 public override ValueTask<DbTransactionDisposer> BeginTransactionAsync(
-    IsolationLevel isolationLevel, CancellationToken cancellationToken = default(CancellationToken))
+    IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
 ```
 
 ## See Also

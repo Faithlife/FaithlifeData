@@ -4,7 +4,7 @@ Returns the database connection.
 
 ```csharp
 public abstract ValueTask<IDbConnection> GetConnectionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 | parameter | description |

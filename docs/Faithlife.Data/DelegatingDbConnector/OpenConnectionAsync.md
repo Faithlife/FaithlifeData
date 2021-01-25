@@ -2,7 +2,7 @@
 
 ```csharp
 public override ValueTask<DbConnectionCloser> OpenConnectionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 ## See Also

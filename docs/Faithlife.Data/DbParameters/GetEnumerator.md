@@ -3,7 +3,7 @@
 Used to enumerate the parameters.
 
 ```csharp
-public IEnumerator<ValueTuple<string, object>> GetEnumerator()
+public IEnumerator<(string Name, object? Value)> GetEnumerator()
 ```
 
 ## See Also

@@ -3,7 +3,7 @@
 Creates SQL for an arbitrarily named parameter with the specified value.
 
 ```csharp
-public static Sql Param(object value)
+public static Sql Param(object? value)
 ```
 
 ## See Also

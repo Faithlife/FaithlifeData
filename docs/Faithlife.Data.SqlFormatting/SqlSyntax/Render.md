@@ -3,7 +3,7 @@
 Renders SQL as text and parameters.
 
 ```csharp
-public ValueTuple<string, DbParameters> Render(Sql sql)
+public (string Text, DbParameters Parameters) Render(Sql sql)
 ```
 
 ## See Also

@@ -44,6 +44,28 @@ public DbConnectorCommand Command(string text)
 Creates a new command.
 
 ```csharp
+public DbConnectorCommand Command(Sql sql, params (string Name, object? Value)[] parameters)
+```
+
+| parameter | description |
+| --- | --- |
+| sql | The parameterized SQL. |
+| parameters | Additional command parameters. |
+
+## See Also
+
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
+* class [Sql](../../Faithlife.Data.SqlFormatting/Sql.md)
+* class [DbConnector](../DbConnector.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbConnector.Command method (4 of 6)
+
+Creates a new command.
+
+```csharp
 public DbConnectorCommand Command(Sql sql, DbParameters parameters)
 ```
 
@@ -62,29 +84,28 @@ public DbConnectorCommand Command(Sql sql, DbParameters parameters)
 
 ---
 
-# DbConnector.Command method (4 of 6)
+# DbConnector.Command method (5 of 6)
 
 Creates a new command.
 
 ```csharp
-public DbConnectorCommand Command(Sql sql, params ValueTuple<string, object>[] parameters)
+public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters)
 ```
 
 | parameter | description |
 | --- | --- |
-| sql | The parameterized SQL. |
-| parameters | Additional command parameters. |
+| text | The text of the command. |
+| parameters | The command parameters. |
 
 ## See Also
 
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
-* class [Sql](../../Faithlife.Data.SqlFormatting/Sql.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
 ---
 
-# DbConnector.Command method (5 of 6)
+# DbConnector.Command method (6 of 6)
 
 Creates a new command.
 
@@ -101,27 +122,6 @@ public DbConnectorCommand Command(string text, DbParameters parameters)
 
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * struct [DbParameters](../DbParameters.md)
-* class [DbConnector](../DbConnector.md)
-* namespace [Faithlife.Data](../../Faithlife.Data.md)
-
----
-
-# DbConnector.Command method (6 of 6)
-
-Creates a new command.
-
-```csharp
-public DbConnectorCommand Command(string text, params ValueTuple<string, object>[] parameters)
-```
-
-| parameter | description |
-| --- | --- |
-| text | The text of the command. |
-| parameters | The command parameters. |
-
-## See Also
-
-* struct [DbConnectorCommand](../DbConnectorCommand.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

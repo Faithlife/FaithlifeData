@@ -4,7 +4,7 @@ Efficiently inserts multiple rows, in batches as necessary.
 
 ```csharp
 public static int BulkInsert(this DbConnectorCommand command, IEnumerable<DbParameters> rows, 
-    BulkInsertSettings settings = null)
+    BulkInsertSettings? settings = null)
 ```
 
 ## See Also

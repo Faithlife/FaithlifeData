@@ -4,7 +4,7 @@ Begins a transaction.
 
 ```csharp
 public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 | parameter | description |
@@ -30,7 +30,7 @@ Begins a transaction.
 
 ```csharp
 public abstract ValueTask<DbTransactionDisposer> BeginTransactionAsync(
-    IsolationLevel isolationLevel, CancellationToken cancellationToken = default(CancellationToken))
+    IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
 ```
 
 | parameter | description |

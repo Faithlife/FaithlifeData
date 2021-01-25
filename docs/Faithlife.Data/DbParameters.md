@@ -3,7 +3,7 @@
 An immutable list of parameters.
 
 ```csharp
-public struct DbParameters : IReadOnlyList<ValueTuple<string, object>>
+public struct DbParameters : IReadOnlyList<(string, object)>
 ```
 
 ## Public Members

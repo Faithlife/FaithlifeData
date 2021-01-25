@@ -3,7 +3,7 @@
 Creates a new DbConnector.
 
 ```csharp
-public static DbConnector Create(IDbConnection connection, DbConnectorSettings settings = null)
+public static DbConnector Create(IDbConnection connection, DbConnectorSettings? settings = null)
 ```
 
 | parameter | description |

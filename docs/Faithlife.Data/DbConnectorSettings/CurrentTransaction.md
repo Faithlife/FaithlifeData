@@ -3,7 +3,7 @@
 The current transaction of the connection.
 
 ```csharp
-public IDbTransaction CurrentTransaction { get; set; }
+public IDbTransaction? CurrentTransaction { get; set; }
 ```
 
 ## See Also

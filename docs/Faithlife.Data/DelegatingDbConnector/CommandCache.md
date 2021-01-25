@@ -1,7 +1,7 @@
 # DelegatingDbConnector.CommandCache property
 
 ```csharp
-protected override DbCommandCache CommandCache { get; }
+protected override DbCommandCache? CommandCache { get; }
 ```
 
 ## See Also

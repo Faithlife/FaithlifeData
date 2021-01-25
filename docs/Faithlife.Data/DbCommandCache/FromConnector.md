@@ -3,7 +3,7 @@
 Provides access via connector. Used when creating wrapping connectors.
 
 ```csharp
-public static DbCommandCache FromConnector(DbConnector connector)
+public static DbCommandCache? FromConnector(DbConnector connector)
 ```
 
 ## See Also

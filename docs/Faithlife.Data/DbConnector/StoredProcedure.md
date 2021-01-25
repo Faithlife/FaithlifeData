@@ -23,6 +23,28 @@ public DbConnectorCommand StoredProcedure(string name)
 Creates a new command.
 
 ```csharp
+public DbConnectorCommand StoredProcedure(string name, 
+    params (string Name, object? Value)[] parameters)
+```
+
+| parameter | description |
+| --- | --- |
+| name | The name of the stored procedure. |
+| parameters | The command parameters. |
+
+## See Also
+
+* struct [DbConnectorCommand](../DbConnectorCommand.md)
+* class [DbConnector](../DbConnector.md)
+* namespace [Faithlife.Data](../../Faithlife.Data.md)
+
+---
+
+# DbConnector.StoredProcedure method (3 of 3)
+
+Creates a new command.
+
+```csharp
 public DbConnectorCommand StoredProcedure(string name, DbParameters parameters)
 ```
 
@@ -35,28 +57,6 @@ public DbConnectorCommand StoredProcedure(string name, DbParameters parameters)
 
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * struct [DbParameters](../DbParameters.md)
-* class [DbConnector](../DbConnector.md)
-* namespace [Faithlife.Data](../../Faithlife.Data.md)
-
----
-
-# DbConnector.StoredProcedure method (3 of 3)
-
-Creates a new command.
-
-```csharp
-public DbConnectorCommand StoredProcedure(string name, 
-    params ValueTuple<string, object>[] parameters)
-```
-
-| parameter | description |
-| --- | --- |
-| name | The name of the stored procedure. |
-| parameters | The command parameters. |
-
-## See Also
-
-* struct [DbConnectorCommand](../DbConnectorCommand.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

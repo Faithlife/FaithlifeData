@@ -3,7 +3,7 @@
 The parameter at the specified index.
 
 ```csharp
-public ValueTuple<string, object> this[int index] { get; }
+public (string Name, object? Value) this[int index] { get; }
 ```
 
 ## See Also

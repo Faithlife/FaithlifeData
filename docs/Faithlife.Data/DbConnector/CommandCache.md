@@ -3,7 +3,7 @@
 Gets the command cache, if supported.
 
 ```csharp
-protected virtual DbCommandCache CommandCache { get; }
+protected virtual DbCommandCache? CommandCache { get; }
 ```
 
 ## See Also

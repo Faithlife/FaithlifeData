@@ -3,8 +3,7 @@
 Executes the query, converting the first record to the specified type.
 
 ```csharp
-public ValueTask<T> QuerySingleAsync<T>(
-    CancellationToken cancellationToken = default(CancellationToken))
+public ValueTask<T> QuerySingleAsync<T>(CancellationToken cancellationToken = default)
 ```
 
 ## Remarks
@@ -25,7 +24,7 @@ Executes the query, converting the first record to the specified type with the s
 
 ```csharp
 public ValueTask<T> QuerySingleAsync<T>(Func<IDataRecord, T> map, 
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 ## Remarks

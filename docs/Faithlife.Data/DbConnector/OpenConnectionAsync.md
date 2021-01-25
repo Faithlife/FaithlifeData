@@ -4,7 +4,7 @@ Opens the connection.
 
 ```csharp
 public abstract ValueTask<DbConnectionCloser> OpenConnectionAsync(
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 | parameter | description |

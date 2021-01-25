@@ -3,8 +3,7 @@
 Executes the query, reading one record at a time and converting it to the specified type.
 
 ```csharp
-public IAsyncEnumerable<T> EnumerateAsync<T>(
-    CancellationToken cancellationToken = default(CancellationToken))
+public IAsyncEnumerable<T> EnumerateAsync<T>(CancellationToken cancellationToken = default)
 ```
 
 ## See Also
@@ -21,7 +20,7 @@ Executes the query, reading one record at a time and converting it to the specif
 
 ```csharp
 public IAsyncEnumerable<T> EnumerateAsync<T>(Func<IDataRecord, T> map, 
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 ## See Also

@@ -3,8 +3,7 @@
 Reads a result set, converting each record to the specified type.
 
 ```csharp
-public ValueTask<IReadOnlyList<T>> ReadAsync<T>(
-    CancellationToken cancellationToken = default(CancellationToken))
+public ValueTask<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationToken = default)
 ```
 
 ## See Also
@@ -21,7 +20,7 @@ Reads a result set, converting each record to the specified type with the specif
 
 ```csharp
 public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> map, 
-    CancellationToken cancellationToken = default(CancellationToken))
+    CancellationToken cancellationToken = default)
 ```
 
 ## See Also

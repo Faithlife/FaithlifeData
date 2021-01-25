@@ -1,9 +1,9 @@
 # DbParameters.Create method (1 of 5)
 
-Creates a list of parameters from a sequence of tuples.
+Creates a list of parameters from tuples.
 
 ```csharp
-public static DbParameters Create(IEnumerable<ValueTuple<string, object>> parameters)
+public static DbParameters Create(params (string Name, object? Value)[] parameters)
 ```
 
 ## See Also
@@ -15,10 +15,10 @@ public static DbParameters Create(IEnumerable<ValueTuple<string, object>> parame
 
 # DbParameters.Create method (2 of 5)
 
-Creates a list of parameters from tuples.
+Creates a list of parameters from a sequence of tuples.
 
 ```csharp
-public static DbParameters Create(params ValueTuple<string, object>[] parameters)
+public static DbParameters Create(IEnumerable<(string Name, object? Value)> parameters)
 ```
 
 ## See Also
@@ -33,7 +33,7 @@ public static DbParameters Create(params ValueTuple<string, object>[] parameters
 Creates a list of parameters with one parameter.
 
 ```csharp
-public static DbParameters Create(string name, object value)
+public static DbParameters Create(string name, object? value)
 ```
 
 ## See Also

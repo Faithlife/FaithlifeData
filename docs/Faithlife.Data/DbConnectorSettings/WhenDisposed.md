@@ -3,7 +3,7 @@
 Called when the connector is disposed.
 
 ```csharp
-public Action WhenDisposed { get; set; }
+public Action? WhenDisposed { get; set; }
 ```
 
 ## See Also

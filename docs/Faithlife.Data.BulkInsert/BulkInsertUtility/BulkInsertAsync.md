@@ -22,8 +22,8 @@ Efficiently inserts multiple rows, in batches as necessary.
 
 ```csharp
 public static Task<int> BulkInsertAsync(this DbConnectorCommand command, 
-    IEnumerable<DbParameters> rows, BulkInsertSettings settings = null, 
-    CancellationToken cancellationToken = default(CancellationToken))
+    IEnumerable<DbParameters> rows, BulkInsertSettings? settings = null, 
+    CancellationToken cancellationToken = default)
 ```
 
 ## See Also

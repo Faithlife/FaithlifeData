@@ -3,7 +3,7 @@
 Provider-specific database methods.
 
 ```csharp
-public DbProviderMethods ProviderMethods { get; set; }
+public DbProviderMethods? ProviderMethods { get; set; }
 ```
 
 ## See Also

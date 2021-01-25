@@ -1,7 +1,7 @@
 # DelegatingDbConnector.Transaction property
 
 ```csharp
-public override IDbTransaction Transaction { get; }
+public override IDbTransaction? Transaction { get; }
 ```
 
 ## See Also

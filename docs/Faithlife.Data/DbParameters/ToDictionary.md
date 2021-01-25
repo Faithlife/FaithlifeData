@@ -3,7 +3,7 @@
 Creates a dictionary of parameters.
 
 ```csharp
-public Dictionary<string, object> ToDictionary()
+public Dictionary<string, object?> ToDictionary()
 ```
 
 ## See Also
