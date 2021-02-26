@@ -81,8 +81,8 @@ create table widgets (
 Every method that has communicates with the database has an asynchronous equivalent, e.g. [`ExecuteAsync()`](Faithlife.Data/DbConnectorCommand/ExecuteAsync.md). Before using the asynchronous methods, make sure that your ADO.NET provider actually supports asynchronous I/O.
 
 ```csharp
-using (var connector = CreateConnector())
-using (await connector.OpenConnectionAsync())
+await using (var connector = CreateConnector())
+await using (await connector.OpenConnectionAsync())
 {
     await connector.Command(@"
 create table widgets (
@@ -248,7 +248,7 @@ Record fields can also be mapped to a dictionary of strings to objects, in which
 
 ```csharp
 var dictionary = connector.Command("select name, height from widgets;")
-    .Query<Dictionary<string, object>>();
+    .Query<Dictionary<string, object>>()[0];
 double height = (double) dictionary["height"];
 ```
 
