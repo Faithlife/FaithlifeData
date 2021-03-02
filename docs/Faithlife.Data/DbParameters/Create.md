@@ -45,10 +45,10 @@ public static DbParameters Create(string name, object? value)
 
 # DbParameters.Create&lt;T&gt; method (4 of 5)
 
-Creates a list of parameters from a dictionary.
+Creates a list of parameters from a sequence of tuples.
 
 ```csharp
-public static DbParameters Create<T>(IEnumerable<KeyValuePair<string, T>> parameters)
+public static DbParameters Create<T>(IEnumerable<(string Name, T Value)> parameters)
 ```
 
 ## See Also
@@ -60,10 +60,10 @@ public static DbParameters Create<T>(IEnumerable<KeyValuePair<string, T>> parame
 
 # DbParameters.Create&lt;T&gt; method (5 of 5)
 
-Creates a list of parameters from a sequence of tuples.
+Creates a list of parameters from a dictionary.
 
 ```csharp
-public static DbParameters Create<T>(IEnumerable<ValueTuple<string, T>> parameters)
+public static DbParameters Create<T>(IEnumerable<KeyValuePair<string, T>> parameters)
 ```
 
 ## See Also

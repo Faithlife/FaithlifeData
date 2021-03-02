@@ -60,10 +60,10 @@ public DbParameters Add(string name, object? value)
 
 # DbParameters.Add&lt;T&gt; method (5 of 6)
 
-Adds parameters from a dictionary.
+Adds parameters from a sequence of tuples.
 
 ```csharp
-public DbParameters Add<T>(IEnumerable<KeyValuePair<string, T>> parameters)
+public DbParameters Add<T>(IEnumerable<(string Name, T Value)> parameters)
 ```
 
 ## See Also
@@ -75,10 +75,10 @@ public DbParameters Add<T>(IEnumerable<KeyValuePair<string, T>> parameters)
 
 # DbParameters.Add&lt;T&gt; method (6 of 6)
 
-Adds parameters from a sequence of tuples.
+Adds parameters from a dictionary.
 
 ```csharp
-public DbParameters Add<T>(IEnumerable<ValueTuple<string, T>> parameters)
+public DbParameters Add<T>(IEnumerable<KeyValuePair<string, T>> parameters)
 ```
 
 ## See Also
