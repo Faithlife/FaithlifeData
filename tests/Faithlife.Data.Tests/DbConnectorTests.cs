@@ -496,6 +496,18 @@ namespace Faithlife.Data.Tests
 				.Should().Throw<InvalidOperationException>();
 		}
 
+		[Test]
+		public void ExplicitParameterTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text null, Number integer null);").Execute();
+			connector.Command("insert into Items (Name, Number) values (@Name, @Number);", ("Name", 'A'), ("Number", 'A')).Execute();
+			connector.Command("select Name, Number from Items order by ItemId limit 1;").QuerySingle<(string, string)>().Should().Be(("A", "A"));
+			connector.Command("insert into Items (Name, Number) values (@Name, @Number);",
+				("Name", new SqliteParameter { Value = 'A', SqliteType = SqliteType.Text }), ("Number", new SqliteParameter { Value = 'A', SqliteType = SqliteType.Integer })).Execute();
+			connector.Command("select Name, Number from Items order by ItemId limit 1 offset 1;").QuerySingle<(string, long)>().Should().Be(("A", 65L));
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
