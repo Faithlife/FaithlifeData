@@ -208,9 +208,15 @@ namespace Faithlife.Data
 				try
 				{
 					if (m_strategy == DbValueTypeStrategy.Enum)
+					{
+						if (value is T enumValue)
+							return enumValue;
+						if (value is string stringValue)
+							return (T) Enum.Parse(m_coreType, stringValue, ignoreCase: true);
 						return (T) Enum.ToObject(m_coreType, value);
-					else
-						return (T) value;
+					}
+
+					return (T) value;
 				}
 				catch (Exception exception) when (exception is ArgumentException || exception is InvalidCastException)
 				{

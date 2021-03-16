@@ -224,6 +224,8 @@ The supported simple types are `string`, `long`, `int`, `short`, `byte`, `ulong`
 
 Use `byte[]` or `Stream` to return the bytes from a "blob" column. If a non-null `Stream` is returned, be sure to dispose it.
 
+Enumerated types (defined with `enum` in C#) are supported like simple types, except that conversions are performed if needed. Specifically, strings are parsed to the enumerated type (ignoring case) and integral types are cast to the enumerated type.
+
 ### Tuples
 
 Use tuples to map multiple record fields at once. Each tuple item is read from the record in order. The record field names are ignored, as are the tuple item names, if any.

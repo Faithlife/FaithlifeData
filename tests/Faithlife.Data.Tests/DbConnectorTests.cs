@@ -476,6 +476,26 @@ namespace Faithlife.Data.Tests
 			Invoking(() => connector2.Command("insert into Items (Name) values ('querty');").WithTimeout(TimeSpan.FromSeconds(1)).Execute()).Should().Throw<SqliteException>();
 		}
 
+		[Test]
+		public void EnumQueryTests()
+		{
+			using var connector = CreateConnector();
+			connector.Command("create table Items (ItemId integer primary key, Name text null, Number integer null);").Execute();
+			connector.Command("insert into Items (Name, Number) values ('Ordinal', 4), ('ordinal', null), (null, 4), ('fail', null);").Execute();
+			connector.Command("select Name, Number from Items order by ItemId limit 1;")
+				.QuerySingle<(StringComparison, StringComparison)>()
+				.Should().Be((StringComparison.Ordinal, StringComparison.Ordinal));
+			connector.Command("select Name, Number from Items order by ItemId limit 1 offset 1;")
+				.QuerySingle<(StringComparison, StringComparison?)>()
+				.Should().Be((StringComparison.Ordinal, null));
+			connector.Command("select Name, Number from Items order by ItemId limit 1 offset 2;")
+				.QuerySingle<(StringComparison?, StringComparison)>()
+				.Should().Be((null, StringComparison.Ordinal));
+			Invoking(() => connector.Command("select Name, Number from Items order by ItemId limit 1 offset 3;")
+				.QuerySingle<(StringComparison?, StringComparison?)>())
+				.Should().Throw<InvalidOperationException>();
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();

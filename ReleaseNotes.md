@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.11.0
+
+* Map strings to enumerated types.
+
 ## 1.10.0
 
 * Use `Sql.Concat` or `operator +` to concatenate SQL fragments.
