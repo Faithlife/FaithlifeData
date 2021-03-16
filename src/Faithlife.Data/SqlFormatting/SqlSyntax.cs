@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Faithlife.Data.SqlFormatting
 {
@@ -46,6 +47,7 @@ namespace Faithlife.Data.SqlFormatting
 		/// and <c>_</c> escaped as needed. This string is not raw SQL, but rather
 		/// a fragment of a LIKE pattern that should be concatenated with the rest of
 		/// the LIKE pattern and sent to the database via a string parameter.</returns>
+		[SuppressMessage("Globalization", "CA1307:Specify StringComparison for clarity", Justification = ".NET Standard 2.0")]
 		public virtual string EscapeLikeFragment(string fragment)
 		{
 			const string escapeString = @"\";
@@ -89,6 +91,7 @@ namespace Faithlife.Data.SqlFormatting
 				};
 			}
 
+			[SuppressMessage("Globalization", "CA1307:Specify StringComparison for clarity", Justification = ".NET Standard 2.0")]
 			public override string QuoteName(string name) =>
 				m_nameQuoteStart + name.Replace(m_nameQuoteEnd, m_nameQuoteEndEscape) + m_nameQuoteEnd;
 
