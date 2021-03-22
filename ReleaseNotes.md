@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.12.0
+
+* `connector.CommandFormat($"...")` is shorthand for `connector.Command(Sql.Format($"..."))`.
+
 ## 1.11.0
 
 * Map strings to enumerated types.

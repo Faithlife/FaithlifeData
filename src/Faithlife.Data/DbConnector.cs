@@ -145,7 +145,7 @@ namespace Faithlife.Data
 		public DbConnectorCommand Command(string text, params (string Name, object? Value)[] parameters) => Command(text, DbParameters.Create(parameters));
 
 		/// <summary>
-		/// Creates a new command.
+		/// Creates a new command from parameterized SQL.
 		/// </summary>
 		/// <param name="sql">The parameterized SQL.</param>
 		public DbConnectorCommand Command(Sql sql)
@@ -155,7 +155,7 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Creates a new command.
+		/// Creates a new command from parameterized SQL.
 		/// </summary>
 		/// <param name="sql">The parameterized SQL.</param>
 		/// <param name="parameters">Additional command parameters.</param>
@@ -166,11 +166,34 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
-		/// Creates a new command.
+		/// Creates a new command from parameterized SQL.
 		/// </summary>
 		/// <param name="sql">The parameterized SQL.</param>
 		/// <param name="parameters">Additional command parameters.</param>
 		public DbConnectorCommand Command(Sql sql, params (string Name, object? Value)[] parameters) => Command(sql, DbParameters.Create(parameters));
+
+		/// <summary>
+		/// Creates a new command from a formatted SQL string.
+		/// </summary>
+		/// <param name="sql">The formatted SQL string.</param>
+		/// <remarks>Shorthand for <c>Command(Sql.Format($"..."))</c>.</remarks>
+		public DbConnectorCommand CommandFormat(FormattableString sql) => Command(Sql.Format(sql));
+
+		/// <summary>
+		/// Creates a new command from a formatted SQL string.
+		/// </summary>
+		/// <param name="sql">The formatted SQL string.</param>
+		/// <param name="parameters">Additional command parameters.</param>
+		/// <remarks>Shorthand for <c>Command(Sql.Format($"..."), parameters)</c>.</remarks>
+		public DbConnectorCommand CommandFormat(FormattableString sql, DbParameters parameters) => Command(Sql.Format(sql), parameters);
+
+		/// <summary>
+		/// Creates a new command from a formatted SQL string.
+		/// </summary>
+		/// <param name="sql">The formatted SQL string.</param>
+		/// <param name="parameters">Additional command parameters.</param>
+		/// <remarks>Shorthand for <c>Command(Sql.Format($"..."), parameters)</c>.</remarks>
+		public DbConnectorCommand CommandFormat(FormattableString sql, params (string Name, object? Value)[] parameters) => Command(Sql.Format(sql), parameters);
 
 		/// <summary>
 		/// Creates a new command to access a stored procedure.
