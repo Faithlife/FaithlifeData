@@ -314,6 +314,15 @@ IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
 
 To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class.
 
+Since commands are commonly created with a single call to `Sql.Format`, the [`CommandFormat`](Faithlife.Data/DbConnector/CommandFormat.md) method can be used as shorthand.
+
+```csharp
+void InsertWidget(DbConnector connector, string name, double height) =>
+    connector.CommandFormat(
+        $"insert into widgets (name, height) values ({name}, {height});"
+        ).Execute();
+```
+
 ### Collection parameters
 
 Database providers do not typically support collections as parameter values, which makes it difficult to run queries that use the `IN` operator. To expand a collection into a set of numbered parameters, use `...` after the parameter name in the SQL and Faithlife.Data will make the necessary substitutions.
