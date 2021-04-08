@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -493,6 +494,20 @@ namespace Faithlife.Data.Tests
 			reader.Get<(long, double)>("TheInteger", "TheReal").Should().Be((s_dto.TheInteger, s_dto.TheReal));
 		}
 
+		[Test]
+		public void CustomDtoTests()
+		{
+			using var connection = GetOpenConnection();
+			using var command = connection.CreateCommand();
+			command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+			using var reader = command.ExecuteReader();
+
+			reader.Read().Should().BeTrue();
+			reader.Get<CustomColumnDto>(0, 1).Should().BeEquivalentTo(new CustomColumnDto { Text = s_dto.TheText });
+			reader.Read().Should().BeTrue();
+			reader.Get<CustomColumnDto>(0, 1).Should().BeNull();
+		}
+
 		private static IDbConnection GetOpenConnection()
 		{
 			var connection = new SqliteConnection("Data Source=:memory:");
@@ -525,6 +540,12 @@ namespace Faithlife.Data.Tests
 			public long TheInteger { get; set; }
 			public double TheReal { get; set; }
 			public byte[]? TheBlob { get; set; }
+		}
+
+		private class CustomColumnDto
+		{
+			[Column("TheText")]
+			public string? Text { get; set; }
 		}
 
 #pragma warning disable CA1801, SA1313
