@@ -11,6 +11,10 @@ public abstract class Sql
 | name | description |
 | --- | --- |
 | static readonly [Empty](Sql/Empty.md) | An empty SQL string. |
+| static [ColumnNames](Sql/ColumnNames.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type. (2 methods) |
+| static [ColumnNames&lt;T&gt;](Sql/ColumnNames.md)() | Returns a comma-delimited list of column names for a DTO of the specified type. |
+| static [ColumnNames&lt;T&gt;](Sql/ColumnNames.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type. |
+| static [ColumnParams](Sql/ColumnParams.md)(…) | Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO. |
 | static [Concat](Sql/Concat.md)(…) | Concatenates SQL fragments. (2 methods) |
 | static [Format](Sql/Format.md)(…) | Creates SQL from a formatted string. |
 | static [Join](Sql/Join.md)(…) | Joins SQL fragments with the specified separator. (2 methods) |
