@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.13.0
+
+* Use `Sql.ColumnNames` to format a comma-delimited list of column names for a DTO.
+* Use `Sql.ColumnParams` to format a comma-delimited list of parameters from a DTO.
+* Respect `ColumnAttribute` on DTOs when querying or using `Sql.ColumnNames`.
+
 ## 1.12.0
 
 * `connector.CommandFormat($"...")` is shorthand for `connector.Command(Sql.Format($"..."))`.
