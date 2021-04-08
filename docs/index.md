@@ -248,7 +248,7 @@ class WidgetDto
 }
 ```
 
-When a DTO type is used, a new instance of the DTO is created, and each record field is mapped to a DTO property whose name matches the field name, ignoring case and any underscores (so `full_name` would map successfully to `FullName`, for example). Not every property of the DTO must be used, but every mapped field must have a corresponding property.
+When a DTO type is used, a new instance of the DTO is created, and each record field is mapped to a DTO property whose name matches the field name, ignoring case and any underscores (so `full_name` would map successfully to `FullName`, for example). If the property has a `Column` attribute with a non-null `Name` property (e.g. from [System.ComponentModel.DataAnnotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.columnattribute)), that name is used instead of the field name. Not every property of the DTO must be used, but every mapped field must have a corresponding property.
 
 ```csharp
 IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector) =>
