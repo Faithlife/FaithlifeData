@@ -25,6 +25,7 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
 </Project>

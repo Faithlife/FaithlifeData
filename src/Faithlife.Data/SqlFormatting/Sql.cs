@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Faithlife.Reflection;
 
 namespace Faithlife.Data.SqlFormatting
 {
@@ -15,6 +16,35 @@ namespace Faithlife.Data.SqlFormatting
 		/// An empty SQL string.
 		/// </summary>
 		public static readonly Sql Empty = Sql.Raw("");
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type.
+		/// </summary>
+		public static Sql ColumnNames<T>() => new ColumnNamesSql(typeof(T));
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type.
+		/// </summary>
+		public static Sql ColumnNames(Type type) => new ColumnNamesSql(type);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name.</remarks>
+		public static Sql ColumnNames<T>(string tableName) => new ColumnNamesSql(typeof(T), tableName);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name.</remarks>
+		public static Sql ColumnNames(Type type, string tableName) => new ColumnNamesSql(type, tableName);
+
+		/// <summary>
+		/// Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO.
+		/// </summary>
+		public static Sql ColumnParams(object dto) => new ColumnParamsSql(dto ?? throw new ArgumentNullException(nameof(dto)));
 
 		/// <summary>
 		/// Concatenates SQL fragments.
@@ -83,6 +113,41 @@ namespace Faithlife.Data.SqlFormatting
 			internal override string Render(SqlContext context) => m_a.Render(context) + m_b.Render(context);
 			private readonly Sql m_a;
 			private readonly Sql m_b;
+		}
+
+		private sealed class ColumnNamesSql : Sql
+		{
+			public ColumnNamesSql(Type type, string? tableName = null) => (m_type, m_tableName) = (type, tableName);
+
+			internal override string Render(SqlContext context)
+			{
+				var properties = DtoInfo.GetInfo(m_type).Properties;
+				if (properties.Count == 0)
+					throw new InvalidOperationException($"The specified type has no columns: {m_type.FullName}");
+				var dbInfo = DbValueTypeInfo.GetInfo(m_type);
+				if (m_tableName is null)
+					return string.Join(", ", properties.Select(x => context.Syntax.QuoteName(dbInfo.GetColumnName(x.Name))));
+				return string.Join(", ", properties.Select(x => context.Syntax.QuoteName(m_tableName) + "." + context.Syntax.QuoteName(dbInfo.GetColumnName(x.Name))));
+			}
+
+			private readonly Type m_type;
+			private readonly string? m_tableName;
+		}
+
+		private sealed class ColumnParamsSql : Sql
+		{
+			public ColumnParamsSql(object dto) => m_dto = dto;
+
+			internal override string Render(SqlContext context)
+			{
+				var type = m_dto.GetType();
+				var properties = DtoInfo.GetInfo(type).Properties;
+				if (properties.Count == 0)
+					throw new InvalidOperationException($"The specified type has no columns: {type.FullName}");
+				return string.Join(", ", properties.Select(x => context.RenderParam(x.GetValue(m_dto))));
+			}
+
+			private readonly object m_dto;
 		}
 
 		private sealed class FormatSql : Sql

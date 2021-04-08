@@ -248,7 +248,7 @@ class WidgetDto
 }
 ```
 
-When a DTO type is used, a new instance of the DTO is created, and each record field is mapped to a DTO property whose name matches the field name, ignoring case and any underscores (so `full_name` would map successfully to `FullName`, for example). Not every property of the DTO must be used, but every mapped field must have a corresponding property.
+When a DTO type is used, a new instance of the DTO is created, and each record field is mapped to a DTO property whose name matches the field name, ignoring case and any underscores (so `full_name` would map successfully to `FullName`, for example). If the property has a `Column` attribute with a non-null `Name` property (e.g. from [System.ComponentModel.DataAnnotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.columnattribute)), that name is used instead of the field name. Not every property of the DTO must be used, but every mapped field must have a corresponding property.
 
 ```csharp
 IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector) =>
@@ -312,7 +312,17 @@ IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
 }
 ```
 
-To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class.
+To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class:
+
+* [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) generates a list of column names from a DTO for SELECT and INSERT statements.
+* [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) generates a list of parameters from a DTO for an INSERT statement.
+* [`Sql.Concat`](Faithlife.Data.SqlFormatting/Sql/Concat.md) (or [`operator +`](Faithlife.Data.SqlFormatting/Sql/op_Addition.md)) concatenates SQL fragments.
+* [`Sql.Empty`](Faithlife.Data.SqlFormatting/Sql/Empty.md) is an empty SQL fragment.
+* [`Sql.Join`](Faithlife.Data.SqlFormatting/Sql/Join.md) joins SQL fragments with a separator.
+* [`Sql.LikePrefixParam`](Faithlife.Data.SqlFormatting/Sql/LikePrefixParam.md) generates a parameter with a LIKE pattern for prefix matching.
+* [`Sql.Name`](Faithlife.Data.SqlFormatting/Sql/Name.md) creates SQL that quotes the specified identifier.
+* [`Sql.Param`](Faithlife.Data.SqlFormatting/Sql/Param.md) generates a parameter for the specified value.
+* [`Sql.Raw`](Faithlife.Data.SqlFormatting/Sql/Raw.md) creates raw SQL from the specified string.
 
 Since commands are commonly created with a single call to `Sql.Format`, the [`CommandFormat`](Faithlife.Data/DbConnector/CommandFormat.md) method can be used as shorthand.
 

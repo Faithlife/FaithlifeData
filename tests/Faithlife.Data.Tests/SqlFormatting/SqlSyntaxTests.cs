@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
@@ -162,6 +162,36 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			SqlSyntax.Sqlite.Render(Sql.Name("x`y[z]z\"y")).Text.Should().Be("\"x`y[z]z\"\"y\"");
 		}
 
+		[Test]
+		public void ColumnNamesAndValuesSql()
+		{
+			SqlSyntax.MySql.Render(Sql.ColumnNames<ItemDto>()).Text.Should().Be("`ItemId`, `Name`");
+			SqlSyntax.MySql.Render(Sql.ColumnNames(typeof(ItemDto))).Text.Should().Be("`ItemId`, `Name`");
+
+			var item = new ItemDto { Id = 3, Name = "three" };
+			var (text, parameters) = SqlSyntax.MySql.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(item.GetType())}) values ({Sql.ColumnParams(item)});"));
+			text.Should().Be("insert into Items (`ItemId`, `Name`) values (@fdp0, @fdp1);");
+			parameters.Should().Equal(("fdp0", item.Id), ("fdp1", item.Name));
+		}
+
+		[Test]
+		public void TableColumnNamesAndValuesSql()
+		{
+			SqlSyntax.MySql.Render(Sql.ColumnNames<ItemDto>("t")).Text.Should().Be("`t`.`ItemId`, `t`.`Name`");
+			SqlSyntax.MySql.Render(Sql.ColumnNames(typeof(ItemDto), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`Name`");
+
+			var item = new ItemDto { Id = 3, Name = "three" };
+			SqlSyntax.MySql.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`Name`");
+		}
+
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
+
+		private sealed class ItemDto
+		{
+			[Column("ItemId")]
+			public int Id { get; set; }
+
+			public string? Name { get; set; }
+		}
 	}
 }
