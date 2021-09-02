@@ -74,8 +74,12 @@ namespace Faithlife.Data
 
 		public int? FieldCount { get; }
 
-		public string GetColumnName(string propertyName) =>
-			m_columnNamesByPropertyName is null ? propertyName : m_columnNamesByPropertyName.TryGetValue(propertyName, out var columnName) ? columnName : propertyName;
+		public string? GetColumnAttributeName(string propertyName)
+		{
+			string? columnAttributeName = null;
+			m_columnAttributeNames?.TryGetValue(propertyName, out columnAttributeName);
+			return columnAttributeName;
+		}
 
 		public T GetValue(IDataRecord record, int index, int count)
 		{
@@ -286,7 +290,7 @@ namespace Faithlife.Data
 			{
 				var properties = DtoInfo.GetInfo<T>().Properties;
 				var propertiesByNormalizedFieldName = new Dictionary<string, (IDtoProperty<T> Dto, IDbValueTypeInfo Db)>(capacity: properties.Count, StringComparer.OrdinalIgnoreCase);
-				Dictionary<string, string>? columnNamesByPropertyName = null;
+				Dictionary<string, string>? columnAttributeNames = null;
 
 				foreach (var property in properties)
 				{
@@ -295,16 +299,15 @@ namespace Faithlife.Data
 						.GetCustomAttributes()
 						.Where(x => x.GetType().Name == "ColumnAttribute")
 						.Select(x => DtoInfo.GetInfo(x.GetType()).TryGetProperty("Name")?.GetValue(x) as string)
-						.FirstOrDefault(x => x != null) ?? property.Name;
+						.FirstOrDefault(x => x != null);
+					if (columnName != null)
+						(columnAttributeNames ??= new Dictionary<string, string>()).Add(property.Name, columnName);
 
-					if (columnName != property.Name)
-						(columnNamesByPropertyName ??= new Dictionary<string, string>()).Add(property.Name, columnName);
-
-					propertiesByNormalizedFieldName.Add(NormalizeFieldName(columnName), (property, DbValueTypeInfo.GetInfo(property.ValueType)));
+					propertiesByNormalizedFieldName.Add(NormalizeFieldName(columnName ?? property.Name), (property, DbValueTypeInfo.GetInfo(property.ValueType)));
 				}
 
 				m_propertiesByNormalizedFieldName = propertiesByNormalizedFieldName;
-				m_columnNamesByPropertyName = columnNamesByPropertyName;
+				m_columnAttributeNames = columnAttributeNames;
 			}
 			else if (m_strategy == DbValueTypeStrategy.Tuple)
 			{
@@ -330,7 +333,7 @@ namespace Faithlife.Data
 		private readonly Type? m_nullableType;
 		private readonly DbValueTypeStrategy m_strategy;
 		private readonly IReadOnlyDictionary<string, (IDtoProperty<T> Dto, IDbValueTypeInfo Db)>? m_propertiesByNormalizedFieldName;
-		private readonly IReadOnlyDictionary<string, string>? m_columnNamesByPropertyName;
+		private readonly IReadOnlyDictionary<string, string>? m_columnAttributeNames;
 		private readonly TupleInfo<T>? m_tupleInfo;
 		private readonly IReadOnlyList<IDbValueTypeInfo>? m_tupleTypeInfos;
 	}

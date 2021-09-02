@@ -165,23 +165,39 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		[Test]
 		public void ColumnNamesAndValuesSql()
 		{
-			SqlSyntax.MySql.Render(Sql.ColumnNames<ItemDto>()).Text.Should().Be("`ItemId`, `Name`");
-			SqlSyntax.MySql.Render(Sql.ColumnNames(typeof(ItemDto))).Text.Should().Be("`ItemId`, `Name`");
+			var syntax = SqlSyntax.MySql;
 
-			var item = new ItemDto { Id = 3, Name = "three" };
-			var (text, parameters) = SqlSyntax.MySql.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(item.GetType())}) values ({Sql.ColumnParams(item)});"));
-			text.Should().Be("insert into Items (`ItemId`, `Name`) values (@fdp0, @fdp1);");
-			parameters.Should().Equal(("fdp0", item.Id), ("fdp1", item.Name));
+			syntax.Render(Sql.ColumnNames<ItemDto>()).Text.Should().Be("`ItemId`, `DisplayName`");
+			syntax.Render(Sql.ColumnNames(typeof(ItemDto))).Text.Should().Be("`ItemId`, `DisplayName`");
+
+			var item = new ItemDto { Id = 3, DisplayName = "three" };
+			var (text, parameters) = syntax.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(item.GetType())}) values ({Sql.ColumnParams(item)});"));
+			text.Should().Be("insert into Items (`ItemId`, `DisplayName`) values (@fdp0, @fdp1);");
+			parameters.Should().Equal(("fdp0", item.Id), ("fdp1", item.DisplayName));
 		}
 
 		[Test]
 		public void TableColumnNamesAndValuesSql()
 		{
-			SqlSyntax.MySql.Render(Sql.ColumnNames<ItemDto>("t")).Text.Should().Be("`t`.`ItemId`, `t`.`Name`");
-			SqlSyntax.MySql.Render(Sql.ColumnNames(typeof(ItemDto), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`Name`");
+			var syntax = SqlSyntax.MySql;
 
-			var item = new ItemDto { Id = 3, Name = "three" };
-			SqlSyntax.MySql.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`Name`");
+			syntax.Render(Sql.ColumnNames<ItemDto>("t")).Text.Should().Be("`t`.`ItemId`, `t`.`DisplayName`");
+			syntax.Render(Sql.ColumnNames(typeof(ItemDto), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`DisplayName`");
+
+			var item = new ItemDto { Id = 3, DisplayName = "three" };
+			syntax.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`DisplayName`");
+		}
+
+		[Test]
+		public void SnakeCaseNamesAndValuesSql()
+		{
+			var syntax = SqlSyntax.MySql.WithSnakeCase();
+
+			syntax.Render(Sql.ColumnNames<ItemDto>("t")).Text.Should().Be("`t`.`ItemId`, `t`.`display_name`");
+			syntax.Render(Sql.ColumnNames(typeof(ItemDto), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`display_name`");
+
+			var item = new ItemDto { Id = 3, DisplayName = "three" };
+			syntax.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`display_name`");
 		}
 
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
@@ -191,7 +207,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			[Column("ItemId")]
 			public int Id { get; set; }
 
-			public string? Name { get; set; }
+			public string? DisplayName { get; set; }
 		}
 	}
 }

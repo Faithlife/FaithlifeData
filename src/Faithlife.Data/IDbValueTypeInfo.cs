@@ -11,6 +11,6 @@ namespace Faithlife.Data
 
 		object? GetValue(IDataRecord record, int index, int count);
 
-		string GetColumnName(string propertyName);
+		string? GetColumnAttributeName(string propertyName);
 	}
 }
