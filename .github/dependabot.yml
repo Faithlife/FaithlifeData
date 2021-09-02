@@ -6,4 +6,3 @@ updates:
     interval: daily
   allow:
   - dependency-name: Faithlife.Reflection
-  - dependency-name: XmlDocMarkdown.Core
