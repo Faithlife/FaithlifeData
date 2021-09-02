@@ -115,7 +115,7 @@ DbConnector CreateConnector() =>
     new DbConnectorSettings { SqlSyntax = SqlSyntax.Sqlite });
 ```
 
-If your database columns use `snake_case`, consider using [`SqlSyntax.WithSnakeCase`](Faithlife.Data.SqlFormatting/SqlSyntax/WithSnakeCase.md), which causes [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) to generate `snake_case` column names from `PascalCase` property names.
+If your database columns use `snake_case`, consider using [`SqlSyntax.WithSnakeCase()`](Faithlife.Data.SqlFormatting/SqlSyntax/WithSnakeCase.md), which causes [`Sql.ColumnNames()`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) to generate `snake_case` column names from `PascalCase` property names.
 
 ```csharp
 new DbConnectorSettings { SqlSyntax = SqlSyntax.MySql.WithSnakeCase() }
