@@ -33,15 +33,33 @@ namespace Faithlife.Data.SqlFormatting
 		/// Returns a comma-delimited list of column names for a DTO of the specified type.
 		/// </summary>
 		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
-		/// needs to be specified with each column name.</remarks>
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
 		public static Sql ColumnNames<T>(string tableName) => new ColumnNamesSql(typeof(T), tableName);
 
 		/// <summary>
 		/// Returns a comma-delimited list of column names for a DTO of the specified type.
 		/// </summary>
 		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
-		/// needs to be specified with each column name.</remarks>
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
 		public static Sql ColumnNames(Type type, string tableName) => new ColumnNamesSql(type, tableName);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
+		public static Sql ColumnNames<T>(params string[] tableNames) => new ColumnNamesSql(typeof(T), tableNames);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
+		public static Sql ColumnNames(Type type, params string[] tableNames) => new ColumnNamesSql(type, tableNames);
 
 		/// <summary>
 		/// Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO.
@@ -119,16 +137,30 @@ namespace Faithlife.Data.SqlFormatting
 
 		private sealed class ColumnNamesSql : Sql
 		{
-			public ColumnNamesSql(Type type, string? tableName = null) => (m_type, m_tableName) = (type, tableName);
+			public ColumnNamesSql(Type type) => m_type = type;
+			public ColumnNamesSql(Type type, string? tableName) => (m_type, m_tableName) = (type, tableName);
+			public ColumnNamesSql(Type type, string[] tableNames) => (m_type, m_tableNames) = (type, tableNames);
 
 			internal override string Render(SqlContext context)
 			{
-				var properties = DtoInfo.GetInfo(m_type).Properties;
+				if (TupleInfo.IsTupleType(m_type))
+					return string.Join(", NULL, ", TupleInfo.GetInfo(m_type).ItemTypes.Select((x, i) => RenderDto(x, i, context)));
+
+				return RenderDto(m_type, 0, context);
+			}
+
+			private string GetTableName(int index) =>
+				(m_tableNames is not null ? m_tableNames.ElementAtOrDefault(index) : index == 0 ? m_tableName : null) ?? "";
+
+			private string RenderDto(Type type, int index, SqlContext context)
+			{
+				var properties = DtoInfo.GetInfo(type).Properties;
 				if (properties.Count == 0)
-					throw new InvalidOperationException($"The specified type has no columns: {m_type.FullName}");
-				var dbInfo = DbValueTypeInfo.GetInfo(m_type);
+					throw new InvalidOperationException($"The specified type has no columns: {type.FullName}");
+				var dbInfo = DbValueTypeInfo.GetInfo(type);
 				var syntax = context.Syntax;
-				var tablePrefix = m_tableName is null ? "" : syntax.QuoteName(m_tableName) + ".";
+				var tableName = GetTableName(index);
+				var tablePrefix = tableName.Length == 0 ? "" : syntax.QuoteName(tableName) + ".";
 				var useSnakeCase = syntax.UseSnakeCase;
 				return string.Join(", ",
 					properties.Select(x => tablePrefix + syntax.QuoteName(
@@ -143,6 +175,7 @@ namespace Faithlife.Data.SqlFormatting
 
 			private readonly Type m_type;
 			private readonly string? m_tableName;
+			private readonly string[]? m_tableNames;
 		}
 
 		private sealed class ColumnParamsSql : Sql
