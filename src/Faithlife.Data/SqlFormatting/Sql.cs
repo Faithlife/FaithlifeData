@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Faithlife.Reflection;
 
 namespace Faithlife.Data.SqlFormatting
@@ -125,10 +127,19 @@ namespace Faithlife.Data.SqlFormatting
 				if (properties.Count == 0)
 					throw new InvalidOperationException($"The specified type has no columns: {m_type.FullName}");
 				var dbInfo = DbValueTypeInfo.GetInfo(m_type);
-				if (m_tableName is null)
-					return string.Join(", ", properties.Select(x => context.Syntax.QuoteName(dbInfo.GetColumnName(x.Name))));
-				return string.Join(", ", properties.Select(x => context.Syntax.QuoteName(m_tableName) + "." + context.Syntax.QuoteName(dbInfo.GetColumnName(x.Name))));
+				var syntax = context.Syntax;
+				var tablePrefix = m_tableName is null ? "" : syntax.QuoteName(m_tableName) + ".";
+				var useSnakeCase = syntax.UseSnakeCase;
+				return string.Join(", ",
+					properties.Select(x => tablePrefix + syntax.QuoteName(
+						dbInfo.GetColumnAttributeName(x.Name) ??
+						(useSnakeCase ? s_snakeCaseCache.GetOrAdd(x.Name, ToSnakeCase) : x.Name))));
 			}
+
+			private static string ToSnakeCase(string value) => string.Join("_", s_word.Matches(value).Cast<Match>().Select(x => x.Value.ToLowerInvariant()));
+
+			private static readonly Regex s_word = new Regex("[A-Z]([A-Z]*(?![a-z])|[a-z]*)|[a-z]+|[0-9]+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
+			private static readonly ConcurrentDictionary<string, string> s_snakeCaseCache = new();
 
 			private readonly Type m_type;
 			private readonly string? m_tableName;

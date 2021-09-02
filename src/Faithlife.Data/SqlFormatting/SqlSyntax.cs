@@ -41,6 +41,11 @@ namespace Faithlife.Data.SqlFormatting
 		public virtual char ParameterPrefix => '@';
 
 		/// <summary>
+		/// True if snake case should be used when generating column names.
+		/// </summary>
+		public virtual bool UseSnakeCase => false;
+
+		/// <summary>
 		/// Escapes a fragment of a LIKE pattern.
 		/// </summary>
 		/// <returns>The string fragment, with wildcard characters such as <c>%</c>
@@ -74,6 +79,11 @@ namespace Faithlife.Data.SqlFormatting
 			return (text, context.Parameters);
 		}
 
+		/// <summary>
+		/// Returns a SQL syntax that uses snake case when generating column names.
+		/// </summary>
+		public SqlSyntax WithSnakeCase() => new WithSnakeCaseSqlSyntax(this);
+
 		private sealed class DefaultSqlSyntax : SqlSyntax
 		{
 		}
@@ -98,6 +108,16 @@ namespace Faithlife.Data.SqlFormatting
 			private readonly string m_nameQuoteStart;
 			private readonly string m_nameQuoteEnd;
 			private readonly string m_nameQuoteEndEscape;
+		}
+
+		private sealed class WithSnakeCaseSqlSyntax : DelegatingSqlSyntax
+		{
+			public WithSnakeCaseSqlSyntax(SqlSyntax inner)
+				: base(inner)
+			{
+			}
+
+			public override bool UseSnakeCase => true;
 		}
 	}
 }

@@ -14,6 +14,9 @@ namespace Faithlife.Data.SqlFormatting
 		public override char ParameterPrefix => Inner.ParameterPrefix;
 
 		/// <inheritdoc />
+		public override bool UseSnakeCase => Inner.UseSnakeCase;
+
+		/// <inheritdoc />
 		public override string EscapeLikeFragment(string fragment) => Inner.EscapeLikeFragment(fragment);
 
 		/// <inheritdoc />

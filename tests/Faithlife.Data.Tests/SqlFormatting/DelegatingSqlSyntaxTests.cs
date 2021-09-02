@@ -35,6 +35,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		private sealed class DelegatedSqlSyntax : SqlSyntax
 		{
 			public override char ParameterPrefix => throw new DelegatedException();
+			public override bool UseSnakeCase => throw new DelegatedException();
 			public override string EscapeLikeFragment(string fragment) => throw new DelegatedException();
 			public override string QuoteName(string name) => throw new DelegatedException();
 		}
