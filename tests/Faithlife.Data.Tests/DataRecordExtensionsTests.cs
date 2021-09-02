@@ -576,7 +576,7 @@ namespace Faithlife.Data.Tests
 			FortyTwo = 42,
 		}
 
-		private static readonly ItemDto s_dto = new ItemDto
+		private static readonly ItemDto s_dto = new()
 		{
 			TheText = "hey",
 			TheInteger = 42L,
@@ -584,7 +584,7 @@ namespace Faithlife.Data.Tests
 			TheBlob = new byte[] { 0x01, 0xFE },
 		};
 
-		private static readonly ItemRecord s_record = new ItemRecord(
+		private static readonly ItemRecord s_record = new(
 			TheText: "hey",
 			TheInteger: 42L,
 			TheReal: 3.1415,

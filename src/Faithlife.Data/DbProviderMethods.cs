@@ -13,7 +13,7 @@ namespace Faithlife.Data
 		/// <summary>
 		/// The default database access methods.
 		/// </summary>
-		public static readonly DbProviderMethods Default = new DbProviderMethods();
+		public static readonly DbProviderMethods Default = new();
 
 		/// <summary>
 		/// Provides access via connector. Used when creating wrapping connectors.

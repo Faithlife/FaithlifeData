@@ -238,6 +238,6 @@ namespace Faithlife.Data
 		/// </summary>
 		protected internal virtual DbCommandCache? CommandCache => null;
 
-		private static readonly DbConnectorSettings s_defaultSettings = new DbConnectorSettings();
+		private static readonly DbConnectorSettings s_defaultSettings = new();
 	}
 }

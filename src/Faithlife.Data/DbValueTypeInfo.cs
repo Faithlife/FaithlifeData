@@ -36,9 +36,9 @@ namespace Faithlife.Data
 		private static IDbValueTypeInfo CreateInfo(Type type) =>
 			(IDbValueTypeInfo) typeof(DbValueTypeInfo<>).MakeGenericType(type).GetTypeInfo().GetDeclaredField("Instance").GetValue(null);
 
-		private static readonly ConcurrentDictionary<Type, IDbValueTypeInfo> s_infos = new ConcurrentDictionary<Type, IDbValueTypeInfo>();
+		private static readonly ConcurrentDictionary<Type, IDbValueTypeInfo> s_infos = new();
 
-		private static readonly Dictionary<Type, DbValueTypeStrategy> s_strategies = new Dictionary<Type, DbValueTypeStrategy>
+		private static readonly Dictionary<Type, DbValueTypeStrategy> s_strategies = new()
 		{
 			[typeof(string)] = DbValueTypeStrategy.CastValue,
 			[typeof(long)] = DbValueTypeStrategy.CastValue,
@@ -264,7 +264,7 @@ namespace Faithlife.Data
 			}
 		}
 
-		internal static readonly DbValueTypeInfo<T> Instance = new DbValueTypeInfo<T>();
+		internal static readonly DbValueTypeInfo<T> Instance = new();
 
 		private DbValueTypeInfo()
 		{

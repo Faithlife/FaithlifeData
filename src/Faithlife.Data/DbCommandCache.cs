@@ -41,7 +41,7 @@ namespace Faithlife.Data
 
 			protected internal override IReadOnlyCollection<IDbCommand> GetCommands() => m_dictionary.Values;
 
-			private readonly Dictionary<string, IDbCommand> m_dictionary = new Dictionary<string, IDbCommand>();
+			private readonly Dictionary<string, IDbCommand> m_dictionary = new();
 		}
 	}
 }
