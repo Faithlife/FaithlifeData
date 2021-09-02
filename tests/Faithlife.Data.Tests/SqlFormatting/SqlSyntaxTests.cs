@@ -200,6 +200,17 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			syntax.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`display_name`");
 		}
 
+		[Test]
+		public void TupleColumnNamesAndValuesSql()
+		{
+			var syntax = SqlSyntax.MySql;
+
+			syntax.Render(Sql.ColumnNames<(ItemDto, ItemDto)>()).Text.Should().Be("`ItemId`, `DisplayName`, NULL, `ItemId`, `DisplayName`");
+			syntax.Render(Sql.ColumnNames(typeof((ItemDto, ItemDto)), "t1")).Text.Should().Be("`t1`.`ItemId`, `t1`.`DisplayName`, NULL, `ItemId`, `DisplayName`");
+			syntax.Render(Sql.ColumnNames<(ItemDto, ItemDto)>("t1", "t2")).Text.Should().Be("`t1`.`ItemId`, `t1`.`DisplayName`, NULL, `t2`.`ItemId`, `t2`.`DisplayName`");
+			syntax.Render(Sql.ColumnNames(typeof((ItemDto, ItemDto)), "", "t2")).Text.Should().Be("`ItemId`, `DisplayName`, NULL, `t2`.`ItemId`, `t2`.`DisplayName`");
+		}
+
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
 
 		private sealed class ItemDto

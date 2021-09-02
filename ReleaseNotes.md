@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.15.0
+
+* `Sql.ColumnNames` should support tuples of DTOs.
+
 ## 1.14.0
 
 * Support snake case when generating column names for a DTO.
