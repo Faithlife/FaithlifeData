@@ -24,7 +24,7 @@ public class DelegatingSqlSyntax : SqlSyntax
 
 ## See Also
 
-* class [SqlSyntax](SqlSyntax.md)
+* class [SqlSyntax](./SqlSyntax.md)
 * namespace [Faithlife.Data.SqlFormatting](../Faithlife.Data.md)
 * [DelegatingSqlSyntax.cs](https://github.com/Faithlife/FaithlifeData/tree/master/src/Faithlife.Data/SqlFormatting/DelegatingSqlSyntax.cs)
 

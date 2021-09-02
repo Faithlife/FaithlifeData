@@ -21,7 +21,7 @@ Allows a lazy-open connector to asynchronously open the connection.
 
 ## See Also
 
-* property [Connection](Connection.md)
+* property [Connection](./Connection.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

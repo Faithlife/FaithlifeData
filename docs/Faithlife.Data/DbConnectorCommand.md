@@ -10,10 +10,10 @@ public struct DbConnectorCommand
 
 | name | description |
 | --- | --- |
-| [CommandType](DbConnectorCommand/CommandType.md) { get; } | The [`CommandType`](DbConnectorCommand/CommandType.md) of the command. |
+| [CommandType](DbConnectorCommand/CommandType.md) { get; } | The [`CommandType`](./DbConnectorCommand/CommandType.md) of the command. |
 | [Connector](DbConnectorCommand/Connector.md) { get; } | The connector of the command. |
-| [IsCached](DbConnectorCommand/IsCached.md) { get; } | True after [`Cache`](DbConnectorCommand/Cache.md) is called. |
-| [IsPrepared](DbConnectorCommand/IsPrepared.md) { get; } | True after [`Prepare`](DbConnectorCommand/Prepare.md) is called. |
+| [IsCached](DbConnectorCommand/IsCached.md) { get; } | True after [`Cache`](./DbConnectorCommand/Cache.md) is called. |
+| [IsPrepared](DbConnectorCommand/IsPrepared.md) { get; } | True after [`Prepare`](./DbConnectorCommand/Prepare.md) is called. |
 | [Parameters](DbConnectorCommand/Parameters.md) { get; } | The parameters of the command. |
 | [Text](DbConnectorCommand/Text.md) { get; } | The text of the command. |
 | [Timeout](DbConnectorCommand/Timeout.md) { get; } | The timeout of the command. |

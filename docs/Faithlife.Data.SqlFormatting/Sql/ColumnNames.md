@@ -1,4 +1,4 @@
-# Sql.ColumnNames method (1 of 4)
+# Sql.ColumnNames method (1 of 6)
 
 Returns a comma-delimited list of column names for a DTO of the specified type.
 
@@ -13,7 +13,7 @@ public static Sql ColumnNames(Type type)
 
 ---
 
-# Sql.ColumnNames method (2 of 4)
+# Sql.ColumnNames method (2 of 6)
 
 Returns a comma-delimited list of column names for a DTO of the specified type.
 
@@ -23,7 +23,7 @@ public static Sql ColumnNames(Type type, string tableName)
 
 ## Remarks
 
-This overload is used with SELECT statements when the table name (or alias) needs to be specified with each column name.
+This overload is used with SELECT statements when the table name (or alias) needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column will separate the DTOs.
 
 ## See Also
 
@@ -32,7 +32,26 @@ This overload is used with SELECT statements when the table name (or alias) need
 
 ---
 
-# Sql.ColumnNames&lt;T&gt; method (3 of 4)
+# Sql.ColumnNames method (3 of 6)
+
+Returns a comma-delimited list of column names for a DTO of the specified type.
+
+```csharp
+public static Sql ColumnNames(Type type, params string[] tableNames)
+```
+
+## Remarks
+
+This overload is used with SELECT statements when the table name (or alias) needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column will separate the DTOs.
+
+## See Also
+
+* class [Sql](../Sql.md)
+* namespace [Faithlife.Data.SqlFormatting](../../Faithlife.Data.md)
+
+---
+
+# Sql.ColumnNames&lt;T&gt; method (4 of 6)
 
 Returns a comma-delimited list of column names for a DTO of the specified type.
 
@@ -47,7 +66,7 @@ public static Sql ColumnNames<T>()
 
 ---
 
-# Sql.ColumnNames&lt;T&gt; method (4 of 4)
+# Sql.ColumnNames&lt;T&gt; method (5 of 6)
 
 Returns a comma-delimited list of column names for a DTO of the specified type.
 
@@ -57,7 +76,26 @@ public static Sql ColumnNames<T>(string tableName)
 
 ## Remarks
 
-This overload is used with SELECT statements when the table name (or alias) needs to be specified with each column name.
+This overload is used with SELECT statements when the table name (or alias) needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column will separate the DTOs.
+
+## See Also
+
+* class [Sql](../Sql.md)
+* namespace [Faithlife.Data.SqlFormatting](../../Faithlife.Data.md)
+
+---
+
+# Sql.ColumnNames&lt;T&gt; method (6 of 6)
+
+Returns a comma-delimited list of column names for a DTO of the specified type.
+
+```csharp
+public static Sql ColumnNames<T>(params string[] tableNames)
+```
+
+## Remarks
+
+This overload is used with SELECT statements when the table name (or alias) needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column will separate the DTOs.
 
 ## See Also
 

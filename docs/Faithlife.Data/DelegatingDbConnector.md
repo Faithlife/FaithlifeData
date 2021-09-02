@@ -38,7 +38,7 @@ public class DelegatingDbConnector : DbConnector
 
 ## See Also
 
-* class [DbConnector](DbConnector.md)
+* class [DbConnector](./DbConnector.md)
 * namespace [Faithlife.Data](../Faithlife.Data.md)
 * [DelegatingDbConnector.cs](https://github.com/Faithlife/FaithlifeData/tree/master/src/Faithlife.Data/DelegatingDbConnector.cs)
 

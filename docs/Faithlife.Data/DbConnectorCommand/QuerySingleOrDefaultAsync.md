@@ -12,7 +12,7 @@ Returns `default(T)` if no records are returned. Throws InvalidOperationExceptio
 
 ## See Also
 
-* method [QuerySingleOrDefault&lt;T&gt;](QuerySingleOrDefault.md)
+* method [QuerySingleOrDefault&lt;T&gt;](./QuerySingleOrDefault.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -33,7 +33,7 @@ Returns `default(T)` if no records are returned. Throws InvalidOperationExceptio
 
 ## See Also
 
-* method [QuerySingleOrDefault&lt;T&gt;](QuerySingleOrDefault.md)
+* method [QuerySingleOrDefault&lt;T&gt;](./QuerySingleOrDefault.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

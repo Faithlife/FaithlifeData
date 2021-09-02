@@ -8,7 +8,7 @@ public abstract IDbConnection Connection { get; }
 
 ## See Also
 
-* method [GetConnectionAsync](GetConnectionAsync.md)
+* method [GetConnectionAsync](./GetConnectionAsync.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

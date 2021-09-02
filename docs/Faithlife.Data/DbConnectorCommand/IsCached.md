@@ -1,6 +1,6 @@
 # DbConnectorCommand.IsCached property
 
-True after [`Cache`](Cache.md) is called.
+True after [`Cache`](./Cache.md) is called.
 
 ```csharp
 public bool IsCached { get; }

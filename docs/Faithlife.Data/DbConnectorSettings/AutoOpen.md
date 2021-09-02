@@ -8,7 +8,7 @@ public bool AutoOpen { get; set; }
 
 ## Remarks
 
-If this property is true, there is no need to call [`OpenConnection`](../DbConnector/OpenConnection.md). The connection is opened immediately (or lazily if [`LazyOpen`](LazyOpen.md) is also specified).
+If this property is true, there is no need to call [`OpenConnection`](../DbConnector/OpenConnection.md). The connection is opened immediately (or lazily if [`LazyOpen`](./LazyOpen.md) is also specified).
 
 ## See Also
 

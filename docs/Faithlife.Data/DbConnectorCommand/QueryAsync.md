@@ -8,7 +8,7 @@ public ValueTask<IReadOnlyList<T>> QueryAsync<T>(CancellationToken cancellationT
 
 ## See Also
 
-* method [Query&lt;T&gt;](Query.md)
+* method [Query&lt;T&gt;](./Query.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -25,7 +25,7 @@ public ValueTask<IReadOnlyList<T>> QueryAsync<T>(Func<IDataRecord, T> map,
 
 ## See Also
 
-* method [Query&lt;T&gt;](Query.md)
+* method [Query&lt;T&gt;](./Query.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

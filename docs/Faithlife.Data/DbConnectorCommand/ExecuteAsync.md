@@ -8,7 +8,7 @@ public ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default
 
 ## See Also
 
-* method [Execute](Execute.md)
+* method [Execute](./Execute.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

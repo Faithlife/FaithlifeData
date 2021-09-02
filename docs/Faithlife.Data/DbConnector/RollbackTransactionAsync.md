@@ -12,7 +12,7 @@ public abstract ValueTask RollbackTransactionAsync(CancellationToken cancellatio
 
 ## See Also
 
-* method [RollbackTransaction](RollbackTransaction.md)
+* method [RollbackTransaction](./RollbackTransaction.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

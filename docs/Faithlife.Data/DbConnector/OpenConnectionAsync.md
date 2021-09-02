@@ -17,7 +17,7 @@ An IDisposable that should be disposed when the connection should be closed.
 
 ## See Also
 
-* method [OpenConnection](OpenConnection.md)
+* method [OpenConnection](./OpenConnection.md)
 * class [DbConnectionCloser](../DbConnectionCloser.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)

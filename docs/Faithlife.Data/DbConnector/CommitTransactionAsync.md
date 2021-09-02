@@ -12,7 +12,7 @@ public abstract ValueTask CommitTransactionAsync(CancellationToken cancellationT
 
 ## See Also
 
-* method [CommitTransaction](CommitTransaction.md)
+* method [CommitTransaction](./CommitTransaction.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

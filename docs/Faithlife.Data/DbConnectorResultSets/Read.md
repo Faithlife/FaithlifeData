@@ -8,7 +8,7 @@ public IReadOnlyList<T> Read<T>()
 
 ## See Also
 
-* method [ReadAsync&lt;T&gt;](ReadAsync.md)
+* method [ReadAsync&lt;T&gt;](./ReadAsync.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -24,7 +24,7 @@ public IReadOnlyList<T> Read<T>(Func<IDataRecord, T> map)
 
 ## See Also
 
-* method [ReadAsync&lt;T&gt;](ReadAsync.md)
+* method [ReadAsync&lt;T&gt;](./ReadAsync.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

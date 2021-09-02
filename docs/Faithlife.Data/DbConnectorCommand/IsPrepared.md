@@ -1,6 +1,6 @@
 # DbConnectorCommand.IsPrepared property
 
-True after [`Prepare`](Prepare.md) is called.
+True after [`Prepare`](./Prepare.md) is called.
 
 ```csharp
 public bool IsPrepared { get; }

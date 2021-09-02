@@ -8,7 +8,7 @@ public ValueTask<IDbCommand> CreateAsync(CancellationToken cancellationToken = d
 
 ## See Also
 
-* method [Create](Create.md)
+* method [Create](./Create.md)
 * struct [DbConnectorCommand](../DbConnectorCommand.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

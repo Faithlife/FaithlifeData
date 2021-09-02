@@ -8,7 +8,7 @@ public ValueTask<IReadOnlyList<T>> ReadAsync<T>(CancellationToken cancellationTo
 
 ## See Also
 
-* method [Read&lt;T&gt;](Read.md)
+* method [Read&lt;T&gt;](./Read.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 
@@ -25,7 +25,7 @@ public ValueTask<IReadOnlyList<T>> ReadAsync<T>(Func<IDataRecord, T> map,
 
 ## See Also
 
-* method [Read&lt;T&gt;](Read.md)
+* method [Read&lt;T&gt;](./Read.md)
 * class [DbConnectorResultSets](../DbConnectorResultSets.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
 

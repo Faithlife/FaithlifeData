@@ -1,6 +1,6 @@
 # DbConnectorSettings class
 
-Settings when creating a [`DbConnector`](DbConnector.md).
+Settings when creating a [`DbConnector`](./DbConnector.md).
 
 ```csharp
 public class DbConnectorSettings

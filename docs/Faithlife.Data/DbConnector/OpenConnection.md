@@ -12,7 +12,7 @@ An IDisposable that should be disposed when the connection should be closed.
 
 ## See Also
 
-* method [OpenConnectionAsync](OpenConnectionAsync.md)
+* method [OpenConnectionAsync](./OpenConnectionAsync.md)
 * class [DbConnectionCloser](../DbConnectionCloser.md)
 * class [DbConnector](../DbConnector.md)
 * namespace [Faithlife.Data](../../Faithlife.Data.md)
