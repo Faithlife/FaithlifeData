@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -130,12 +131,15 @@ namespace Faithlife.Data.SqlFormatting
 				var tablePrefix = m_tableName is null ? "" : syntax.QuoteName(m_tableName) + ".";
 				var useSnakeCase = syntax.UseSnakeCase;
 				return string.Join(", ",
-					properties.Select(x => tablePrefix + syntax.QuoteName(dbInfo.GetColumnAttributeName(x.Name) ?? (useSnakeCase ? ToSnakeCase(x.Name) : x.Name))));
+					properties.Select(x => tablePrefix + syntax.QuoteName(
+						dbInfo.GetColumnAttributeName(x.Name) ??
+						(useSnakeCase ? s_snakeCaseCache.GetOrAdd(x.Name, ToSnakeCase) : x.Name))));
 			}
 
 			private static string ToSnakeCase(string value) => string.Join("_", s_word.Matches(value).Cast<Match>().Select(x => x.Value.ToLowerInvariant()));
 
 			private static readonly Regex s_word = new Regex("[A-Z]([A-Z]*(?![a-z])|[a-z]*)|[a-z]+|[0-9]+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
+			private static readonly ConcurrentDictionary<string, string> s_snakeCaseCache = new();
 
 			private readonly Type m_type;
 			private readonly string? m_tableName;
