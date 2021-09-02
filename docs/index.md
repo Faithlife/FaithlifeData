@@ -115,6 +115,12 @@ DbConnector CreateConnector() =>
     new DbConnectorSettings { SqlSyntax = SqlSyntax.Sqlite });
 ```
 
+If your database columns use `snake_case`, consider using [`SqlSyntax.WithSnakeCase`](Faithlife.Data.SqlFormatting/SqlSyntax/WithSnakeCase.md), which causes [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) to generate `snake_case` column names from `PascalCase` property names.
+
+```csharp
+new DbConnectorSettings { SqlSyntax = SqlSyntax.MySql.WithSnakeCase() }
+```
+
 ## Executing a command
 
 Once you have a connector, you can open the connection with [`OpenConnectionAsync()`](Faithlife.Data/DbConnector/OpenConnectionAsync.md), create a command with [`Command()`](Faithlife.Data/DbConnector/Command.md), and execute the command with [`ExecuteAsync()`](Faithlife.Data/DbConnectorCommand/ExecuteAsync.md).
