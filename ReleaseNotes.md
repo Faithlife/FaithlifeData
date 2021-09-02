@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.14.0
+
+* Support snake case when generating column names for a DTO.
+
 ## 1.13.0
 
 * Use `Sql.ColumnNames` to format a comma-delimited list of column names for a DTO.
