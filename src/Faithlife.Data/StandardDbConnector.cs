@@ -20,6 +20,7 @@ namespace Faithlife.Data
 			m_noDisposeConnection = m_noDisposeTransaction || settings.NoDispose;
 			m_whenDisposed = settings.WhenDisposed;
 			m_providerMethods = settings.ProviderMethods ?? DbProviderMethods.Default;
+			m_defaultIsolationLevel = settings.DefaultIsolationLevel;
 			SqlSyntax = settings.SqlSyntax ?? SqlSyntax.Default;
 
 			if (settings.AutoOpen && !m_isConnectionOpen)
@@ -74,7 +75,9 @@ namespace Faithlife.Data
 		public override DbTransactionDisposer BeginTransaction()
 		{
 			VerifyCanBeginTransaction();
-			m_transaction = Connection.BeginTransaction();
+			m_transaction = m_defaultIsolationLevel is IsolationLevel isolationLevel
+				? Connection.BeginTransaction(isolationLevel)
+				: Connection.BeginTransaction();
 			return new TransactionDisposer(this);
 		}
 
@@ -88,7 +91,9 @@ namespace Faithlife.Data
 		public override async ValueTask<DbTransactionDisposer> BeginTransactionAsync(CancellationToken cancellationToken = default)
 		{
 			VerifyCanBeginTransaction();
-			m_transaction = await m_providerMethods.BeginTransactionAsync(Connection, cancellationToken).ConfigureAwait(false);
+			m_transaction = m_defaultIsolationLevel is IsolationLevel isolationLevel
+				? await m_providerMethods.BeginTransactionAsync(Connection, isolationLevel, cancellationToken).ConfigureAwait(false)
+				: await m_providerMethods.BeginTransactionAsync(Connection, cancellationToken).ConfigureAwait(false);
 			return new TransactionDisposer(this);
 		}
 
@@ -337,6 +342,7 @@ namespace Faithlife.Data
 		private readonly bool m_noCloseConnection;
 		private readonly bool m_shouldLazyOpen;
 		private readonly DbProviderMethods m_providerMethods;
+		private readonly IsolationLevel? m_defaultIsolationLevel;
 		private readonly Action? m_whenDisposed;
 		private readonly IDbConnection m_connection;
 		private IDbTransaction? m_transaction;

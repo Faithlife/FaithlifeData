@@ -47,5 +47,11 @@ namespace Faithlife.Data
 		/// The SQL syntax to use when formatting SQL.
 		/// </summary>
 		public SqlSyntax? SqlSyntax { get; set; }
+
+		/// <summary>
+		/// The isolation level used when <c>BeginTransaction(Async)</c> is called without one.
+		/// </summary>
+		/// <remarks>If not specified, the behavior is driver-specific.</remarks>
+		public IsolationLevel? DefaultIsolationLevel { get; set; }
 	}
 }
