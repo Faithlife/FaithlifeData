@@ -13,6 +13,7 @@ public class DbConnectorSettings
 | [DbConnectorSettings](DbConnectorSettings/DbConnectorSettings.md)() | The default constructor. |
 | [AutoOpen](DbConnectorSettings/AutoOpen.md) { get; set; } | If true, automatically opens the connection. |
 | [CurrentTransaction](DbConnectorSettings/CurrentTransaction.md) { get; set; } | The current transaction of the connection. |
+| [DefaultIsolationLevel](DbConnectorSettings/DefaultIsolationLevel.md) { get; set; } | The isolation level used when `BeginTransaction(Async)` is called without one. |
 | [LazyOpen](DbConnectorSettings/LazyOpen.md) { get; set; } | If true, does not actually open the connection until it is needed. |
 | [NoDispose](DbConnectorSettings/NoDispose.md) { get; set; } | If true, does not dispose the connection when the connector is disposed. |
 | [ProviderMethods](DbConnectorSettings/ProviderMethods.md) { get; set; } | Provider-specific database methods. |
