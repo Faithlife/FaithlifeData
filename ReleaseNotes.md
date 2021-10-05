@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.16.0
+
+* Support `DefaultIsolationLevel`.
+
 ## 1.15.0
 
 * `Sql.ColumnNames` should support tuples of DTOs.
