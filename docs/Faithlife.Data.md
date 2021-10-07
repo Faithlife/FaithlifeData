@@ -9,6 +9,8 @@
 | abstract class [DbConnectionCloser](./Faithlife.Data/DbConnectionCloser.md) | Closes the connection when disposed. |
 | abstract class [DbConnector](./Faithlife.Data/DbConnector.md) | Encapsulates a database connection and any current transaction. |
 | struct [DbConnectorCommand](./Faithlife.Data/DbConnectorCommand.md) | Encapsulates the text and parameters of a database command. |
+| class [DbConnectorPool](./Faithlife.Data/DbConnectorPool.md) | Maintains a pool of connectors. |
+| class [DbConnectorPoolSettings](./Faithlife.Data/DbConnectorPoolSettings.md) | Settings when creating a [`DbConnectorPool`](./Faithlife.Data/DbConnectorPool.md). |
 | class [DbConnectorResultSets](./Faithlife.Data/DbConnectorResultSets.md) | Encapsulates multiple result sets. |
 | class [DbConnectorSettings](./Faithlife.Data/DbConnectorSettings.md) | Settings when creating a [`DbConnector`](./Faithlife.Data/DbConnector.md). |
 | struct [DbParameters](./Faithlife.Data/DbParameters.md) | An immutable list of parameters. |
