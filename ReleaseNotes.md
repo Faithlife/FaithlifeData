@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.17.0
+
+* Support `DbConnectorPool`.
+
 ## 1.16.0
 
 * Support `DefaultIsolationLevel`.
