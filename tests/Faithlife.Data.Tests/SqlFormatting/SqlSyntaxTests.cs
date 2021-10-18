@@ -174,6 +174,11 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			var (text, parameters) = syntax.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(item.GetType())}) values ({Sql.ColumnParams(item)});"));
 			text.Should().Be("insert into Items (`ItemId`, `DisplayName`) values (@fdp0, @fdp1);");
 			parameters.Should().Equal(("fdp0", item.Id), ("fdp1", item.DisplayName));
+
+			var anon = new { item.Id, item.DisplayName };
+			(text, parameters) = syntax.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(anon.GetType())}) values ({Sql.ColumnParams(anon)});"));
+			text.Should().Be("insert into Items (`Id`, `DisplayName`) values (@fdp0, @fdp1);");
+			parameters.Should().Equal(("fdp0", anon.Id), ("fdp1", anon.DisplayName));
 		}
 
 		[Test]
@@ -198,6 +203,9 @@ namespace Faithlife.Data.Tests.SqlFormatting
 
 			var item = new ItemDto { Id = 3, DisplayName = "three" };
 			syntax.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`display_name`");
+
+			var anon = new { item.Id, item.DisplayName };
+			syntax.Render(Sql.ColumnNames(anon.GetType(), "t")).Text.Should().Be("`t`.`id`, `t`.`display_name`");
 		}
 
 		[Test]
