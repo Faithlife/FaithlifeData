@@ -320,8 +320,8 @@ IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
 
 To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class:
 
-* [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) generates a list of column names from a DTO for SELECT and INSERT statements.
-* [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) generates a list of parameters from a DTO for an INSERT statement.
+* [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) and [`Sql.ColumnNamesWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnNamesWhere.md) generate a list of column names from a DTO for SELECT and INSERT statements.
+* [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) and [`Sql.ColumnParamsWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnParamsWhere.md) generate a list of parameters from a DTO for an INSERT statement.
 * [`Sql.Concat`](Faithlife.Data.SqlFormatting/Sql/Concat.md) (or [`operator +`](Faithlife.Data.SqlFormatting/Sql/op_Addition.md)) concatenates SQL fragments.
 * [`Sql.Empty`](Faithlife.Data.SqlFormatting/Sql/Empty.md) is an empty SQL fragment.
 * [`Sql.Join`](Faithlife.Data.SqlFormatting/Sql/Join.md) joins SQL fragments with a separator.

@@ -27,7 +27,7 @@ namespace Faithlife.Data.SqlFormatting
 		/// <summary>
 		/// Returns a comma-delimited list of column names for a DTO of the specified type.
 		/// </summary>
-		public static Sql ColumnNames(Type type) => new ColumnNamesSql(type);
+		public static Sql ColumnNames(Type type) => new ColumnNamesSql(type ?? throw new ArgumentNullException(nameof(type)));
 
 		/// <summary>
 		/// Returns a comma-delimited list of column names for a DTO of the specified type.
@@ -43,7 +43,7 @@ namespace Faithlife.Data.SqlFormatting
 		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
 		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
 		/// will separate the DTOs.</remarks>
-		public static Sql ColumnNames(Type type, string tableName) => new ColumnNamesSql(type, tableName);
+		public static Sql ColumnNames(Type type, string tableName) => new ColumnNamesSql(type ?? throw new ArgumentNullException(nameof(type)), tableName);
 
 		/// <summary>
 		/// Returns a comma-delimited list of column names for a DTO of the specified type.
@@ -59,12 +59,67 @@ namespace Faithlife.Data.SqlFormatting
 		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
 		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
 		/// will separate the DTOs.</remarks>
-		public static Sql ColumnNames(Type type, params string[] tableNames) => new ColumnNamesSql(type, tableNames);
+		public static Sql ColumnNames(Type type, params string[] tableNames) => new ColumnNamesSql(type ?? throw new ArgumentNullException(nameof(type)), tableNames);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		public static Sql ColumnNamesWhere<T>(Func<string, bool> filter) => new ColumnNamesSql(typeof(T), filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		public static Sql ColumnNamesWhere(Type type, Func<string, bool> filter) => new ColumnNamesSql(type ?? throw new ArgumentNullException(nameof(type)), filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
+		public static Sql ColumnNamesWhere<T>(Func<string, bool> filter, string tableName) => new ColumnNamesSql(typeof(T), tableName, filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
+		public static Sql ColumnNamesWhere(Type type, Func<string, bool> filter, string tableName) => new ColumnNamesSql(type ?? throw new ArgumentNullException(nameof(type)), tableName, filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
+		public static Sql ColumnNamesWhere<T>(Func<string, bool> filter, params string[] tableNames) => new ColumnNamesSql(typeof(T), tableNames, filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of column names for a DTO of the specified type
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		/// <remarks>This overload is used with SELECT statements when the table name (or alias)
+		/// needs to be specified with each column name. If a tuple of DTOs is specified, a NULL column
+		/// will separate the DTOs.</remarks>
+		public static Sql ColumnNamesWhere(Type type, Func<string, bool> filter, params string[] tableNames) => new ColumnNamesSql(type ?? throw new ArgumentNullException(nameof(type)), tableNames, filter);
 
 		/// <summary>
 		/// Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO.
 		/// </summary>
 		public static Sql ColumnParams(object dto) => new ColumnParamsSql(dto ?? throw new ArgumentNullException(nameof(dto)));
+
+		/// <summary>
+		/// Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO
+		/// for the properties whose names match the specified filter.
+		/// </summary>
+		public static Sql ColumnParamsWhere(object dto, Func<string, bool> filter) =>
+			new ColumnParamsSql(dto ?? throw new ArgumentNullException(nameof(dto)), filter ?? throw new ArgumentNullException(nameof(filter)));
 
 		/// <summary>
 		/// Concatenates SQL fragments.
@@ -137,9 +192,9 @@ namespace Faithlife.Data.SqlFormatting
 
 		private sealed class ColumnNamesSql : Sql
 		{
-			public ColumnNamesSql(Type type) => m_type = type;
-			public ColumnNamesSql(Type type, string? tableName) => (m_type, m_tableName) = (type, tableName);
-			public ColumnNamesSql(Type type, string[] tableNames) => (m_type, m_tableNames) = (type, tableNames);
+			public ColumnNamesSql(Type type, Func<string, bool>? filter = null) => (m_type, m_filter) = (type, filter);
+			public ColumnNamesSql(Type type, string? tableName, Func<string, bool>? filter = null) => (m_type, m_tableName, m_filter) = (type, tableName, filter);
+			public ColumnNamesSql(Type type, string[] tableNames, Func<string, bool>? filter = null) => (m_type, m_tableNames, m_filter) = (type, tableNames, filter);
 
 			internal override string Render(SqlContext context)
 			{
@@ -157,15 +212,24 @@ namespace Faithlife.Data.SqlFormatting
 				var properties = DtoInfo.GetInfo(type).Properties;
 				if (properties.Count == 0)
 					throw new InvalidOperationException($"The specified type has no columns: {type.FullName}");
+
 				var dbInfo = DbValueTypeInfo.GetInfo(type);
 				var syntax = context.Syntax;
 				var tableName = GetTableName(index);
 				var tablePrefix = tableName.Length == 0 ? "" : syntax.QuoteName(tableName) + ".";
 				var useSnakeCase = syntax.UseSnakeCase;
-				return string.Join(", ",
-					properties.Select(x => tablePrefix + syntax.QuoteName(
+
+				IEnumerable<IDtoProperty> filteredProperties = properties;
+				if (m_filter is not null)
+					filteredProperties = filteredProperties.Where(x => m_filter(x.Name));
+
+				var text = string.Join(", ",
+					filteredProperties.Select(x => tablePrefix + syntax.QuoteName(
 						dbInfo.GetColumnAttributeName(x.Name) ??
 						(useSnakeCase ? s_snakeCaseCache.GetOrAdd(x.Name, ToSnakeCase) : x.Name))));
+				if (text.Length == 0)
+					throw new InvalidOperationException($"The specified type has no remaining columns: {type.FullName}");
+				return text;
 			}
 
 			private static string ToSnakeCase(string value) => string.Join("_", s_word.Matches(value).Cast<Match>().Select(x => x.Value.ToLowerInvariant()));
@@ -176,11 +240,12 @@ namespace Faithlife.Data.SqlFormatting
 			private readonly Type m_type;
 			private readonly string? m_tableName;
 			private readonly string[]? m_tableNames;
+			private readonly Func<string, bool>? m_filter;
 		}
 
 		private sealed class ColumnParamsSql : Sql
 		{
-			public ColumnParamsSql(object dto) => m_dto = dto;
+			public ColumnParamsSql(object dto, Func<string, bool>? filter = null) => (m_dto, m_filter) = (dto, filter);
 
 			internal override string Render(SqlContext context)
 			{
@@ -188,10 +253,19 @@ namespace Faithlife.Data.SqlFormatting
 				var properties = DtoInfo.GetInfo(type).Properties;
 				if (properties.Count == 0)
 					throw new InvalidOperationException($"The specified type has no columns: {type.FullName}");
-				return string.Join(", ", properties.Select(x => context.RenderParam(x.GetValue(m_dto))));
+
+				IEnumerable<IDtoProperty> filteredProperties = properties;
+				if (m_filter is not null)
+					filteredProperties = filteredProperties.Where(x => m_filter(x.Name));
+
+				var text = string.Join(", ", filteredProperties.Select(x => context.RenderParam(x.GetValue(m_dto))));
+				if (text.Length == 0)
+					throw new InvalidOperationException($"The specified type has no remaining columns: {type.FullName}");
+				return text;
 			}
 
 			private readonly object m_dto;
+			private readonly Func<string, bool>? m_filter;
 		}
 
 		private sealed class FormatSql : Sql
