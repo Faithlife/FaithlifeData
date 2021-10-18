@@ -209,7 +209,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 		}
 
 		[Test]
-		public void TupleColumnNamesAndValuesSql()
+		public void TupleColumnNamesSql()
 		{
 			var syntax = SqlSyntax.MySql;
 
