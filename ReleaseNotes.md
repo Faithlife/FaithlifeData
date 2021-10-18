@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.18.0-beta.1
+
+* Support `Sql.ColumnNamesWhere` and `Sql.ColumnParamsWhere`.
+
 ## 1.17.0
 
 * Support `DbConnectorPool`.
