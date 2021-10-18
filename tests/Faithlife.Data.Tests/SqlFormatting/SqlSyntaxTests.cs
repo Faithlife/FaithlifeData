@@ -174,6 +174,11 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			var (text, parameters) = syntax.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(item.GetType())}) values ({Sql.ColumnParams(item)});"));
 			text.Should().Be("insert into Items (`ItemId`, `DisplayName`) values (@fdp0, @fdp1);");
 			parameters.Should().Equal(("fdp0", item.Id), ("fdp1", item.DisplayName));
+
+			var anon = new { item.Id, item.DisplayName };
+			(text, parameters) = syntax.Render(Sql.Format($"insert into Items ({Sql.ColumnNames(anon.GetType())}) values ({Sql.ColumnParams(anon)});"));
+			text.Should().Be("insert into Items (`Id`, `DisplayName`) values (@fdp0, @fdp1);");
+			parameters.Should().Equal(("fdp0", anon.Id), ("fdp1", anon.DisplayName));
 		}
 
 		[Test]
@@ -198,10 +203,56 @@ namespace Faithlife.Data.Tests.SqlFormatting
 
 			var item = new ItemDto { Id = 3, DisplayName = "three" };
 			syntax.Render(Sql.ColumnNames(item.GetType(), "t")).Text.Should().Be("`t`.`ItemId`, `t`.`display_name`");
+
+			var anon = new { item.Id, item.DisplayName };
+			syntax.Render(Sql.ColumnNames(anon.GetType(), "t")).Text.Should().Be("`t`.`id`, `t`.`display_name`");
 		}
 
 		[Test]
-		public void TupleColumnNamesAndValuesSql()
+		public void ColumnNamesAndValuesWhereSql()
+		{
+			var syntax = SqlSyntax.MySql;
+
+			syntax.Render(Sql.ColumnNamesWhere<ItemDto>(x => x != nameof(ItemDto.Id))).Text.Should().Be("`DisplayName`");
+
+			var item = new ItemDto { Id = 3, DisplayName = "three" };
+			var (text, parameters) = syntax.Render(Sql.Format(@$"
+				insert into Items ({Sql.ColumnNamesWhere(item.GetType(), x => x is not nameof(ItemDto.Id))})
+				values ({Sql.ColumnParamsWhere(item, x => x is not nameof(ItemDto.Id))});"));
+			text.Should().Be(@"
+				insert into Items (`DisplayName`)
+				values (@fdp0);");
+			parameters.Should().Equal(("fdp0", item.DisplayName));
+		}
+
+		[Test]
+		public void TableColumnNamesAndValuesWhereSql()
+		{
+			var syntax = SqlSyntax.MySql;
+
+			syntax.Render(Sql.ColumnNamesWhere<ItemDto>(x => x != nameof(ItemDto.Id), "t")).Text.Should().Be("`t`.`DisplayName`");
+
+			var item = new ItemDto { Id = 3, DisplayName = "three" };
+			var (text, parameters) = syntax.Render(Sql.Format(@$"
+				insert into Items ({Sql.ColumnNamesWhere(item.GetType(), x => x is not nameof(ItemDto.Id), "t")})
+				values ({Sql.ColumnParamsWhere(item, x => x is not nameof(ItemDto.Id))});"));
+			text.Should().Be(@"
+				insert into Items (`t`.`DisplayName`)
+				values (@fdp0);");
+			parameters.Should().Equal(("fdp0", item.DisplayName));
+		}
+
+		[Test]
+		public void ColumnNamesAndValuesWhereNoneException()
+		{
+			var syntax = SqlSyntax.MySql;
+
+			Invoking(() => syntax.Render(Sql.ColumnNamesWhere<ItemDto>(_ => false))).Should().Throw<InvalidOperationException>();
+			Invoking(() => syntax.Render(Sql.ColumnParamsWhere(new ItemDto(), _ => false))).Should().Throw<InvalidOperationException>();
+		}
+
+		[Test]
+		public void TupleColumnNamesSql()
 		{
 			var syntax = SqlSyntax.MySql;
 
@@ -209,6 +260,12 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			syntax.Render(Sql.ColumnNames(typeof((ItemDto, ItemDto)), "t1")).Text.Should().Be("`t1`.`ItemId`, `t1`.`DisplayName`, NULL, `ItemId`, `DisplayName`");
 			syntax.Render(Sql.ColumnNames<(ItemDto, ItemDto)>("t1", "t2")).Text.Should().Be("`t1`.`ItemId`, `t1`.`DisplayName`, NULL, `t2`.`ItemId`, `t2`.`DisplayName`");
 			syntax.Render(Sql.ColumnNames(typeof((ItemDto, ItemDto)), "", "t2")).Text.Should().Be("`ItemId`, `DisplayName`, NULL, `t2`.`ItemId`, `t2`.`DisplayName`");
+
+			static bool NotId(string propertyName) => propertyName != nameof(ItemDto.Id);
+			syntax.Render(Sql.ColumnNamesWhere<(ItemDto, ItemDto)>(NotId)).Text.Should().Be("`DisplayName`, NULL, `DisplayName`");
+			syntax.Render(Sql.ColumnNamesWhere(typeof((ItemDto, ItemDto)), NotId, "t1")).Text.Should().Be("`t1`.`DisplayName`, NULL, `DisplayName`");
+			syntax.Render(Sql.ColumnNamesWhere<(ItemDto, ItemDto)>(NotId, "t1", "t2")).Text.Should().Be("`t1`.`DisplayName`, NULL, `t2`.`DisplayName`");
+			syntax.Render(Sql.ColumnNamesWhere(typeof((ItemDto, ItemDto)), NotId, "", "t2")).Text.Should().Be("`DisplayName`, NULL, `t2`.`DisplayName`");
 		}
 
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);

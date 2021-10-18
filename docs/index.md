@@ -320,8 +320,8 @@ IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
 
 To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class:
 
-* [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) generates a list of column names from a DTO for SELECT and INSERT statements.
-* [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) generates a list of parameters from a DTO for an INSERT statement.
+* [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) and [`Sql.ColumnNamesWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnNamesWhere.md) generate a list of column names from a DTO for SELECT and INSERT statements.
+* [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) and [`Sql.ColumnParamsWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnParamsWhere.md) generate a list of parameters from a DTO for an INSERT statement.
 * [`Sql.Concat`](Faithlife.Data.SqlFormatting/Sql/Concat.md) (or [`operator +`](Faithlife.Data.SqlFormatting/Sql/op_Addition.md)) concatenates SQL fragments.
 * [`Sql.Empty`](Faithlife.Data.SqlFormatting/Sql/Empty.md) is an empty SQL fragment.
 * [`Sql.Join`](Faithlife.Data.SqlFormatting/Sql/Join.md) joins SQL fragments with a separator.
@@ -516,6 +516,19 @@ Execute the method within a transaction if it is important to avoid inserting on
 The `BulkInsert()` and `BulkInsertAsync()` methods of the `BulkInsertUtility` static class are extension methods on [`DbConnectorCommand`](Faithlife.Data/DbConnectorCommand.md). They support an optional [`BulkInsertSettings`](Faithlife.Data.BulkInsert/BulkInsertSettings.md) parameter that allows you to change the maximum number of command parameters and/or the maximum number of rows per batch.
 
 The method returns the total number of rows affected (or, more specifically, the sum of the row counts returned when executing the SQL commands for each batch).
+
+You can also use [formatted SQL](#formatted-sql) to do bulk insertion more explicitly:
+
+```csharp
+var columnNamesSql = Sql.ColumnNames(widgets[0].GetType());
+foreach (var chunk in widgets.Chunk(1000))
+{
+    connector.CommandFormat(@$"
+        insert into widgets ({columnNamesSql})
+        values {Sql.Join(",", chunk.Select(x => Sql.Format($"({Sql.ColumnParams(x)})")))};"
+        ").Execute();
+}
+```
 
 ## Advanced record mapping
 
