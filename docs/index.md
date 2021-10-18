@@ -517,6 +517,19 @@ The `BulkInsert()` and `BulkInsertAsync()` methods of the `BulkInsertUtility` st
 
 The method returns the total number of rows affected (or, more specifically, the sum of the row counts returned when executing the SQL commands for each batch).
 
+You can also use [formatted SQL](#formatted-sql) to do bulk insertion more explicitly:
+
+```csharp
+var columnNamesSql = Sql.ColumnNames(widgets[0].GetType());
+foreach (var chunk in widgets.Chunk(1000))
+{
+    connector.CommandFormat(@$"
+        insert into widgets ({columnNamesSql})
+        values {Sql.Join(",", chunk.Select(x => Sql.Format($"({Sql.ColumnParams(x)})")))};"
+        ").Execute();
+}
+```
+
 ## Advanced record mapping
 
 This section documents additional scenarios for mapping records to values.
