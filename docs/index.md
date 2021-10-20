@@ -523,7 +523,7 @@ You can also use [formatted SQL](#formatted-sql) to do bulk insertion more expli
 var columnNamesSql = Sql.ColumnNames(widgets[0].GetType());
 foreach (var chunk in widgets.Chunk(1000))
 {
-    connector.CommandFormat(@$"
+    connector.CommandFormat($@"
         insert into widgets ({columnNamesSql})
         values {Sql.Join(",", chunk.Select(x => Sql.Format($"({Sql.ColumnParams(x)})")))};"
         ").Execute();

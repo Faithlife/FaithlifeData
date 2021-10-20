@@ -216,7 +216,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			syntax.Render(Sql.ColumnNamesWhere<ItemDto>(x => x != nameof(ItemDto.Id))).Text.Should().Be("`DisplayName`");
 
 			var item = new ItemDto { Id = 3, DisplayName = "three" };
-			var (text, parameters) = syntax.Render(Sql.Format(@$"
+			var (text, parameters) = syntax.Render(Sql.Format($@"
 				insert into Items ({Sql.ColumnNamesWhere(item.GetType(), x => x is not nameof(ItemDto.Id))})
 				values ({Sql.ColumnParamsWhere(item, x => x is not nameof(ItemDto.Id))});"));
 			text.Should().Be(@"
@@ -233,7 +233,7 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			syntax.Render(Sql.ColumnNamesWhere<ItemDto>(x => x != nameof(ItemDto.Id), "t")).Text.Should().Be("`t`.`DisplayName`");
 
 			var item = new ItemDto { Id = 3, DisplayName = "three" };
-			var (text, parameters) = syntax.Render(Sql.Format(@$"
+			var (text, parameters) = syntax.Render(Sql.Format($@"
 				insert into Items ({Sql.ColumnNamesWhere(item.GetType(), x => x is not nameof(ItemDto.Id), "t")})
 				values ({Sql.ColumnParamsWhere(item, x => x is not nameof(ItemDto.Id))});"));
 			text.Should().Be(@"

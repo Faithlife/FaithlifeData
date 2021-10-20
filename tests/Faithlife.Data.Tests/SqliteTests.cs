@@ -39,7 +39,7 @@ namespace Faithlife.Data.Tests
 
 			var items = new[] { new NameValue("one", "two"), new NameValue("two", "four") };
 
-			connector.Command(Sql.Format(@$"
+			connector.Command(Sql.Format($@"
 				insert into {tableName} ({Sql.ColumnNames<NameValue>()})
 				values {Sql.Join(", ", items.Select(item => Sql.Format($"({Sql.ColumnParams(item)})")))};
 				")).Execute();
