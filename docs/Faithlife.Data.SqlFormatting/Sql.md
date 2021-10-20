@@ -14,7 +14,10 @@ public abstract class Sql
 | static [ColumnNames](Sql/ColumnNames.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type. (3 methods) |
 | static [ColumnNames&lt;T&gt;](Sql/ColumnNames.md)() | Returns a comma-delimited list of column names for a DTO of the specified type. |
 | static [ColumnNames&lt;T&gt;](Sql/ColumnNames.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type. (2 methods) |
+| static [ColumnNamesWhere](Sql/ColumnNamesWhere.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type for the properties whose names match the specified filter. (3 methods) |
+| static [ColumnNamesWhere&lt;T&gt;](Sql/ColumnNamesWhere.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type for the properties whose names match the specified filter. (3 methods) |
 | static [ColumnParams](Sql/ColumnParams.md)(…) | Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO. |
+| static [ColumnParamsWhere](Sql/ColumnParamsWhere.md)(…) | Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO for the properties whose names match the specified filter. |
 | static [Concat](Sql/Concat.md)(…) | Concatenates SQL fragments. (2 methods) |
 | static [Format](Sql/Format.md)(…) | Creates SQL from a formatted string. |
 | static [Join](Sql/Join.md)(…) | Joins SQL fragments with the specified separator. (2 methods) |
