@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.18.0-beta.1
+## 1.18.0
 
 * Support `Sql.ColumnNamesWhere` and `Sql.ColumnParamsWhere`.
 
