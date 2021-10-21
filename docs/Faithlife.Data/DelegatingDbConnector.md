@@ -25,6 +25,8 @@ public class DelegatingDbConnector : DbConnector
 | override [GetConnectionAsync](DelegatingDbConnector/GetConnectionAsync.md)(…) |  |
 | override [OpenConnection](DelegatingDbConnector/OpenConnection.md)() |  |
 | override [OpenConnectionAsync](DelegatingDbConnector/OpenConnectionAsync.md)(…) |  |
+| override [ReleaseConnection](DelegatingDbConnector/ReleaseConnection.md)() |  |
+| override [ReleaseConnectionAsync](DelegatingDbConnector/ReleaseConnectionAsync.md)() |  |
 | override [RollbackTransaction](DelegatingDbConnector/RollbackTransaction.md)() |  |
 | override [RollbackTransactionAsync](DelegatingDbConnector/RollbackTransactionAsync.md)(…) |  |
 
