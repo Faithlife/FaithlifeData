@@ -19,6 +19,11 @@ public abstract class Sql
 | static [ColumnParams](Sql/ColumnParams.md)(…) | Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO. |
 | static [ColumnParamsWhere](Sql/ColumnParamsWhere.md)(…) | Returns a comma-delimited list of arbitrarily-named parameters for the column values of the specified DTO for the properties whose names match the specified filter. |
 | static [Concat](Sql/Concat.md)(…) | Concatenates SQL fragments. (2 methods) |
+| static [DtoParamNames](Sql/DtoParamNames.md)(…) | Returns a comma-delimited list of named parameters for the properties of the specified DTO. (3 methods) |
+| static [DtoParamNames&lt;T&gt;](Sql/DtoParamNames.md)() | Returns a comma-delimited list of named parameters for the properties of the specified DTO. |
+| static [DtoParamNames&lt;T&gt;](Sql/DtoParamNames.md)(…) | Returns a comma-delimited list of named parameters for the properties of the specified DTO. (2 methods) |
+| static [DtoParamNamesWhere](Sql/DtoParamNamesWhere.md)(…) | Returns a comma-delimited list of named parameters for the properties of the specified DTO whose names match the specified filter. (3 methods) |
+| static [DtoParamNamesWhere&lt;T&gt;](Sql/DtoParamNamesWhere.md)(…) | Returns a comma-delimited list of named parameters for the properties of the specified DTO whose names match the specified filter. (3 methods) |
 | static [Format](Sql/Format.md)(…) | Creates SQL from a formatted string. |
 | static [Join](Sql/Join.md)(…) | Joins SQL fragments with the specified separator. (2 methods) |
 | static [LikePrefixParam](Sql/LikePrefixParam.md)(…) | Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing `%`. |

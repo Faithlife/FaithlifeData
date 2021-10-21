@@ -15,6 +15,7 @@ public struct DbParameters : IReadOnlyList<(string, object)>
 | static [Create&lt;T&gt;](DbParameters/Create.md)(…) | Creates a list of parameters from a sequence of tuples. (2 methods) |
 | static [FromDto](DbParameters/FromDto.md)(…) | Creates a list of parameters from the properties of a DTO. (3 methods) |
 | static [FromDtos](DbParameters/FromDtos.md)(…) | Creates a list of parameters from the collective properties of a sequence of DTOs. (3 methods) |
+| static [FromDtoWhere](DbParameters/FromDtoWhere.md)(…) | Creates a list of parameters from the properties of a DTO whose names match the specified filter. (3 methods) |
 | static [FromMany](DbParameters/FromMany.md)(…) | Creates a list of parameters from a single name and a collection of values. (2 methods) |
 | [Count](DbParameters/Count.md) { get; } | The number of parameters. |
 | [Item](DbParameters/Item.md) { get; } | The parameter at the specified index. |
@@ -22,6 +23,7 @@ public struct DbParameters : IReadOnlyList<(string, object)>
 | [Add&lt;T&gt;](DbParameters/Add.md)(…) | Adds parameters from a sequence of tuples. (2 methods) |
 | [AddDto](DbParameters/AddDto.md)(…) | Adds parameters from the properties of a DTO. (3 methods) |
 | [AddDtos](DbParameters/AddDtos.md)(…) | Adds parameters from the collective properties of a sequence of DTOs. (3 methods) |
+| [AddDtoWhere](DbParameters/AddDtoWhere.md)(…) | Adds parameters from the properties of a DTO whose names match the specified filter. (3 methods) |
 | [AddMany](DbParameters/AddMany.md)(…) | Adds parameters from a single name and a collection of values. (2 methods) |
 | [GetEnumerator](DbParameters/GetEnumerator.md)() | Used to enumerate the parameters. |
 | [ToDictionary](DbParameters/ToDictionary.md)() | Creates a dictionary of parameters. |

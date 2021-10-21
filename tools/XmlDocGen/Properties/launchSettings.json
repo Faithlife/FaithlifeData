@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "XmlDocGen": {
+      "commandName": "Project",
+      "commandLineArgs": "Faithlife.Data ..\\..\\..\\..\\..\\docs --source https://github.com/Faithlife/FaithlifeData/tree/master/src/Faithlife.Data --newline lf --clean"
+    }
+  }
+}
