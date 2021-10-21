@@ -217,6 +217,18 @@ namespace Faithlife.Data
 		public DbConnectorCommand StoredProcedure(string name, params (string Name, object? Value)[] parameters) => StoredProcedure(name, DbParameters.Create(parameters));
 
 		/// <summary>
+		/// Releases the open connection.
+		/// </summary>
+		/// <remarks>This method closes the underlying connection, automatically reopening it if it is used again.</remarks>
+		public virtual void ReleaseConnection() => throw new NotImplementedException();
+
+		/// <summary>
+		/// Releases the open connection.
+		/// </summary>
+		/// <remarks>This method closes the underlying connection, automatically reopening it if it is used again.</remarks>
+		public virtual ValueTask ReleaseConnectionAsync() => throw new NotImplementedException();
+
+		/// <summary>
 		/// Disposes the connector.
 		/// </summary>
 		/// <seealso cref="DisposeAsync" />

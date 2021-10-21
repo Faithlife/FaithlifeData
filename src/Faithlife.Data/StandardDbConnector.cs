@@ -135,6 +135,36 @@ namespace Faithlife.Data
 			await DisposeTransactionAsync().ConfigureAwait(false);
 		}
 
+		public override void ReleaseConnection()
+		{
+			VerifyNotDisposed();
+
+			if (!m_isConnectionOpen)
+				throw new InvalidOperationException("Connection must be open.");
+
+			if (!m_pendingLazyOpen)
+			{
+				if (!m_noCloseConnection)
+					m_connection.Close();
+				m_pendingLazyOpen = true;
+			}
+		}
+
+		public override async ValueTask ReleaseConnectionAsync()
+		{
+			VerifyNotDisposed();
+
+			if (!m_isConnectionOpen)
+				throw new InvalidOperationException("Connection must be open.");
+
+			if (!m_pendingLazyOpen)
+			{
+				if (!m_noCloseConnection)
+					await m_providerMethods.CloseConnectionAsync(m_connection).ConfigureAwait(false);
+				m_pendingLazyOpen = true;
+			}
+		}
+
 		public override void Dispose()
 		{
 			if (!m_isDisposed)

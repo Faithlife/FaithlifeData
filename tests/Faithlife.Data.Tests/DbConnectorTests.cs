@@ -508,6 +508,26 @@ namespace Faithlife.Data.Tests
 			connector.Command("select Name, Number from Items order by ItemId limit 1 offset 1;").QuerySingle<(string, long)>().Should().Be(("A", 65L));
 		}
 
+		[Test]
+		public void ReleaseConnection()
+		{
+			// if connection was not closed and reopened, the temporary table would still exist and recreating it would fail
+			using var connector = CreateConnector();
+			connector.Command("create temporary table Items (ItemId integer primary key);").Execute().Should().Be(0);
+			connector.ReleaseConnection();
+			connector.Command("create temporary table Items (ItemId integer primary key);").Execute().Should().Be(0);
+		}
+
+		[Test]
+		public async Task ReleaseConnectionAsync()
+		{
+			// if connection was not closed and reopened, the temporary table would still exist and recreating it would fail
+			await using var connector = CreateConnector();
+			(await connector.Command("create temporary table Items (ItemId integer primary key);").ExecuteAsync()).Should().Be(0);
+			await connector.ReleaseConnectionAsync();
+			(await connector.Command("create temporary table Items (ItemId integer primary key);").ExecuteAsync()).Should().Be(0);
+		}
+
 		private static async Task<IReadOnlyList<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
 		{
 			var list = new List<T>();
