@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.20.0
+
+* Support `DbConnector.ReleaseConnection`.
+
 ## 1.19.0
 
 * Support `Sql.DtoParamNames` and `Sql.DtoParamNamesWhere`.
