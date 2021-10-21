@@ -3,7 +3,7 @@
 ## 1.19.0
 
 * Support `Sql.DtoParamNames` and `Sql.DtoParamNamesWhere`.
-* Support `DbParameters.FromDtoWhere` and DbParameters.AddDtoWhere`.
+* Support `DbParameters.FromDtoWhere` and `DbParameters.AddDtoWhere`.
 
 ## 1.18.0
 
