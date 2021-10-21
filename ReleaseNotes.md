@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.19.0
+
+* Support `Sql.DtoParamNames` and `Sql.DtoParamNamesWhere`.
+* Support `DbParameters.FromDtoWhere` and DbParameters.AddDtoWhere`.
+
 ## 1.18.0
 
 * Support `Sql.ColumnNamesWhere` and `Sql.ColumnParamsWhere`.
