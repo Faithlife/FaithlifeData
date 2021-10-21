@@ -114,6 +114,38 @@ namespace Faithlife.Data
 		}
 
 		/// <summary>
+		/// Creates a list of parameters from the properties of a DTO whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The name of each parameter is the name of the corresponding DTO property.</remarks>
+		public static DbParameters FromDtoWhere(object dto, Func<string, bool> filter) =>
+			new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Where(x => filter(x.Name)).Select(x => (x.Name, x.GetValue(dto))));
+
+		/// <summary>
+		/// Creates a list of parameters from the properties of a DTO whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_prop</c>, where <c>name</c> is as specified and <c>prop</c> is the
+		/// name of the corresponding DTO property.</remarks>
+		public static DbParameters FromDtoWhere(string name, object dto, Func<string, bool> filter)
+		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
+			return new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Where(x => filter(x.Name)).Select(x => ($"{name}_{x.Name}", x.GetValue(dto))));
+		}
+
+		/// <summary>
+		/// Creates a list of parameters from the properties of a DTO whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The name of each parameter is determined by calling the function with the name of the corresponding DTO property.</remarks>
+		public static DbParameters FromDtoWhere(Func<string, string> name, object dto, Func<string, bool> filter)
+		{
+			if (name is null)
+				throw new ArgumentNullException(nameof(name));
+
+			return new DbParameters(DtoInfo.GetInfo((dto ?? throw new ArgumentNullException(nameof(dto))).GetType()).Properties.Where(x => filter(x.Name)).Select(x => (name(x.Name), x.GetValue(dto))));
+		}
+
+		/// <summary>
 		/// Creates a list of parameters from the collective properties of a sequence of DTOs.
 		/// </summary>
 		/// <remarks>The name of each parameter is <c>prop_index</c>, where <c>prop</c> is the name of the corresponding DTO property
@@ -241,6 +273,25 @@ namespace Faithlife.Data
 		/// </summary>
 		/// <remarks>The name of each parameter is determined by calling the function with the name of the corresponding DTO property.</remarks>
 		public DbParameters AddDto(Func<string, string> name, object dto) => Add(FromDto(name, dto));
+
+		/// <summary>
+		/// Adds parameters from the properties of a DTO whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The name of each parameter is the name of the corresponding DTO property.</remarks>
+		public DbParameters AddDtoWhere(object dto, Func<string, bool> filter) => Add(FromDtoWhere(dto, filter));
+
+		/// <summary>
+		/// Adds parameters from the properties of a DTO whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The name of each parameter is <c>name_prop</c>, where <c>name</c> is as specified and <c>prop</c> is the
+		/// name of the corresponding DTO property.</remarks>
+		public DbParameters AddDtoWhere(string name, object dto, Func<string, bool> filter) => Add(FromDtoWhere(name, dto, filter));
+
+		/// <summary>
+		/// Adds parameters from the properties of a DTO whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The name of each parameter is determined by calling the function with the name of the corresponding DTO property.</remarks>
+		public DbParameters AddDtoWhere(Func<string, string> name, object dto, Func<string, bool> filter) => Add(FromDtoWhere(name, dto, filter));
 
 		/// <summary>
 		/// Adds parameters from the collective properties of a sequence of DTOs.

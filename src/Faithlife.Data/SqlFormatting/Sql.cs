@@ -134,6 +134,87 @@ namespace Faithlife.Data.SqlFormatting
 			new ConcatSql(AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))));
 
 		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNames<T>() => DtoParamNames(typeof(T));
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNames(Type type) => new DtoParamNamesSql(type ?? throw new ArgumentNullException(nameof(type)));
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNames<T>(string name) => DtoParamNames(typeof(T), name);
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNames(Type type, string name) => new DtoParamNamesSql(type ?? throw new ArgumentNullException(nameof(type)), name ?? throw new ArgumentNullException(nameof(name)));
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNames<T>(Func<string, string> name) => DtoParamNames(typeof(T), name);
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNames(Type type, Func<string, string> name) => new DtoParamNamesSql(type ?? throw new ArgumentNullException(nameof(type)), name ?? throw new ArgumentNullException(nameof(name)));
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO
+		/// whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNamesWhere<T>(Func<string, bool> filter) => DtoParamNamesWhere(typeof(T), filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO
+		/// whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNamesWhere(Type type, Func<string, bool> filter) =>
+			new DtoParamNamesSql(type ?? throw new ArgumentNullException(nameof(type)), filter ?? throw new ArgumentNullException(nameof(filter)));
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO
+		/// whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNamesWhere<T>(string name, Func<string, bool> filter) => DtoParamNamesWhere(typeof(T), name, filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO
+		/// whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNamesWhere(Type type, string name, Func<string, bool> filter) =>
+			new DtoParamNamesSql(type ?? throw new ArgumentNullException(nameof(type)), name ?? throw new ArgumentNullException(nameof(name)), filter ?? throw new ArgumentNullException(nameof(filter)));
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO
+		/// whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNamesWhere<T>(Func<string, string> name, Func<string, bool> filter) => DtoParamNamesWhere(typeof(T), name, filter);
+
+		/// <summary>
+		/// Returns a comma-delimited list of named parameters for the properties of the specified DTO
+		/// whose names match the specified filter.
+		/// </summary>
+		/// <remarks>The parameter names are the same as those used by the <c>Dto</c> methods of <see cref="DbParameters"/>.</remarks>
+		public static Sql DtoParamNamesWhere(Type type, Func<string, string> name, Func<string, bool> filter) =>
+			new DtoParamNamesSql(type ?? throw new ArgumentNullException(nameof(type)), name ?? throw new ArgumentNullException(nameof(name)), filter ?? throw new ArgumentNullException(nameof(filter)));
+
+		/// <summary>
 		/// Creates SQL from a formatted string.
 		/// </summary>
 		public static Sql Format(FormattableString formattableString) => new FormatSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
@@ -266,6 +347,37 @@ namespace Faithlife.Data.SqlFormatting
 
 			private readonly object m_dto;
 			private readonly Func<string, bool>? m_filter;
+		}
+
+		private sealed class DtoParamNamesSql : Sql
+		{
+			public DtoParamNamesSql(Type type, Func<string, bool>? filter = null) => (m_type, m_filter) = (type, filter);
+			public DtoParamNamesSql(Type type, string name, Func<string, bool>? filter = null) => (m_type, m_name, m_filter) = (type, name, filter);
+			public DtoParamNamesSql(Type type, Func<string, string> name, Func<string, bool>? filter = null) => (m_type, m_getName, m_filter) = (type, name, filter);
+
+			internal override string Render(SqlContext context)
+			{
+				var properties = DtoInfo.GetInfo(m_type).Properties;
+				if (properties.Count == 0)
+					throw new InvalidOperationException($"The specified type has no columns: {m_type.FullName}");
+
+				IEnumerable<IDtoProperty> filteredProperties = properties;
+				if (m_filter is not null)
+					filteredProperties = filteredProperties.Where(x => m_filter(x.Name));
+
+				var text = string.Join(", ", filteredProperties.Select(x => context.Syntax.ParameterPrefix + GetName(x.Name)));
+				if (text.Length == 0)
+					throw new InvalidOperationException($"The specified type has no remaining columns: {m_type.FullName}");
+				return text;
+			}
+
+			private string GetName(string name) =>
+				m_name is not null ? $"{m_name}_{name}" : m_getName is not null ? m_getName(name) : name;
+
+			private readonly Type m_type;
+			private readonly Func<string, bool>? m_filter;
+			private readonly string? m_name;
+			private readonly Func<string, string>? m_getName;
 		}
 
 		private sealed class FormatSql : Sql

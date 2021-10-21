@@ -89,6 +89,14 @@ namespace Faithlife.Data.Tests
 		}
 
 		[Test]
+		public void CreateFromDtoWhere()
+		{
+			DbParameters.FromDtoWhere(new { one = 1, two = 2, three = 3 }, x => x[0] == 't').Should().Equal(("two", 2), ("three", 3));
+			DbParameters.FromDtoWhere("thing", new { one = 1, two = 2, three = 3 }, x => x[0] == 't').Should().Equal(("thing_two", 2), ("thing_three", 3));
+			DbParameters.FromDtoWhere(x => x.ToUpperInvariant(), new { one = 1, two = 2, three = 3 }, x => x[0] == 't').Should().Equal(("TWO", 2), ("THREE", 3));
+		}
+
+		[Test]
 		public void Add()
 		{
 			default(DbParameters)

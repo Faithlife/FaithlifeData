@@ -268,6 +268,28 @@ namespace Faithlife.Data.Tests.SqlFormatting
 			syntax.Render(Sql.ColumnNamesWhere(typeof((ItemDto, ItemDto)), NotId, "", "t2")).Text.Should().Be("`DisplayName`, NULL, `t2`.`DisplayName`");
 		}
 
+		[Test]
+		public void DtoParamNamesSql()
+		{
+			var syntax = SqlSyntax.MySql;
+
+			syntax.Render(Sql.DtoParamNames<ItemDto>()).Text.Should().Be("@Id, @DisplayName");
+			syntax.Render(Sql.DtoParamNames<ItemDto>("p")).Text.Should().Be("@p_Id, @p_DisplayName");
+			syntax.Render(Sql.DtoParamNames<ItemDto>(x => x + "_")).Text.Should().Be("@Id_, @DisplayName_");
+		}
+
+		[Test]
+		public void DtoParamNamesWhereSql()
+		{
+			var syntax = SqlSyntax.MySql;
+
+			syntax.Render(Sql.DtoParamNamesWhere<ItemDto>(NotId)).Text.Should().Be("@DisplayName");
+			syntax.Render(Sql.DtoParamNamesWhere<ItemDto>("p", NotId)).Text.Should().Be("@p_DisplayName");
+			syntax.Render(Sql.DtoParamNamesWhere<ItemDto>(x => x + "_", NotId)).Text.Should().Be("@DisplayName_");
+
+			static bool NotId(string x) => x != nameof(ItemDto.Id);
+		}
+
 		private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);
 
 		private sealed class ItemDto
