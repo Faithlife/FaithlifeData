@@ -64,6 +64,12 @@ namespace Faithlife.Data
 		public override ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default) => Inner.RollbackTransactionAsync(cancellationToken);
 
 		/// <inheritdoc />
+		public override void ReleaseConnection() => Inner.ReleaseConnection();
+
+		/// <inheritdoc />
+		public override ValueTask ReleaseConnectionAsync() => Inner.ReleaseConnectionAsync();
+
+		/// <inheritdoc />
 		public override void Dispose() => Inner.Dispose();
 
 		/// <inheritdoc />

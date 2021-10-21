@@ -67,6 +67,10 @@ namespace Faithlife.Data.Tests
 
 			public override ValueTask RollbackTransactionAsync(CancellationToken cancellationToken = default) => throw new DelegatedException();
 
+			public override void ReleaseConnection() => throw new DelegatedException();
+
+			public override ValueTask ReleaseConnectionAsync() => throw new DelegatedException();
+
 			public override void Dispose() => throw new DelegatedException();
 
 			public override ValueTask DisposeAsync() => throw new DelegatedException();
