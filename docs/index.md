@@ -323,6 +323,7 @@ To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlF
 * [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) and [`Sql.ColumnNamesWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnNamesWhere.md) generate a list of column names from a DTO for SELECT and INSERT statements.
 * [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) and [`Sql.ColumnParamsWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnParamsWhere.md) generate a list of parameters from a DTO for an INSERT statement.
 * [`Sql.Concat`](Faithlife.Data.SqlFormatting/Sql/Concat.md) (or [`operator +`](Faithlife.Data.SqlFormatting/Sql/op_Addition.md)) concatenates SQL fragments.
+* [`Sql.DtoParamNames`](Faithlife.Data.SqlFormatting/Sql/DtoParamNames.md) and [`Sql.DtoParamNamesWhere`](Faithlife.Data.SqlFormatting/Sql/DtoParamNames.md) generate a list of named parameters for DTO properties.
 * [`Sql.Empty`](Faithlife.Data.SqlFormatting/Sql/Empty.md) is an empty SQL fragment.
 * [`Sql.Join`](Faithlife.Data.SqlFormatting/Sql/Join.md) joins SQL fragments with a separator.
 * [`Sql.LikePrefixParam`](Faithlife.Data.SqlFormatting/Sql/LikePrefixParam.md) generates a parameter with a LIKE pattern for prefix matching.
@@ -657,6 +658,8 @@ var tallWidgets = connector.Command(
     "select id from widgets where height >= @minHeight and height <= @maxHeight;",
     DbParameters.FromDto(new { minHeight = 1.0, maxHeight = 100.0 })).Query<long>();
 ```
+
+Use [`DbParameters.FromDtoWhere()`](Faithlife.Data/DbParameters/FromDtoWhere.md) or [`DbParameters.AddDtoWhere()`](Faithlife.Data/DbParameters/AddDtoWhere.md) to create parameters from a subset of the public properites and fields.
 
 Use [`DbParameters.FromDtos()`](Faithlife.Data/DbParameters/FromDtos.md) or [`DbParameters.AddDtos()`](Faithlife.Data/DbParameters/AddDtos.md) to create parameters for many DTOs at once.
 
