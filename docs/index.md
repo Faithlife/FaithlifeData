@@ -296,7 +296,7 @@ void InsertWidget(DbConnector connector, string name, double height) =>
 
 (`fdp` is just an arbitrary prefix for the automatically named parameters; it stands for "Faithlife.Data parameter".)
 
-Note that using an interpolated string without `Sql.Format()` is still a SQL injection vulnerability:
+Note that using an interpolated string without `Sql.Format()` is still a SQL injection vulnerability. Consider enabling [FL0012](https://github.com/Faithlife/FaithlifeAnalyzers/wiki/FL0012) from [Faithlife.Analyzers](https://github.com/Faithlife/FaithlifeAnalyzers), which reports when `Command` is called with an interpolated string.
 
 ```csharp
 // Don't do this!
