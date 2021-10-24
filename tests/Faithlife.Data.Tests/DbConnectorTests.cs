@@ -332,7 +332,7 @@ namespace Faithlife.Data.Tests
 				var id1 = (await resultSet.ReadAsync<long>()).First();
 				var id2 = (await resultSet.ReadAsync(x => x.Get<long>())).Single();
 				id1.Should().BeLessThan(id2);
-				Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().Throw<InvalidOperationException>();
+				await Awaiting(async () => await resultSet.ReadAsync(x => 0)).Should().ThrowAsync<InvalidOperationException>();
 			}
 
 			await using (var resultSet = await connector.Command(sql).QueryMultipleAsync())
@@ -340,7 +340,7 @@ namespace Faithlife.Data.Tests
 				var id1 = await FirstAsync(resultSet.EnumerateAsync<long>());
 				var id2 = await FirstAsync(resultSet.EnumerateAsync(x => x.Get<long>()));
 				id1.Should().BeLessThan(id2);
-				Awaiting(async () => await ToListAsync(resultSet.EnumerateAsync(x => 0))).Should().Throw<InvalidOperationException>();
+				await Awaiting(async () => await ToListAsync(resultSet.EnumerateAsync(x => 0))).Should().ThrowAsync<InvalidOperationException>();
 			}
 		}
 
@@ -383,7 +383,7 @@ namespace Faithlife.Data.Tests
 				", ("before", 1), ("names", new[] { "one", "three", "five" }), ("ignore", new[] { 0 }), ("after", 2)).QueryMultiple();
 			resultSets.Read<string>().Should().BeEquivalentTo("one", "three");
 			resultSets.Read<string>().Should().BeEquivalentTo("two");
-			resultSets.Read<long>().Should().BeEquivalentTo(3);
+			resultSets.Read<long>().Should().BeEquivalentTo(new[] { 3L });
 		}
 
 		[Test]
