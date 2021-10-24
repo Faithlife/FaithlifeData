@@ -110,7 +110,7 @@ namespace Faithlife.Data.Tests
 				.AddMany((int i) => $"ten*{2 * i + 1}", new object?[] { 10.0, false })
 				.AddDto(new { twelve = 12 })
 				.AddDto("the", new { thirteen = 13 })
-				.AddDto(name => $"Why ${name}?", new { fourteen = 14 })
+				.AddDto(name => $"Why @{name}?", new { fourteen = 14 })
 				.AddDtos(new object[] { new { fifteen = 15, sixteen = 16 }, new { seventeen = 17 } })
 				.AddDtos("stop", new object[] { new { eighteen = 18, nineteen = 19 }, new { twenty = 20 } })
 				.AddDtos((string prop, int i) => $"I don't want to write any more {prop}ing numbers ({i + 1})", new object[] { new { twenty_one = 21, twenty_two = 22 }, new { twenty_three = 23 } })

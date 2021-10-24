@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using Faithlife.Data;
+using Faithlife.Data.SqlFormatting;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using MySqlConnector;
@@ -57,7 +58,7 @@ namespace Benchmarks
 		{
 			m_connector = DbConnector.Create(connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 			m_connector.Command("drop table if exists PreparedCachedBenchmark; ").Execute();
-			m_connector.Command($"create table PreparedCachedBenchmark ({columnsSql});").Execute();
+			m_connector.CommandFormat($"create table PreparedCachedBenchmark ({Sql.Raw(columnsSql)});").Execute();
 			m_recordCount = recordCount;
 			m_createParameter = createParameter;
 
