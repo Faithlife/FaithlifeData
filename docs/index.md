@@ -75,7 +75,7 @@ With a `DbConnector`, you can:
 * Efficiently access only the first record of the query result with [`QueryFirst()`](Faithlife.Data/DbConnectorCommand/QueryFirst.md), [`QuerySingleOrDefault()`](Faithlife.Data/DbConnectorCommand/QuerySingleOrDefault.md), etc.
 * Access the database synchronously or asynchronously with cancellation support, e.g. [`Query()`](Faithlife.Data/DbConnectorCommand/Query.md) vs. [`QueryAsync()`](Faithlife.Data/DbConnectorCommand/QueryAsync.md).
 * Read multiple result sets from multi-statement commands with [`QueryMultiple()`](Faithlife.Data/DbConnectorCommand/QueryMultiple.md).
-* Expand [collection parameters](#parameters-from-collections) to a list of numbered parameters for easier `IN` support.
+* Expand [collection parameters](#collection-parameters) to a list of numbered parameters for easier `IN` support.
 * Use [bulk insert](#bulk-insert) to easily and efficiently insert multiple rows into a table.
 * Execute stored procedures with [`DbConnector.StoredProcedure()`](Faithlife.Data/DbConnector/StoredProcedure.md).
 * [Cache](#cached-commands) and/or [prepare](#prepared-commands) commands for possible performance improvements.
