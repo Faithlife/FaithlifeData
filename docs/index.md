@@ -155,6 +155,8 @@ DbConnector OpenConnector() => DbConnector.Create(
    });
 ```
 
+A connector can also be placed into "lazy open" mode by calling [`ReleaseConnectionAsync()`](Faithlife.Data/DbConnector/ReleaseConnectionAsync.md), which closes the connection until the next time it is used. You can use this to release database resources while performing long-running work between database queries.
+
 ## Accessing the database synchronously
 
 Every method that has communicates with the database has an synchronous equivalent without the `Async` suffix, e.g. [`Execute()`](Faithlife.Data/DbConnectorCommand/Execute.md). Consider using the synchronous methods if your ADO.NET provider doesn't actually support asynchronous I/O.
