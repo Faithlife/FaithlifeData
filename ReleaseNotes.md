@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.20.1
+
+* Use `DisposeAsync` when available.
+
 ## 1.20.0
 
 * Support `DbConnector.ReleaseConnection`.
