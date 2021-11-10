@@ -67,7 +67,8 @@ namespace Faithlife.Data
 		/// <seealso cref="Execute" />
 		public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken = default)
 		{
-			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			await using var commandScope = new AsyncScope(command).ConfigureAwait(false);
 			return await Connector.ProviderMethods.ExecuteNonQueryAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
 		}
 
@@ -515,8 +516,10 @@ namespace Faithlife.Data
 		{
 			var methods = Connector.ProviderMethods;
 
-			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			await using var commandScope = new AsyncScope(command).ConfigureAwait(false);
+			var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			await using var readerScope = new AsyncScope(reader).ConfigureAwait(false);
 
 			var list = new List<T>();
 
@@ -556,8 +559,10 @@ namespace Faithlife.Data
 		{
 			var methods = Connector.ProviderMethods;
 
-			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = single ? await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
+			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			await using var commandScope = new AsyncScope(command).ConfigureAwait(false);
+			var reader = single ? await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false) : await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), CommandBehavior.SingleRow, cancellationToken).ConfigureAwait(false);
+			await using var readerScope = new AsyncScope(reader).ConfigureAwait(false);
 
 			while (!await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			{
@@ -599,8 +604,10 @@ namespace Faithlife.Data
 		{
 			var methods = Connector.ProviderMethods;
 
-			using var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
-			using var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			var command = await CreateAsync(cancellationToken).ConfigureAwait(false);
+			await using var commandScope = new AsyncScope(command).ConfigureAwait(false);
+			var reader = await methods.ExecuteReaderAsync(CachedCommand.Unwrap(command), cancellationToken).ConfigureAwait(false);
+			await using var readerScope = new AsyncScope(reader).ConfigureAwait(false);
 
 			do
 			{
