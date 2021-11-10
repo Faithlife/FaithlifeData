@@ -5,10 +5,10 @@ using NUnit.Framework;
 
 namespace Faithlife.Data.Tests
 {
-	[TestFixture]
+	[TestFixture, Explicit("Requires 'docker-compose up' from '/docker'.")]
 	public class NpgsqlTests
 	{
-		[Test, Explicit("Requires 'docker-compose up' from '/docker'.")]
+		[Test]
 		public void PrepareCacheTests()
 		{
 			var tableName = Sql.Name(nameof(PrepareCacheTests));
