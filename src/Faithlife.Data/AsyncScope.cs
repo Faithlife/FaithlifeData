@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace Faithlife.Data
 {
 	internal readonly struct AsyncScope : IAsyncDisposable

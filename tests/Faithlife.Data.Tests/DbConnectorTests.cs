@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Faithlife.Data.BulkInsert;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;

@@ -1,6 +1,4 @@
 using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
 using Faithlife.Data.SqlFormatting;
 
 namespace Faithlife.Data

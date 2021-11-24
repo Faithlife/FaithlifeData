@@ -1,4 +1,3 @@
-using System.Linq;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;

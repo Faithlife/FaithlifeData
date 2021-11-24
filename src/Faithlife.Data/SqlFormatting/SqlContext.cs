@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using static System.FormattableString;
 
 namespace Faithlife.Data.SqlFormatting

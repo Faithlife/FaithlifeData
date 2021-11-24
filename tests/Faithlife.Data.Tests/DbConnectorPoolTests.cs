@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using NUnit.Framework;
