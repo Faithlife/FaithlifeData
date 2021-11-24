@@ -1,21 +1,20 @@
-namespace Faithlife.Data
+namespace Faithlife.Data;
+
+internal readonly struct AsyncScope : IAsyncDisposable
 {
-	internal readonly struct AsyncScope : IAsyncDisposable
+	public AsyncScope(IDisposable disposable)
 	{
-		public AsyncScope(IDisposable disposable)
-		{
-			m_disposable = disposable;
-		}
-
-		public ValueTask DisposeAsync()
-		{
-			if (m_disposable is IAsyncDisposable asyncDisposable)
-				return asyncDisposable.DisposeAsync();
-
-			m_disposable.Dispose();
-			return default;
-		}
-
-		private readonly IDisposable m_disposable;
+		m_disposable = disposable;
 	}
+
+	public ValueTask DisposeAsync()
+	{
+		if (m_disposable is IAsyncDisposable asyncDisposable)
+			return asyncDisposable.DisposeAsync();
+
+		m_disposable.Dispose();
+		return default;
+	}
+
+	private readonly IDisposable m_disposable;
 }

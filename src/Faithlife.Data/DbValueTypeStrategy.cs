@@ -1,14 +1,13 @@
-namespace Faithlife.Data
+namespace Faithlife.Data;
+
+internal enum DbValueTypeStrategy
 {
-	internal enum DbValueTypeStrategy
-	{
-		CastValue,
-		DtoProperties,
-		ByteArray,
-		Tuple,
-		Enum,
-		Dynamic,
-		Dictionary,
-		Stream,
-	}
+	CastValue,
+	DtoProperties,
+	ByteArray,
+	Tuple,
+	Enum,
+	Dynamic,
+	Dictionary,
+	Stream,
 }

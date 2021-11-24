@@ -1,18 +1,17 @@
-namespace Faithlife.Data
+namespace Faithlife.Data;
+
+/// <summary>
+/// Closes the connection when disposed.
+/// </summary>
+public abstract class DbConnectionCloser : IDisposable, IAsyncDisposable
 {
 	/// <summary>
-	/// Closes the connection when disposed.
+	/// Closes the connection.
 	/// </summary>
-	public abstract class DbConnectionCloser : IDisposable, IAsyncDisposable
-	{
-		/// <summary>
-		/// Closes the connection.
-		/// </summary>
-		public abstract void Dispose();
+	public abstract void Dispose();
 
-		/// <summary>
-		/// Closes the connection.
-		/// </summary>
-		public abstract ValueTask DisposeAsync();
-	}
+	/// <summary>
+	/// Closes the connection.
+	/// </summary>
+	public abstract ValueTask DisposeAsync();
 }

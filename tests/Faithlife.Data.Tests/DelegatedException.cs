@@ -1,6 +1,5 @@
-namespace Faithlife.Data.Tests
+namespace Faithlife.Data.Tests;
+
+public sealed class DelegatedException : Exception
 {
-	public sealed class DelegatedException : Exception
-	{
-	}
 }

@@ -1,15 +1,14 @@
 using System.Data;
 
-namespace Faithlife.Data
+namespace Faithlife.Data;
+
+internal interface IDbValueTypeInfo
 {
-	internal interface IDbValueTypeInfo
-	{
-		Type Type { get; }
+	Type Type { get; }
 
-		int? FieldCount { get; }
+	int? FieldCount { get; }
 
-		object? GetValue(IDataRecord record, int index, int count);
+	object? GetValue(IDataRecord record, int index, int count);
 
-		string? GetColumnAttributeName(string propertyName);
-	}
+	string? GetColumnAttributeName(string propertyName);
 }
