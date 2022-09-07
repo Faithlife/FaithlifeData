@@ -50,7 +50,7 @@ internal sealed class StandardDbConnector : DbConnector
 		if (m_shouldLazyOpen)
 			m_pendingLazyOpen = true;
 		else
-			m_connection.Open();
+			OpenDbConnection(m_connection);
 		m_isConnectionOpen = true;
 
 		return new ConnectionCloser(this);
@@ -63,7 +63,7 @@ internal sealed class StandardDbConnector : DbConnector
 		if (m_shouldLazyOpen)
 			m_pendingLazyOpen = true;
 		else
-			await m_providerMethods.OpenConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
+			await OpenDbConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
 		m_isConnectionOpen = true;
 
 		return new ConnectionCloser(this);
@@ -200,17 +200,21 @@ internal sealed class StandardDbConnector : DbConnector
 
 	protected internal override DbCommandCache CommandCache => m_commandCache ??= DbCommandCache.Create();
 
+	protected internal override void OpenDbConnection(IDbConnection dbConnection) => dbConnection.Open();
+
+	protected internal override async Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => await m_providerMethods.OpenConnectionAsync(dbConnection, cancellationToken).ConfigureAwait(false);
+
 	private IDbConnection LazyOpenConnection()
 	{
 		m_pendingLazyOpen = false;
-		m_connection.Open();
+		OpenDbConnection(m_connection);
 		return m_connection;
 	}
 
 	private async ValueTask<IDbConnection> LazyOpenConnectionAsync(CancellationToken cancellationToken)
 	{
 		m_pendingLazyOpen = false;
-		await m_providerMethods.OpenConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
+		await OpenDbConnectionAsync(m_connection, cancellationToken).ConfigureAwait(false);
 		return m_connection;
 	}
 

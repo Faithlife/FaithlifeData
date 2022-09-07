@@ -13,9 +13,9 @@ public class DelegatingDbConnectorTests
 	[Test]
 	public void DelegateAllVirtuals()
 	{
-		var methods = typeof(DbConnector).GetMethods()
+		var methods = typeof(DbConnector).GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
 			.Concat(typeof(DbConnector).GetProperties().Select(x => x.GetMethod!))
-			.Where(x => x.DeclaringType == typeof(DbConnector) && (x.IsAbstract || x.IsVirtual))
+			.Where(x => x.IsAbstract || x.IsVirtual)
 			.ToList();
 		var delegated = new DelegatedDbConnector();
 		InvokeMethods(delegated);
@@ -73,5 +73,11 @@ public class DelegatingDbConnectorTests
 		public override ValueTask DisposeAsync() => throw new DelegatedException();
 
 		protected internal override DbProviderMethods ProviderMethods => throw new DelegatedException();
+
+		protected internal override DbCommandCache? CommandCache => throw new DelegatedException();
+
+		protected internal override void OpenDbConnection(IDbConnection dbConnection) => throw new DelegatedException();
+
+		protected internal override Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => throw new DelegatedException();
 	}
 }
