@@ -16,6 +16,9 @@ public class DelegatingDbProviderMethods : DbProviderMethods
 	}
 
 	/// <inheritdoc />
+	public override void OpenConnection(IDbConnection connection) => Inner.OpenConnection(connection);
+
+	/// <inheritdoc />
 	public override ValueTask OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken) => Inner.OpenConnectionAsync(connection, cancellationToken);
 
 	/// <inheritdoc />

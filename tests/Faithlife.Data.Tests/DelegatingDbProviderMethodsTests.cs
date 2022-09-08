@@ -33,6 +33,8 @@ public class DelegatingDbProviderMethodsTests
 
 	private sealed class DelegatedDbProviderMethods : DbProviderMethods
 	{
+		public override void OpenConnection(IDbConnection connection) => throw new DelegatedException();
+
 		public override ValueTask OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken) => throw new DelegatedException();
 
 		public override ValueTask CloseConnectionAsync(IDbConnection connection) => throw new DelegatedException();

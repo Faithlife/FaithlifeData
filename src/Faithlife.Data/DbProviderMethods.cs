@@ -19,6 +19,11 @@ public class DbProviderMethods
 	public static DbProviderMethods FromConnector(DbConnector connector) => connector.ProviderMethods;
 
 	/// <summary>
+	/// Opens the connection.
+	/// </summary>
+	public virtual void OpenConnection(IDbConnection connection) => connection.Open();
+
+	/// <summary>
 	/// Opens the connection asynchronously.
 	/// </summary>
 	public virtual ValueTask OpenConnectionAsync(IDbConnection connection, CancellationToken cancellationToken)
