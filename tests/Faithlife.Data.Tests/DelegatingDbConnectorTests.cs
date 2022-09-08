@@ -75,9 +75,5 @@ public class DelegatingDbConnectorTests
 		protected internal override DbProviderMethods ProviderMethods => throw new DelegatedException();
 
 		protected internal override DbCommandCache? CommandCache => throw new DelegatedException();
-
-		protected internal override void OpenDbConnection(IDbConnection dbConnection) => throw new DelegatedException();
-
-		protected internal override Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => throw new DelegatedException();
 	}
 }

@@ -79,12 +79,6 @@ public class DelegatingDbConnector : DbConnector
 	/// <inheritdoc />
 	protected internal override DbCommandCache? CommandCache => Inner.CommandCache;
 
-	/// <inheritdoc />
-	protected internal override void OpenDbConnection(IDbConnection dbConnection) => Inner.OpenDbConnection(dbConnection);
-
-	/// <inheritdoc />
-	protected internal override Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => Inner.OpenDbConnectionAsync(dbConnection, cancellationToken);
-
 	/// <summary>
 	/// The inner connector.
 	/// </summary>

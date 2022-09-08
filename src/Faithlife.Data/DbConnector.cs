@@ -247,15 +247,5 @@ public abstract class DbConnector : IDisposable, IAsyncDisposable
 	/// </summary>
 	protected internal virtual DbCommandCache? CommandCache => null;
 
-	/// <summary>
-	/// Called to open the specified connection.
-	/// </summary>
-	protected internal virtual void OpenDbConnection(IDbConnection dbConnection) => throw new NotImplementedException();
-
-	/// <summary>
-	/// Called to open the specified connection.
-	/// </summary>
-	protected internal virtual async Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => throw new NotImplementedException();
-
 	private static readonly DbConnectorSettings s_defaultSettings = new();
 }

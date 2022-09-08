@@ -200,9 +200,9 @@ internal sealed class StandardDbConnector : DbConnector
 
 	protected internal override DbCommandCache CommandCache => m_commandCache ??= DbCommandCache.Create();
 
-	protected internal override void OpenDbConnection(IDbConnection dbConnection) => dbConnection.Open();
+	private void OpenDbConnection(IDbConnection dbConnection) => dbConnection.Open();
 
-	protected internal override async Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => await m_providerMethods.OpenConnectionAsync(dbConnection, cancellationToken).ConfigureAwait(false);
+	private async Task OpenDbConnectionAsync(IDbConnection dbConnection, CancellationToken cancellationToken) => await m_providerMethods.OpenConnectionAsync(dbConnection, cancellationToken).ConfigureAwait(false);
 
 	private IDbConnection LazyOpenConnection()
 	{
