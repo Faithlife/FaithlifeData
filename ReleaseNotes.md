@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.21.0
+
+* Add `OpenConnection` to `DbProviderMethods`. This allows the implementation of a more resilient connection opener.
+* Introduce `DelegatingDbProviderMethods`.
+
 ## 1.20.1
 
 * Use `DisposeAsync` when available.
