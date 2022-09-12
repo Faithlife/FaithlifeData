@@ -17,6 +17,7 @@
 | class [DbProviderMethods](./Faithlife.Data/DbProviderMethods.md) | Provides provider-specific database access methods. |
 | abstract class [DbTransactionDisposer](./Faithlife.Data/DbTransactionDisposer.md) | Disposes the transaction when disposed. |
 | class [DelegatingDbConnector](./Faithlife.Data/DelegatingDbConnector.md) | Delegates to an inner connector. |
+| class [DelegatingDbProviderMethods](./Faithlife.Data/DelegatingDbProviderMethods.md) | Delegates to an inner provider. |
 
 ## Faithlife.Data.BulkInsert namespace
 
