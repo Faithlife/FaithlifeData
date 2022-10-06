@@ -5,7 +5,6 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
-using Faithlife.Reflection;
 
 namespace Faithlife.Data;
 
@@ -30,7 +29,7 @@ internal static class DbValueTypeInfo
 	}
 
 	private static IDbValueTypeInfo CreateInfo(Type type) =>
-		(IDbValueTypeInfo) typeof(DbValueTypeInfo<>).MakeGenericType(type).GetTypeInfo().GetDeclaredField("Instance").GetValue(null);
+		(IDbValueTypeInfo) typeof(DbValueTypeInfo<>).MakeGenericType(type).GetTypeInfo().GetDeclaredField("Instance")!.GetValue(null)!;
 
 	private static readonly ConcurrentDictionary<Type, IDbValueTypeInfo> s_infos = new();
 
@@ -105,7 +104,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 			var notNull = false;
 			for (var i = index; i < index + count; i++)
 			{
-				string name = record.GetName(i);
+				var name = record.GetName(i);
 				if (!record.IsDBNull(i))
 				{
 					obj[name] = record.GetValue(i);
@@ -124,7 +123,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 				return default!;
 
 			var byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
-			byte[] bytes = new byte[byteCount];
+			var bytes = new byte[byteCount];
 			record.GetBytes(index, 0, bytes, 0, byteCount);
 			return (T) (object) bytes;
 		}
@@ -200,7 +199,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 		}
 		else if (m_strategy == DbValueTypeStrategy.CastValue || m_strategy == DbValueTypeStrategy.Enum || m_strategy == DbValueTypeStrategy.Dynamic)
 		{
-			object value = record.GetValue(index);
+			var value = record.GetValue(index);
 			if (value == DBNull.Value)
 			{
 				if (m_nullableType == null)
@@ -232,7 +231,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 			var notNull = false;
 			for (var i = index; i < index + count; i++)
 			{
-				string name = record.GetName(i);
+				var name = record.GetName(i);
 				if (!record.IsDBNull(i))
 				{
 					dictionary[name] = record.GetValue(i);
@@ -254,7 +253,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 				return (T) (object) dbReader.GetStream(index);
 
 			var byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
-			byte[] bytes = new byte[byteCount];
+			var bytes = new byte[byteCount];
 			record.GetBytes(index, 0, bytes, 0, byteCount);
 			return (T) (object) new MemoryStream(bytes, 0, byteCount, writable: false);
 		}

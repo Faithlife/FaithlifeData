@@ -1,4 +1,5 @@
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Faithlife.Data;
 
@@ -20,7 +21,7 @@ public abstract class DbCommandCache
 	/// <summary>
 	/// Gets the specified cached command, if any.
 	/// </summary>
-	protected internal abstract bool TryGetCommand(string text, out IDbCommand command);
+	protected internal abstract bool TryGetCommand(string text, [MaybeNullWhen(false)] out IDbCommand command);
 
 	/// <summary>
 	/// Adds the specified command to the cache.
@@ -34,7 +35,7 @@ public abstract class DbCommandCache
 
 	private sealed class DictionaryCache : DbCommandCache
 	{
-		protected internal override bool TryGetCommand(string text, out IDbCommand command) => m_dictionary.TryGetValue(text, out command);
+		protected internal override bool TryGetCommand(string text, [MaybeNullWhen(false)] out IDbCommand command) => m_dictionary.TryGetValue(text, out command);
 
 		protected internal override void AddCommand(string text, IDbCommand command) => m_dictionary.Add(text, command);
 

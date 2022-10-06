@@ -400,7 +400,7 @@ public readonly struct DbConnectorCommand
 			}
 		}
 
-		IDbCommand command;
+		IDbCommand? command;
 		var transaction = Connector.Transaction;
 
 		var wasCached = false;

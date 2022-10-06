@@ -1,4 +1,5 @@
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Faithlife.Data;
 
@@ -31,10 +32,11 @@ internal sealed class CachedCommand : IDbCommand
 
 	public IDataReader ExecuteReader(CommandBehavior behavior) => Inner.ExecuteReader(behavior);
 
-	public object ExecuteScalar() => Inner.ExecuteScalar();
+	public object? ExecuteScalar() => Inner.ExecuteScalar();
 
 	public void Prepare() => Inner.Prepare();
 
+	[AllowNull]
 	public string CommandText
 	{
 		get => Inner.CommandText;
@@ -53,7 +55,7 @@ internal sealed class CachedCommand : IDbCommand
 		set => throw CreateException();
 	}
 
-	public IDbConnection Connection
+	public IDbConnection? Connection
 	{
 		get => Inner.Connection;
 		set => throw CreateException();
@@ -61,7 +63,7 @@ internal sealed class CachedCommand : IDbCommand
 
 	public IDataParameterCollection Parameters => Inner.Parameters;
 
-	public IDbTransaction Transaction
+	public IDbTransaction? Transaction
 	{
 		get => Inner.Transaction;
 		set => Inner.Transaction = value;

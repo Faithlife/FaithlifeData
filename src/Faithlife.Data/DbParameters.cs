@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using Faithlife.Reflection;
 
 namespace Faithlife.Data;
 
@@ -191,7 +190,7 @@ public readonly struct DbParameters : IReadOnlyList<(string Name, object? Value)
 
 		var index = 0;
 		var parameters = new List<(string, object?)>();
-		foreach (object dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
+		foreach (var dto in dtos ?? throw new ArgumentNullException(nameof(dtos)))
 		{
 			parameters.AddRange(DtoInfo.GetInfo((dto ?? throw new ArgumentException("DTO is null.", nameof(dtos))).GetType()).Properties.Select(x => (name(x.Name, index), x.GetValue(dto))));
 			index++;

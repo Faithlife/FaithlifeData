@@ -72,7 +72,7 @@ internal sealed class StandardDbConnector : DbConnector
 	public override DbTransactionDisposer BeginTransaction()
 	{
 		VerifyCanBeginTransaction();
-		m_transaction = m_defaultIsolationLevel is IsolationLevel isolationLevel
+		m_transaction = m_defaultIsolationLevel is { } isolationLevel
 			? Connection.BeginTransaction(isolationLevel)
 			: Connection.BeginTransaction();
 		return new TransactionDisposer(this);
@@ -88,7 +88,7 @@ internal sealed class StandardDbConnector : DbConnector
 	public override async ValueTask<DbTransactionDisposer> BeginTransactionAsync(CancellationToken cancellationToken = default)
 	{
 		VerifyCanBeginTransaction();
-		m_transaction = m_defaultIsolationLevel is IsolationLevel isolationLevel
+		m_transaction = m_defaultIsolationLevel is { } isolationLevel
 			? await m_providerMethods.BeginTransactionAsync(Connection, isolationLevel, cancellationToken).ConfigureAwait(false)
 			: await m_providerMethods.BeginTransactionAsync(Connection, cancellationToken).ConfigureAwait(false);
 		return new TransactionDisposer(this);
