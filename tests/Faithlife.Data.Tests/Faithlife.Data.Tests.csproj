@@ -7,7 +7,9 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition=" $([MSBuild]::IsOSPlatform('Windows')) ">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition=" $([MSBuild]::IsOSPlatform('OSX')) ">osx-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition=" $([MSBuild]::IsOSPlatform('Linux')) ">linux-x64</RuntimeIdentifier>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
