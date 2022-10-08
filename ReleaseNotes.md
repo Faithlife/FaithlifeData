@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.21.1
+
+* Add .NET 6 target. Improve reference nullability.
+
 ## 1.21.0
 
 * Add `OpenConnection` to `DbProviderMethods`. This allows the implementation of a more resilient connection opener.
