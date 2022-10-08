@@ -115,7 +115,7 @@ public static class BulkInsertUtility
 			batchCommand = batchCommand.Cache();
 		if (command.IsPrepared)
 			batchCommand = batchCommand.Prepare();
-		if (command.Timeout != null)
+		if (command.Timeout is not null)
 			batchCommand = batchCommand.WithTimeout(command.Timeout.Value);
 		return batchCommand;
 	}
