@@ -5,7 +5,6 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
-using Faithlife.Reflection;
 
 namespace Faithlife.Data;
 
@@ -30,7 +29,7 @@ internal static class DbValueTypeInfo
 	}
 
 	private static IDbValueTypeInfo CreateInfo(Type type) =>
-		(IDbValueTypeInfo) typeof(DbValueTypeInfo<>).MakeGenericType(type).GetTypeInfo().GetDeclaredField("Instance").GetValue(null);
+		(IDbValueTypeInfo) typeof(DbValueTypeInfo<>).MakeGenericType(type).GetTypeInfo().GetDeclaredField("Instance")!.GetValue(null)!;
 
 	private static readonly ConcurrentDictionary<Type, IDbValueTypeInfo> s_infos = new();
 
@@ -79,7 +78,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 
 	public T GetValue(IDataRecord record, int index, int count)
 	{
-		if (FieldCount != null && FieldCount.Value != count)
+		if (FieldCount is not null && FieldCount.Value != count)
 			throw new InvalidOperationException($"Type must be read from {FieldCount.Value} fields but is being read from {count} fields: {Type.FullName}");
 
 		if (m_strategy == DbValueTypeStrategy.DtoProperties)
@@ -97,7 +96,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 					propertyValues.Add((property.Dto, property.Db.GetValue(record, i, 1)));
 				}
 			}
-			return propertyValues != null ? DtoInfo.GetInfo<T>().CreateNew(propertyValues) : default!;
+			return propertyValues is not null ? DtoInfo.GetInfo<T>().CreateNew(propertyValues) : default!;
 		}
 		else if (m_strategy == DbValueTypeStrategy.Dynamic && count > 1)
 		{
@@ -105,7 +104,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 			var notNull = false;
 			for (var i = index; i < index + count; i++)
 			{
-				string name = record.GetName(i);
+				var name = record.GetName(i);
 				if (!record.IsDBNull(i))
 				{
 					obj[name] = record.GetValue(i);
@@ -124,7 +123,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 				return default!;
 
 			var byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
-			byte[] bytes = new byte[byteCount];
+			var bytes = new byte[byteCount];
 			record.GetBytes(index, 0, bytes, 0, byteCount);
 			return (T) (object) bytes;
 		}
@@ -139,14 +138,14 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 
 				int fieldCount;
 				int? nullIndex = null;
-				if (info.FieldCount == null)
+				if (info.FieldCount is null)
 				{
 					int? remainingFieldCount = 0;
 					var minimumRemainingFieldCount = 0;
 					for (var nextValueIndex = valueIndex + 1; nextValueIndex < valueCount; nextValueIndex++)
 					{
 						var nextFieldCount = m_tupleTypeInfos[nextValueIndex].FieldCount;
-						if (nextFieldCount != null)
+						if (nextFieldCount is not null)
 						{
 							remainingFieldCount += nextFieldCount.Value;
 							minimumRemainingFieldCount += nextFieldCount.Value;
@@ -158,7 +157,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 						}
 					}
 
-					if (remainingFieldCount != null)
+					if (remainingFieldCount is not null)
 					{
 						fieldCount = count - recordIndex - remainingFieldCount.Value;
 					}
@@ -173,7 +172,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 							}
 						}
 
-						if (nullIndex != null)
+						if (nullIndex is not null)
 						{
 							fieldCount = nullIndex.Value - recordIndex;
 						}
@@ -200,10 +199,10 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 		}
 		else if (m_strategy == DbValueTypeStrategy.CastValue || m_strategy == DbValueTypeStrategy.Enum || m_strategy == DbValueTypeStrategy.Dynamic)
 		{
-			object value = record.GetValue(index);
+			var value = record.GetValue(index);
 			if (value == DBNull.Value)
 			{
-				if (m_nullableType == null)
+				if (m_nullableType is null)
 					throw new InvalidOperationException($"Failed to cast null to {Type.FullName}.");
 				return default!;
 			}
@@ -232,7 +231,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 			var notNull = false;
 			for (var i = index; i < index + count; i++)
 			{
-				string name = record.GetName(i);
+				var name = record.GetName(i);
 				if (!record.IsDBNull(i))
 				{
 					dictionary[name] = record.GetValue(i);
@@ -254,7 +253,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 				return (T) (object) dbReader.GetStream(index);
 
 			var byteCount = (int) record.GetBytes(index, 0, null, 0, 0);
-			byte[] bytes = new byte[byteCount];
+			var bytes = new byte[byteCount];
 			record.GetBytes(index, 0, bytes, 0, byteCount);
 			return (T) (object) new MemoryStream(bytes, 0, byteCount, writable: false);
 		}
@@ -273,7 +272,7 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 		{
 			var underlyingType = Nullable.GetUnderlyingType(type);
 			m_coreType = underlyingType ?? type;
-			m_nullableType = underlyingType != null ? type : null;
+			m_nullableType = underlyingType is not null ? type : null;
 		}
 		else
 		{
@@ -295,8 +294,8 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 					.GetCustomAttributes()
 					.Where(x => x.GetType().Name == "ColumnAttribute")
 					.Select(x => DtoInfo.GetInfo(x.GetType()).TryGetProperty("Name")?.GetValue(x) as string)
-					.FirstOrDefault(x => x != null);
-				if (columnName != null)
+					.FirstOrDefault(x => x is not null);
+				if (columnName is not null)
 					(columnAttributeNames ??= new Dictionary<string, string>()).Add(property.Name, columnName);
 
 				propertiesByNormalizedFieldName.Add(NormalizeFieldName(columnName ?? property.Name), (property, DbValueTypeInfo.GetInfo(property.ValueType)));

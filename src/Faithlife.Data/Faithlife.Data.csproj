@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
     <Description>Helpers for querying ADO.NET-compatible databases.</Description>
     <PackageTags>ado.net sql database orm</PackageTags>
     <IsPackable>true</IsPackable>
@@ -9,20 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Faithlife.Reflection" Version="1.1.0" />
+    <PackageReference Include="Faithlife.Reflection" Version="1.2.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="IndexRange" Version="1.0.0" />
+    <PackageReference Include="IndexRange" Version="1.0.2" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Faithlife.Data.Tests</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="Faithlife.Data.Tests" />
   </ItemGroup>
 
 </Project>

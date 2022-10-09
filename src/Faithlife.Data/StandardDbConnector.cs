@@ -13,7 +13,7 @@ internal sealed class StandardDbConnector : DbConnector
 		m_isConnectionOpen = m_connection.State == ConnectionState.Open;
 		m_noCloseConnection = m_isConnectionOpen;
 		m_transaction = settings.CurrentTransaction;
-		m_noDisposeTransaction = m_transaction != null;
+		m_noDisposeTransaction = m_transaction is not null;
 		m_noDisposeConnection = m_noDisposeTransaction || settings.NoDispose;
 		m_whenDisposed = settings.WhenDisposed;
 		m_providerMethods = settings.ProviderMethods ?? DbProviderMethods.Default;
@@ -72,7 +72,7 @@ internal sealed class StandardDbConnector : DbConnector
 	public override DbTransactionDisposer BeginTransaction()
 	{
 		VerifyCanBeginTransaction();
-		m_transaction = m_defaultIsolationLevel is IsolationLevel isolationLevel
+		m_transaction = m_defaultIsolationLevel is { } isolationLevel
 			? Connection.BeginTransaction(isolationLevel)
 			: Connection.BeginTransaction();
 		return new TransactionDisposer(this);
@@ -88,7 +88,7 @@ internal sealed class StandardDbConnector : DbConnector
 	public override async ValueTask<DbTransactionDisposer> BeginTransactionAsync(CancellationToken cancellationToken = default)
 	{
 		VerifyCanBeginTransaction();
-		m_transaction = m_defaultIsolationLevel is IsolationLevel isolationLevel
+		m_transaction = m_defaultIsolationLevel is { } isolationLevel
 			? await m_providerMethods.BeginTransactionAsync(Connection, isolationLevel, cancellationToken).ConfigureAwait(false)
 			: await m_providerMethods.BeginTransactionAsync(Connection, cancellationToken).ConfigureAwait(false);
 		return new TransactionDisposer(this);
@@ -257,14 +257,14 @@ internal sealed class StandardDbConnector : DbConnector
 	{
 		VerifyNotDisposed();
 
-		if (!m_noDisposeTransaction && m_transaction != null)
+		if (!m_noDisposeTransaction && m_transaction is not null)
 			await m_providerMethods.DisposeTransactionAsync(m_transaction).ConfigureAwait(false);
 		m_transaction = null;
 	}
 
 	private void DisposeCachedCommands()
 	{
-		if (m_commandCache != null)
+		if (m_commandCache is not null)
 		{
 			foreach (var command in m_commandCache.GetCommands())
 				CachedCommand.Unwrap(command).Dispose();
@@ -273,7 +273,7 @@ internal sealed class StandardDbConnector : DbConnector
 
 	private async ValueTask DisposeCachedCommandsAsync()
 	{
-		if (m_commandCache != null)
+		if (m_commandCache is not null)
 		{
 			foreach (var command in m_commandCache.GetCommands())
 				await m_providerMethods.DisposeCommandAsync(CachedCommand.Unwrap(command)).ConfigureAwait(false);
@@ -300,7 +300,7 @@ internal sealed class StandardDbConnector : DbConnector
 
 		if (!m_isConnectionOpen)
 			throw new InvalidOperationException("Connection must be open.");
-		if (m_transaction != null)
+		if (m_transaction is not null)
 			throw new InvalidOperationException("A transaction is already started.");
 	}
 
@@ -308,7 +308,7 @@ internal sealed class StandardDbConnector : DbConnector
 	{
 		VerifyNotDisposed();
 
-		if (m_transaction == null)
+		if (m_transaction is null)
 			throw new InvalidOperationException("No transaction available; call BeginTransaction first.");
 
 		return m_transaction;
@@ -320,7 +320,7 @@ internal sealed class StandardDbConnector : DbConnector
 
 		public override void Dispose()
 		{
-			if (m_connector != null)
+			if (m_connector is not null)
 			{
 				m_connector.CloseConnection();
 				m_connector = null;
@@ -329,7 +329,7 @@ internal sealed class StandardDbConnector : DbConnector
 
 		public override async ValueTask DisposeAsync()
 		{
-			if (m_connector != null)
+			if (m_connector is not null)
 			{
 				await m_connector.CloseConnectionAsync().ConfigureAwait(false);
 				m_connector = null;
@@ -345,7 +345,7 @@ internal sealed class StandardDbConnector : DbConnector
 
 		public override void Dispose()
 		{
-			if (m_connector != null)
+			if (m_connector is not null)
 			{
 				m_connector.DisposeTransaction();
 				m_connector = null;
@@ -354,7 +354,7 @@ internal sealed class StandardDbConnector : DbConnector
 
 		public override async ValueTask DisposeAsync()
 		{
-			if (m_connector != null)
+			if (m_connector is not null)
 			{
 				await m_connector.DisposeTransactionAsync().ConfigureAwait(false);
 				m_connector = null;

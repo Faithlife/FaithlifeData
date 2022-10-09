@@ -56,7 +56,7 @@ public sealed class DbConnectorPool : IDisposable, IAsyncDisposable
 			m_idleConnectors = null;
 		}
 
-		if (connectors != null)
+		if (connectors is not null)
 		{
 			foreach (var connector in connectors)
 				connector.Dispose();
@@ -77,7 +77,7 @@ public sealed class DbConnectorPool : IDisposable, IAsyncDisposable
 			m_idleConnectors = null;
 		}
 
-		if (connectors != null)
+		if (connectors is not null)
 		{
 			foreach (var connector in connectors)
 				await connector.DisposeAsync().ConfigureAwait(false);

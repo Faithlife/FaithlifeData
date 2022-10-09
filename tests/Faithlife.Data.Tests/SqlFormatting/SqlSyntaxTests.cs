@@ -108,9 +108,9 @@ public class SqlSyntaxTests
 		Sql CreateSql(int? width, int? height)
 		{
 			var sqls = new List<Sql>();
-			if (width != null)
+			if (width is not null)
 				sqls.Add(Sql.Format($"width = {width}"));
-			if (height != null)
+			if (height is not null)
 				sqls.Add(Sql.Format($"height = {height}"));
 			var whereSql = sqls.Count == 0 ? Sql.Empty : Sql.Format($"where {Sql.Join(" and ", sqls)}");
 			return Sql.Format($"select * from widgets {whereSql};");

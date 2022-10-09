@@ -47,7 +47,7 @@ public static class DataRecordExtensions
 	/// </summary>
 	public static T Get<T>(this IDataRecord record, string fromName, string toName)
 	{
-		if (record == null)
+		if (record is null)
 			throw new ArgumentNullException(nameof(record));
 
 		var fromIndex = record.GetOrdinal(fromName);
@@ -66,7 +66,7 @@ public static class DataRecordExtensions
 	/// </summary>
 	public static T Get<T>(this IDataRecord record, Range range)
 	{
-		if (record == null)
+		if (record is null)
 			throw new ArgumentNullException(nameof(record));
 
 		var (index, count) = range.GetOffsetAndLength(record.FieldCount);

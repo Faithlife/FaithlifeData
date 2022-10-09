@@ -99,7 +99,7 @@ public sealed class DbConnectorResultSets : IDisposable, IAsyncDisposable
 
 		var list = new List<T>();
 		while (m_reader.Read())
-			list.Add(map != null ? map(m_reader) : m_reader.Get<T>());
+			list.Add(map is not null ? map(m_reader) : m_reader.Get<T>());
 		return list;
 	}
 
@@ -111,7 +111,7 @@ public sealed class DbConnectorResultSets : IDisposable, IAsyncDisposable
 
 		var list = new List<T>();
 		while (await m_methods.ReadAsync(m_reader, cancellationToken).ConfigureAwait(false))
-			list.Add(map != null ? map(m_reader) : m_reader.Get<T>());
+			list.Add(map is not null ? map(m_reader) : m_reader.Get<T>());
 		return list;
 	}
 
@@ -122,7 +122,7 @@ public sealed class DbConnectorResultSets : IDisposable, IAsyncDisposable
 		m_next = true;
 
 		while (m_reader.Read())
-			yield return map != null ? map(m_reader) : m_reader.Get<T>();
+			yield return map is not null ? map(m_reader) : m_reader.Get<T>();
 	}
 
 	private async IAsyncEnumerable<T> DoEnumerateAsync<T>(Func<IDataRecord, T>? map, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -132,7 +132,7 @@ public sealed class DbConnectorResultSets : IDisposable, IAsyncDisposable
 		m_next = true;
 
 		while (await m_methods.ReadAsync(m_reader, cancellationToken).ConfigureAwait(false))
-			yield return map != null ? map(m_reader) : m_reader.Get<T>();
+			yield return map is not null ? map(m_reader) : m_reader.Get<T>();
 	}
 
 	private static InvalidOperationException CreateNoMoreResultsException() =>

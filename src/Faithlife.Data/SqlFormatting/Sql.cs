@@ -431,11 +431,11 @@ public abstract class Sql
 	{
 		public SqlFormatProvider(SqlContext context) => m_context = context;
 
-		public object GetFormat(Type formatType) => this;
+		public object GetFormat(Type? formatType) => this;
 
-		public string Format(string? format, object? arg, IFormatProvider formatProvider)
+		public string Format(string? format, object? arg, IFormatProvider? formatProvider)
 		{
-			if (format is object)
+			if (format is not null)
 				throw new FormatException($"Format specifier '{format}' is not supported.");
 			return arg is Sql sql ? sql.Render(m_context) : m_context.RenderParam(arg);
 		}

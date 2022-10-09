@@ -340,7 +340,7 @@ public readonly struct DbConnectorCommand
 
 	private void Validate()
 	{
-		if (Connector == null)
+		if (Connector is null)
 			throw new InvalidOperationException("Use DbConnector to create commands.");
 	}
 
@@ -400,12 +400,12 @@ public readonly struct DbConnectorCommand
 			}
 		}
 
-		IDbCommand command;
+		IDbCommand? command;
 		var transaction = Connector.Transaction;
 
 		var wasCached = false;
 		var cache = IsCached ? Connector.CommandCache : null;
-		if (cache != null)
+		if (cache is not null)
 		{
 			if (cache.TryGetCommand(commandText, out command))
 			{
@@ -480,10 +480,10 @@ public readonly struct DbConnectorCommand
 			if (commandType != CommandType.Text)
 				newCommand.CommandType = commandType;
 
-			if (timeout != null)
+			if (timeout is not null)
 				newCommand.CommandTimeout = timeout == System.Threading.Timeout.InfiniteTimeSpan ? 0 : (int) Math.Ceiling(timeout.Value.TotalSeconds);
 
-			if (transaction != null)
+			if (transaction is not null)
 				newCommand.Transaction = transaction;
 
 			return newCommand;
@@ -500,7 +500,7 @@ public readonly struct DbConnectorCommand
 		do
 		{
 			while (reader.Read())
-				list.Add(map != null ? map(reader) : reader.Get<T>());
+				list.Add(map is not null ? map(reader) : reader.Get<T>());
 		}
 		while (reader.NextResult());
 
@@ -521,7 +521,7 @@ public readonly struct DbConnectorCommand
 		do
 		{
 			while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-				list.Add(map != null ? map(reader) : reader.Get<T>());
+				list.Add(map is not null ? map(reader) : reader.Get<T>());
 		}
 		while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 
@@ -539,7 +539,7 @@ public readonly struct DbConnectorCommand
 				return orDefault ? default(T)! : throw new InvalidOperationException("No records were found; use 'OrDefault' to permit this.");
 		}
 
-		var value = map != null ? map(reader) : reader.Get<T>();
+		var value = map is not null ? map(reader) : reader.Get<T>();
 
 		if (single && reader.Read())
 			throw CreateTooManyRecordsException();
@@ -565,7 +565,7 @@ public readonly struct DbConnectorCommand
 				return orDefault ? default(T)! : throw CreateNoRecordsException();
 		}
 
-		var value = map != null ? map(reader) : reader.Get<T>();
+		var value = map is not null ? map(reader) : reader.Get<T>();
 
 		if (single && await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
 			throw CreateTooManyRecordsException();
@@ -590,7 +590,7 @@ public readonly struct DbConnectorCommand
 		do
 		{
 			while (reader.Read())
-				yield return map != null ? map(reader) : reader.Get<T>();
+				yield return map is not null ? map(reader) : reader.Get<T>();
 		}
 		while (reader.NextResult());
 	}
@@ -607,7 +607,7 @@ public readonly struct DbConnectorCommand
 		do
 		{
 			while (await methods.ReadAsync(reader, cancellationToken).ConfigureAwait(false))
-				yield return map != null ? map(reader) : reader.Get<T>();
+				yield return map is not null ? map(reader) : reader.Get<T>();
 		}
 		while (await methods.NextResultAsync(reader, cancellationToken).ConfigureAwait(false));
 	}
