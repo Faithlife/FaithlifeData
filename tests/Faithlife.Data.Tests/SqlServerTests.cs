@@ -32,6 +32,6 @@ public class SqlServerTests
 	}
 
 	private static DbConnector CreateConnector() => DbConnector.Create(
-		new SqlConnection("data source=localhost;user id=sa;password=P@ssw0rd;initial catalog=test"),
+		new SqlConnection("data source=localhost;user id=sa;password=P@ssw0rd;initial catalog=test;TrustServerCertificate=True"),
 		new DbConnectorSettings { AutoOpen = true, LazyOpen = true, SqlSyntax = SqlSyntax.SqlServer });
 }
