@@ -79,7 +79,7 @@ With a `DbConnector`, you can:
 * Use [bulk insert](#bulk-insert) to easily and efficiently insert multiple rows into a table.
 * Execute stored procedures with [`DbConnector.StoredProcedure()`](Faithlife.Data/DbConnector/StoredProcedure.md).
 * [Cache](#cached-commands) and/or [prepare](#prepared-commands) commands for possible performance improvements.
-* Use [formatted SQL](#formatted-sql) to use automatically named parameters and safely assemble SQL statements from SQL fragments.
+* Use [formatted SQL](#formatted-sql) to use automatically named parameters via string interpolation and safely assemble SQL statements from SQL fragments.
 
 Consult the [reference documentation](Faithlife.Data.md) for additional details.
 
@@ -97,6 +97,7 @@ If you are familiar with [Dapper](https://github.com/StackExchange/Dapper), you 
 * Faithlife.Data has an easy **alternative to using anonymous objects** for specifying parameters, which may have better performance for some clients and uses stronger types than Dapper's `param` parameter of type `object`.
 * Faithlife.Data does **less caching** than Dapper. This may or may not be an advantage, depending on usage.
 * Both Faithlife.Data and Dapper will edit the SQL when substituting a collection parameter for a list of dynamically named parameters. The syntax used by Faithlife.Data is more explicit, so scenarios where the SQL is edited are **more predictable**.
+* Faithlife.Data has **extra features** like bulk insert and formatted SQL.
 
 ## Creating a connector
 
