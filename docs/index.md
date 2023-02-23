@@ -96,7 +96,7 @@ If you are familiar with [Dapper](https://github.com/StackExchange/Dapper), you 
 * Faithlife.Data makes the choice between **buffered and unbuffered queries** more explicit by providing separate methods. This makes it more likely that clients will keep the difference in mind, and allows `Query()` to return an `IReadOnlyList<T>` instead of an `IEnumerable<T>`.
 * Faithlife.Data has an easy **alternative to using anonymous objects** for specifying parameters, which may have better performance for some clients and uses stronger types than Dapper's `param` parameter of type `object`.
 * Faithlife.Data does **less caching** than Dapper. This may or may not be an advantage, depending on usage.
-* Both Faithlife.Data and Dapper will edit the SQL when substituting a collection parameter for a list of dynamically named parameters. The syntax used by Faithlife.Data is more explicit, so scenarios where the SQL is edited are **more predictable**.
+* Both Faithlife.Data and Dapper will edit the SQL when substituting a collection parameter for a list of dynamically named parameters. The syntax used by Faithlife.Data is more explicit, so scenarios where the SQL is edited are **more predictable**. Also, Faithlife.Data throws an exception when an empty collection is used, since the desired behavior in that scenario is not clear, and Dapper's strategy of replacing it with `(SELECT @p WHERE 1 = 0)` doesn't work with all databases, isn't always what the caller would want, and doesn't always play well with table indexes.
 * Faithlife.Data has **extra features** like bulk insert and formatted SQL.
 
 ## Creating a connector
