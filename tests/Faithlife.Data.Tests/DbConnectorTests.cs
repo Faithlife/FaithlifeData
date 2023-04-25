@@ -434,7 +434,7 @@ public class DbConnectorTests
 
 		var storedProcedureCommand = connector.StoredProcedure("values (1);");
 		storedProcedureCommand.CommandType.Should().Be(CommandType.StoredProcedure);
-		Invoking(() => storedProcedureCommand.Execute()).Should().Throw<ArgumentException>("CommandType must be Text. (Parameter 'value')");
+		Invoking(storedProcedureCommand.Execute).Should().Throw<ArgumentException>("CommandType must be Text. (Parameter 'value')");
 		connector.StoredProcedure("values (@two);", ("two", 2)).CommandType.Should().Be(CommandType.StoredProcedure);
 	}
 

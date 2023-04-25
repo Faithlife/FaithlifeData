@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using Faithlife.Reflection;
 
 namespace Faithlife.Data.SqlFormatting;
 

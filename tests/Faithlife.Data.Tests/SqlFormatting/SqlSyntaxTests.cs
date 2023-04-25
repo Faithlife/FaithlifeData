@@ -6,6 +6,8 @@ using static FluentAssertions.FluentActions;
 
 namespace Faithlife.Data.Tests.SqlFormatting;
 
+#pragma warning disable FL0014 // Interpolated strings for literals
+
 [TestFixture]
 public class SqlSyntaxTests
 {

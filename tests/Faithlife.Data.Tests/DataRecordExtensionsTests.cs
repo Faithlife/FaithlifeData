@@ -530,7 +530,7 @@ public class DataRecordExtensionsTests
 		return connection;
 	}
 
-	private class ItemDto
+	private sealed class ItemDto
 	{
 		public string? TheText { get; set; }
 		public long TheInteger { get; set; }
@@ -538,22 +538,22 @@ public class DataRecordExtensionsTests
 		public byte[]? TheBlob { get; set; }
 	}
 
-	private class CustomColumnDto
+	private sealed class CustomColumnDto
 	{
 		[Column("TheText")]
 		public string? Text { get; set; }
 	}
 
 #pragma warning disable CA1801, SA1313
-	private record ItemRecord(string? TheText, long TheInteger, double TheReal, byte[]? TheBlob, long TheOptionalInteger = 42);
+	private sealed record ItemRecord(string? TheText, long TheInteger, double TheReal, byte[]? TheBlob, long TheOptionalInteger = 42);
 #pragma warning restore CA1801, SA1313
 
-	private record NonPositionalRecord
+	private sealed record NonPositionalRecord
 	{
 		public string? TheText { get; set; }
 	}
 
-	private class DtoWithConstructors
+	private sealed class DtoWithConstructors
 	{
 		public DtoWithConstructors()
 		{
