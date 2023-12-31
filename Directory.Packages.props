@@ -3,21 +3,21 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="BenchmarkDotNet" Version="0.13.2" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.13.11" />
     <PackageVersion Include="Faithlife.Reflection" Version="1.2.3" />
-    <PackageVersion Include="FluentAssertions" Version="6.7.0" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="IndexRange" Version="1.0.2" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageVersion Include="Microsoft.Data.SQLite" Version="6.0.9" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+    <PackageVersion Include="Microsoft.Data.SQLite" Version="8.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-    <PackageVersion Include="MySqlConnector" Version="2.1.13" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageVersion Include="Npgsql" Version="6.0.7" />
+    <PackageVersion Include="MySqlConnector" Version="2.3.3" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Npgsql" Version="8.0.1" />
     <PackageVersion Include="NUnit" Version="4.0.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
     <PackageVersion Include="XmlDocMarkdown.Core" Version="2.9.0" />
