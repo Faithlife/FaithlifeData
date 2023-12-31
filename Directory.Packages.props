@@ -9,7 +9,7 @@
     <PackageVersion Include="IndexRange" Version="1.0.2" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.1.2" />
-    <PackageVersion Include="Microsoft.Data.SQLite" Version="7.0.14" />
+    <PackageVersion Include="Microsoft.Data.SQLite" Version="6.0.25" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
     <PackageVersion Include="MySqlConnector" Version="2.3.3" />
