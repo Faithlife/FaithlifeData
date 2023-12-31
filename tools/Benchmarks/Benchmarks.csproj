@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,11 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Data.SQLite" Version="6.0.9" />
-    <PackageReference Include="MySqlConnector" Version="2.1.13" />
-    <PackageReference Include="Npgsql" Version="6.0.7" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.Data.SQLite" />
+    <PackageReference Include="MySqlConnector" />
+    <PackageReference Include="Npgsql" />
   </ItemGroup>
 
 </Project>

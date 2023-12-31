@@ -459,7 +459,7 @@ public class DbConnectorTests
 		noTimeoutCommand.Create().CommandTimeout.Should().Be(0);
 	}
 
-	[Test, Timeout(15000)]
+	[Test]
 	public void TimeoutTest()
 	{
 		var connectionString = new SqliteConnectionStringBuilder { DataSource = nameof(TimeoutTest), Mode = SqliteOpenMode.Memory, Cache = SqliteCacheMode.Shared }.ConnectionString;
