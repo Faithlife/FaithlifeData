@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.21.2
+
+* Reuse the same parameter when an instance from `Sql.Param` is used more than once.
+
 ## 1.21.1
 
 * Add .NET 6 target. Improve reference nullability.
