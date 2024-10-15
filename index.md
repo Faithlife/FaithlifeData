@@ -331,7 +331,7 @@ To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlF
 * [`Sql.Join`](Faithlife.Data.SqlFormatting/Sql/Join.md) joins SQL fragments with a separator.
 * [`Sql.LikePrefixParam`](Faithlife.Data.SqlFormatting/Sql/LikePrefixParam.md) generates a parameter with a LIKE pattern for prefix matching.
 * [`Sql.Name`](Faithlife.Data.SqlFormatting/Sql/Name.md) creates SQL that quotes the specified identifier.
-* [`Sql.Param`](Faithlife.Data.SqlFormatting/Sql/Param.md) generates a parameter for the specified value.
+* [`Sql.Param`](Faithlife.Data.SqlFormatting/Sql/Param.md) generates a parameter for the specified value. If the same `Sql` instance is used more than once by a command, the same SQL parameter is provided for each use.
 * [`Sql.Raw`](Faithlife.Data.SqlFormatting/Sql/Raw.md) creates raw SQL from the specified string.
 
 Since commands are commonly created with a single call to `Sql.Format`, the [`CommandFormat`](Faithlife.Data/DbConnector/CommandFormat.md) method can be used as shorthand.
