@@ -335,7 +335,7 @@ public abstract class Sql
 			if (m_filter is not null)
 				filteredProperties = filteredProperties.Where(x => m_filter(x.Name));
 
-			var text = string.Join(", ", filteredProperties.Select(x => context.RenderParam(x.GetValue(m_dto))));
+			var text = string.Join(", ", filteredProperties.Select(x => context.RenderParam(key: null, value: x.GetValue(m_dto))));
 			if (text.Length == 0)
 				throw new InvalidOperationException($"The specified type has no remaining columns: {type.FullName}");
 			return text;
@@ -401,7 +401,7 @@ public abstract class Sql
 	private sealed class LikePrefixParamSql : Sql
 	{
 		public LikePrefixParamSql(string prefix) => m_prefix = prefix;
-		internal override string Render(SqlContext context) => context.RenderParam(context.Syntax.EscapeLikeFragment(m_prefix) + "%");
+		internal override string Render(SqlContext context) => context.RenderParam(key: this, value: context.Syntax.EscapeLikeFragment(m_prefix) + "%");
 		private readonly string m_prefix;
 	}
 
@@ -415,7 +415,7 @@ public abstract class Sql
 	private sealed class ParamSql : Sql
 	{
 		public ParamSql(object? value) => m_value = value;
-		internal override string Render(SqlContext context) => context.RenderParam(m_value);
+		internal override string Render(SqlContext context) => context.RenderParam(key: this, value: m_value);
 		private readonly object? m_value;
 	}
 
@@ -436,7 +436,7 @@ public abstract class Sql
 		{
 			if (format is not null)
 				throw new FormatException($"Format specifier '{format}' is not supported.");
-			return arg is Sql sql ? sql.Render(m_context) : m_context.RenderParam(arg);
+			return arg is Sql sql ? sql.Render(m_context) : m_context.RenderParam(key: null, value: arg);
 		}
 
 		private readonly SqlContext m_context;

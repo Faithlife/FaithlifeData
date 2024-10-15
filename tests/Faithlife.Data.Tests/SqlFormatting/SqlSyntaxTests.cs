@@ -86,6 +86,18 @@ public class SqlSyntaxTests
 	}
 
 	[Test]
+	public void SameParamTwice()
+	{
+		var id = 42;
+		var name = "xyzzy";
+		var desc = "long description";
+		var descParam = Sql.Param(desc);
+		var (text, parameters) = Render(Sql.Format($"insert into widgets (Id, Name, Desc) values ({id}, {name}, {descParam}) on duplicate key update Name = {name}, Desc = {descParam}"));
+		text.Should().Be("insert into widgets (Id, Name, Desc) values (@fdp0, @fdp1, @fdp2) on duplicate key update Name = @fdp3, Desc = @fdp2");
+		parameters.Should().Equal(("fdp0", id), ("fdp1", name), ("fdp2", desc), ("fdp3", name));
+	}
+
+	[Test]
 	public void FormatBadFormat()
 	{
 		var tableName = "widgets";
