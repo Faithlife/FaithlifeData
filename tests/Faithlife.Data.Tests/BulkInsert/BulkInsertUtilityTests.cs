@@ -183,7 +183,7 @@ public class BulkInsertUtilityTests
 	[Test]
 	public void NothingToInsert()
 	{
-		var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo)...", DbParameters.Empty, Array.Empty<DbParameters>()).ToList();
+		var commands = BulkInsertUtility.GetBulkInsertCommands("VALUES(@foo)...", DbParameters.Empty, []).ToList();
 		commands.Count.Should().Be(0);
 	}
 

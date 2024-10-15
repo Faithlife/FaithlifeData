@@ -333,7 +333,7 @@ public readonly struct DbParameters : IReadOnlyList<(string Name, object? Value)
 
 	private DbParameters(IEnumerable<(string Name, object? Value)> parameters) => m_parameters = parameters.ToList();
 
-	private IReadOnlyList<(string Name, object? Value)> Parameters => m_parameters ?? Array.Empty<(string Name, object? Value)>();
+	private IReadOnlyList<(string Name, object? Value)> Parameters => m_parameters ?? [];
 
 	private readonly IReadOnlyList<(string Name, object? Value)>? m_parameters;
 }
