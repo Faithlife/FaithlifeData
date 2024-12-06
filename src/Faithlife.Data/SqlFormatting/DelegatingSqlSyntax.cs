@@ -17,6 +17,9 @@ public class DelegatingSqlSyntax : SqlSyntax
 	public override bool UseSnakeCase => Inner.UseSnakeCase;
 
 	/// <inheritdoc />
+	public override bool UseLowercaseKeywords => Inner.UseLowercaseKeywords;
+
+	/// <inheritdoc />
 	public override string EscapeLikeFragment(string fragment) => Inner.EscapeLikeFragment(fragment);
 
 	/// <inheritdoc />

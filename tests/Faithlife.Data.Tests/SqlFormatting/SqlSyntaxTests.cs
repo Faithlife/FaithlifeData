@@ -43,6 +43,124 @@ public class SqlSyntaxTests
 	}
 
 	[Test]
+	public void ParamOfSql()
+	{
+		Invoking(() => Render(Sql.Param(Sql.Raw("xyzzy")))).Should().Throw<ArgumentException>();
+	}
+
+	[Test]
+	public void ListSql()
+	{
+		var (text, parameters) = Render(Sql.List(Sql.Param("one"), Sql.Param("two"), Sql.Raw("null")));
+		text.Should().Be("@fdp0, @fdp1, null");
+		parameters.Should().Equal(("fdp0", "one"), ("fdp1", "two"));
+	}
+
+	[Test]
+	public void ListNone()
+	{
+		var (text, parameters) = Render(Sql.List());
+		text.Should().BeEmpty();
+		parameters.Should().BeEmpty();
+	}
+
+	[Test]
+	public void TupleSql()
+	{
+		var (text, parameters) = Render(Sql.Tuple(Sql.Param("one"), Sql.Param("two"), Sql.Raw("null")));
+		text.Should().Be("(@fdp0, @fdp1, null)");
+		parameters.Should().Equal(("fdp0", "one"), ("fdp1", "two"));
+	}
+
+	[Test]
+	public void TupleNone()
+	{
+		var (text, parameters) = Render(Sql.Tuple());
+		text.Should().Be("()");
+		parameters.Should().BeEmpty();
+	}
+
+	[Test]
+	public void ParamListSqlStrings()
+	{
+		var (text, parameters) = Render(Sql.ParamList(["one", "two", "three"]));
+		text.Should().Be("@fdp0, @fdp1, @fdp2");
+		parameters.Should().Equal(("fdp0", "one"), ("fdp1", "two"), ("fdp2", "three"));
+	}
+
+	[Test]
+	public void ParamListSqlNumbers()
+	{
+		var (text, parameters) = Render(Sql.ParamList(new[] { 1, 2 }));
+		text.Should().Be("@fdp0, @fdp1");
+		parameters.Should().Equal(("fdp0", 1), ("fdp1", 2));
+	}
+
+	[Test]
+	public void ParamListSqlMixedNumbers()
+	{
+		var (text, parameters) = Render(Sql.ParamList([1, 2L]));
+		text.Should().Be("@fdp0, @fdp1");
+		parameters.Should().Equal(("fdp0", 1), ("fdp1", 2L));
+	}
+
+	[Test]
+	public void ParamListSqlMixedObjects()
+	{
+		var (text, parameters) = Render(Sql.ParamList(["one", 2, null]));
+		text.Should().Be("@fdp0, @fdp1, @fdp2");
+		parameters.Should().Equal(("fdp0", "one"), ("fdp1", 2), ("fdp2", null));
+	}
+
+	[Test]
+	public void ParamListNone()
+	{
+		var (text, parameters) = Render(Sql.ParamList([]));
+		text.Should().BeEmpty();
+		parameters.Should().BeEmpty();
+	}
+
+	[Test]
+	public void ParamTupleSqlStrings()
+	{
+		var (text, parameters) = Render(Sql.ParamTuple(["one", "two", "three"]));
+		text.Should().Be("(@fdp0, @fdp1, @fdp2)");
+		parameters.Should().Equal(("fdp0", "one"), ("fdp1", "two"), ("fdp2", "three"));
+	}
+
+	[Test]
+	public void ParamTupleSqlNumbers()
+	{
+		var (text, parameters) = Render(Sql.ParamTuple(new[] { 1, 2 }));
+		text.Should().Be("(@fdp0, @fdp1)");
+		parameters.Should().Equal(("fdp0", 1), ("fdp1", 2));
+	}
+
+	[Test]
+	public void ParamTupleSqlMixedNumbers()
+	{
+		var (text, parameters) = Render(Sql.ParamTuple([1, 2L]));
+		text.Should().Be("(@fdp0, @fdp1)");
+		parameters.Should().Equal(("fdp0", 1), ("fdp1", 2L));
+	}
+
+	[Test]
+	public void ParamTupleSqlMixedObjects()
+	{
+		var (text, parameters) = Render(Sql.ParamTuple(["one", 2, null]));
+		text.Should().Be("(@fdp0, @fdp1, @fdp2)");
+		parameters.Should().Equal(("fdp0", "one"), ("fdp1", 2), ("fdp2", null));
+	}
+
+	[Test]
+	public void ParamTupleNone()
+	{
+		var (text, parameters) = Render(Sql.ParamTuple([]));
+		text.Should().Be("()");
+		parameters.Should().BeEmpty();
+	}
+
+	[Test]
 	public void FormatEmpty()
 	{
 		var (text, parameters) = Render(Sql.Format($""));
@@ -129,6 +247,14 @@ public class SqlSyntaxTests
 			var whereSql = sqls.Count == 0 ? Sql.Empty : Sql.Format($"where {Sql.Join(" and ", sqls)}");
 			return Sql.Format($"select * from widgets {whereSql};");
 		}
+	}
+
+	[Test]
+	public void JoinEmpty()
+	{
+		var (text, parameters) = Render(Sql.Join("/", Sql.Raw("one"), Sql.Empty, Sql.Raw("two")));
+		text.Should().Be("one/two");
+		parameters.Should().BeEmpty();
 	}
 
 	[Test]
@@ -299,6 +425,82 @@ public class SqlSyntaxTests
 		syntax.Render(Sql.DtoParamNamesWhere<ItemDto>(x => x + "_", NotId)).Text.Should().Be("@DisplayName_");
 
 		static bool NotId(string x) => x != nameof(ItemDto.Id);
+	}
+
+	[TestCase("", "")]
+	[TestCase("one", "one")]
+	[TestCase("one,two", "one AND two")]
+	[TestCase("one,two,three", "one and two and three", true)]
+	public void And(string values, string sql, bool lowercase = false)
+	{
+		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
+		var (text, parameters) = syntax.Render(Sql.And(values.Split([','], StringSplitOptions.RemoveEmptyEntries).Select(Sql.Raw)));
+		text.Should().Be(sql);
+		parameters.Should().BeEmpty();
+	}
+
+	[TestCase("", "")]
+	[TestCase("one", "one")]
+	[TestCase("one,two", "one OR two")]
+	[TestCase("one,two,three", "one or two or three", true)]
+	public void Or(string values, string sql, bool lowercase = false)
+	{
+		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
+		var (text, parameters) = syntax.Render(Sql.Or(values.Split([','], StringSplitOptions.RemoveEmptyEntries).Select(Sql.Raw)));
+		text.Should().Be(sql);
+		parameters.Should().BeEmpty();
+	}
+
+	[Test]
+	public void AndOrAnd()
+	{
+		var (text, parameters) = Render(Sql.And(Sql.Raw("one"), Sql.Or(Sql.Raw("two"), Sql.And(Sql.Raw("three")))));
+		text.Should().Be("one AND (two OR three)");
+		parameters.Should().BeEmpty();
+	}
+
+	[TestCase("", "")]
+	[TestCase("true", "WHERE true")]
+	[TestCase("true", "where true", true)]
+	public void Where(string condition, string sql, bool lowercase = false)
+	{
+		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
+		var (text, parameters) = syntax.Render(Sql.Where(Sql.Raw(condition)));
+		text.Should().Be(sql);
+		parameters.Should().BeEmpty();
+	}
+
+	[TestCase("", "")]
+	[TestCase("true", "ORDER BY true")]
+	[TestCase("true", "order by true", true)]
+	public void OrderBy(string condition, string sql, bool lowercase = false)
+	{
+		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
+		var (text, parameters) = syntax.Render(Sql.OrderBy(Sql.Raw(condition)));
+		text.Should().Be(sql);
+		parameters.Should().BeEmpty();
+	}
+
+	[TestCase("", "")]
+	[TestCase("true", "GROUP BY true")]
+	[TestCase("true", "group by true", true)]
+	public void GroupBy(string condition, string sql, bool lowercase = false)
+	{
+		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
+		var (text, parameters) = syntax.Render(Sql.GroupBy(Sql.Raw(condition)));
+		text.Should().Be(sql);
+		parameters.Should().BeEmpty();
+	}
+
+	[TestCase("", "")]
+	[TestCase("true", "HAVING true")]
+	[TestCase("true", "having true", true)]
+	public void Having(string condition, string sql, bool lowercase = false)
+	{
+		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
+		var (text, parameters) = syntax.Render(Sql.Having(Sql.Raw(condition)));
+		text.Should().Be(sql);
+		parameters.Should().BeEmpty();
 	}
 
 	private static (string Text, DbParameters Parameters) Render(Sql sql) => SqlSyntax.Default.Render(sql);

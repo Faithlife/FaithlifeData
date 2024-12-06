@@ -45,6 +45,11 @@ public abstract class SqlSyntax
 	public virtual bool UseSnakeCase => false;
 
 	/// <summary>
+	/// True if lowercase should be used when generating SQL keywords.
+	/// </summary>
+	public virtual bool UseLowercaseKeywords => false;
+
+	/// <summary>
 	/// Escapes a fragment of a LIKE pattern.
 	/// </summary>
 	/// <returns>The string fragment, with wildcard characters such as <c>%</c>
@@ -83,6 +88,11 @@ public abstract class SqlSyntax
 	/// </summary>
 	public SqlSyntax WithSnakeCase() => new WithSnakeCaseSqlSyntax(this);
 
+	/// <summary>
+	/// Returns a SQL syntax that uses lowercase when generating SQL keywords.
+	/// </summary>
+	public SqlSyntax WithLowercaseKeywords() => new WithLowercaseSqlSyntax(this);
+
 	private sealed class DefaultSqlSyntax : SqlSyntax
 	{
 	}
@@ -109,13 +119,13 @@ public abstract class SqlSyntax
 		private readonly string m_nameQuoteEndEscape;
 	}
 
-	private sealed class WithSnakeCaseSqlSyntax : DelegatingSqlSyntax
+	private sealed class WithSnakeCaseSqlSyntax(SqlSyntax inner) : DelegatingSqlSyntax(inner)
 	{
-		public WithSnakeCaseSqlSyntax(SqlSyntax inner)
-			: base(inner)
-		{
-		}
-
 		public override bool UseSnakeCase => true;
+	}
+
+	private sealed class WithLowercaseSqlSyntax(SqlSyntax inner) : DelegatingSqlSyntax(inner)
+	{
+		public override bool UseLowercaseKeywords => true;
 	}
 }
