@@ -35,6 +35,7 @@ public class DelegatingSqlSyntaxTests
 	{
 		public override char ParameterPrefix => throw new DelegatedException();
 		public override bool UseSnakeCase => throw new DelegatedException();
+		public override bool UseLowercaseKeywords => throw new DelegatedException();
 		public override string EscapeLikeFragment(string fragment) => throw new DelegatedException();
 		public override string QuoteName(string name) => throw new DelegatedException();
 	}

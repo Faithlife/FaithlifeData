@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.22.0-beta.1
+
+* Support new `Sql` methods: `And`, `Clauses`, `GroupBy`, `Having`, `List`, `Or`, `OrderBy`, `ParamList`, `ParamTuple`, `Tuple`, `Where`.
+* Support lowercase keywords via `SqlSyntax`.
+
 ## 1.21.2
 
 * Reuse the same parameter when an instance from `Sql.Param` is used more than once.
