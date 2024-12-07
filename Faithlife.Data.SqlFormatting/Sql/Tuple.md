@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.Tuple method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Creates SQL for a comma-delimited list of SQL fragments, surrounded by parentheses.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql Tuple(IEnumerable<Sql> sqls)
 ```
 
 ## See Also

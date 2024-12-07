@@ -12,6 +12,7 @@ public class DelegatingSqlSyntax : SqlSyntax
 | --- | --- |
 | [DelegatingSqlSyntax](DelegatingSqlSyntax/DelegatingSqlSyntax.md)(…) | Creates an instance that delegates to the specified SQL syntax. |
 | override [ParameterPrefix](DelegatingSqlSyntax/ParameterPrefix.md) { get; } |  |
+| override [UseLowercaseKeywords](DelegatingSqlSyntax/UseLowercaseKeywords.md) { get; } |  |
 | override [UseSnakeCase](DelegatingSqlSyntax/UseSnakeCase.md) { get; } |  |
 | override [EscapeLikeFragment](DelegatingSqlSyntax/EscapeLikeFragment.md)(…) |  |
 | override [QuoteName](DelegatingSqlSyntax/QuoteName.md)(…) |  |

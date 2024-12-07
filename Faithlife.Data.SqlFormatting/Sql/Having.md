@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.Having method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Creates SQL for a HAVING clause. If the SQL is empty, the HAVING clause is omitted.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql Having(Sql sql)
 ```
 
 ## See Also

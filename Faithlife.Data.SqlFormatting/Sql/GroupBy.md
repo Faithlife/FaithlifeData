@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.GroupBy method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Creates SQL for a GROUP BY clause. If the SQLs are empty, the GROUP BY clause is omitted.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql GroupBy(IEnumerable<Sql> sqls)
 ```
 
 ## See Also

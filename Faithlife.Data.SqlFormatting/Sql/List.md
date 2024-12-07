@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.List method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Creates SQL for a comma-delimited list of SQL fragments.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql List(IEnumerable<Sql> sqls)
 ```
 
 ## See Also

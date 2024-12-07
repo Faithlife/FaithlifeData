@@ -1,6 +1,6 @@
 # Sql.LikePrefixParam method
 
-Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing `%`.
+Creates SQL for an arbitrarily-named parameter with the specified fragment of a LIKE pattern followed by a trailing `%`.
 
 ```csharp
 public static Sql LikePrefixParam(string prefix)

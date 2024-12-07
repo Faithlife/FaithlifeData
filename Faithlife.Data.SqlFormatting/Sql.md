@@ -11,6 +11,8 @@ public abstract class Sql
 | name | description |
 | --- | --- |
 | static readonly [Empty](Sql/Empty.md) | An empty SQL string. |
+| static [And](Sql/And.md)(…) | Joins the specified SQL fragments with the AND operator. |
+| static [Clauses](Sql/Clauses.md)(…) | Joins the specified SQL fragments with newlines. |
 | static [ColumnNames](Sql/ColumnNames.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type. (3 methods) |
 | static [ColumnNames&lt;T&gt;](Sql/ColumnNames.md)() | Returns a comma-delimited list of column names for a DTO of the specified type. |
 | static [ColumnNames&lt;T&gt;](Sql/ColumnNames.md)(…) | Returns a comma-delimited list of column names for a DTO of the specified type. (2 methods) |
@@ -25,11 +27,20 @@ public abstract class Sql
 | static [DtoParamNamesWhere](Sql/DtoParamNamesWhere.md)(…) | Returns a comma-delimited list of named parameters for the properties of the specified DTO whose names match the specified filter. (3 methods) |
 | static [DtoParamNamesWhere&lt;T&gt;](Sql/DtoParamNamesWhere.md)(…) | Returns a comma-delimited list of named parameters for the properties of the specified DTO whose names match the specified filter. (3 methods) |
 | static [Format](Sql/Format.md)(…) | Creates SQL from a formatted string. |
+| static [GroupBy](Sql/GroupBy.md)(…) | Creates SQL for a GROUP BY clause. If the SQLs are empty, the GROUP BY clause is omitted. |
+| static [Having](Sql/Having.md)(…) | Creates SQL for a HAVING clause. If the SQL is empty, the HAVING clause is omitted. |
 | static [Join](Sql/Join.md)(…) | Joins SQL fragments with the specified separator. (2 methods) |
-| static [LikePrefixParam](Sql/LikePrefixParam.md)(…) | Creates SQL for an arbitrarily named parameter with the specified fragment of a LIKE pattern followed by a trailing `%`. |
+| static [LikePrefixParam](Sql/LikePrefixParam.md)(…) | Creates SQL for an arbitrarily-named parameter with the specified fragment of a LIKE pattern followed by a trailing `%`. |
+| static [List](Sql/List.md)(…) | Creates SQL for a comma-delimited list of SQL fragments. |
 | static [Name](Sql/Name.md)(…) | Creates SQL for a quoted identifier. |
-| static [Param](Sql/Param.md)(…) | Creates SQL for an arbitrarily named parameter with the specified value. |
+| static [Or](Sql/Or.md)(…) | Joins the specified SQL fragments with the OR operator. |
+| static [OrderBy](Sql/OrderBy.md)(…) | Creates SQL for an ORDER BY clause. If the SQLs are empty, the ORDER BY clause is omitted. |
+| static [Param](Sql/Param.md)(…) | Creates SQL for an arbitrarily-named parameter with the specified value. |
+| static [ParamList](Sql/ParamList.md)(…) | Creates SQL for a comma-delimted list of arbitrarily-named parameters with the specified values. (2 methods) |
+| static [ParamTuple](Sql/ParamTuple.md)(…) | Creates SQL for a comma-delimted list of arbitrarily-named parameters with the specified values, surrounded by parentheses. (2 methods) |
 | static [Raw](Sql/Raw.md)(…) | Creates SQL from a raw string. |
+| static [Tuple](Sql/Tuple.md)(…) | Creates SQL for a comma-delimited list of SQL fragments, surrounded by parentheses. |
+| static [Where](Sql/Where.md)(…) | Creates SQL for a WHERE clause. If the SQL is empty, the WHERE clause is omitted. |
 | [operator +](Sql/op_Addition.md) | Concatenates two SQL fragments. |
 
 ## Protected Members

@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.Where method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Creates SQL for a WHERE clause. If the SQL is empty, the WHERE clause is omitted.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql Where(Sql sql)
 ```
 
 ## See Also

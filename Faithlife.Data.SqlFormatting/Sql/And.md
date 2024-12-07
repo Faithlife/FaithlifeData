@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.And method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Joins the specified SQL fragments with the AND operator.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql And(IEnumerable<Sql> sqls)
 ```
 
 ## See Also

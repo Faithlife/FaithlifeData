@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.OrderBy method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Creates SQL for an ORDER BY clause. If the SQLs are empty, the ORDER BY clause is omitted.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql OrderBy(IEnumerable<Sql> sqls)
 ```
 
 ## See Also

@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.Or method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Joins the specified SQL fragments with the OR operator.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql Or(IEnumerable<Sql> sqls)
 ```
 
 ## See Also

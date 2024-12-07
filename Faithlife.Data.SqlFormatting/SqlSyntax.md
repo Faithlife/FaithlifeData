@@ -16,10 +16,12 @@ public abstract class SqlSyntax
 | static [Sqlite](SqlSyntax/Sqlite.md) { get; } | The syntax for SQLite. |
 | static [SqlServer](SqlSyntax/SqlServer.md) { get; } | The syntax for Microsoft SQL Server. |
 | virtual [ParameterPrefix](SqlSyntax/ParameterPrefix.md) { get; } | The prefix for named parameters. |
+| virtual [UseLowercaseKeywords](SqlSyntax/UseLowercaseKeywords.md) { get; } | True if lowercase should be used when generating SQL keywords. |
 | virtual [UseSnakeCase](SqlSyntax/UseSnakeCase.md) { get; } | True if snake case should be used when generating column names. |
 | virtual [EscapeLikeFragment](SqlSyntax/EscapeLikeFragment.md)(…) | Escapes a fragment of a LIKE pattern. |
 | virtual [QuoteName](SqlSyntax/QuoteName.md)(…) | Quotes the specified identifier so that it can be used as a schema/table/column name even if it matches a keyword or has special characters. |
 | [Render](SqlSyntax/Render.md)(…) | Renders SQL as text and parameters. |
+| [WithLowercaseKeywords](SqlSyntax/WithLowercaseKeywords.md)() | Returns a SQL syntax that uses lowercase when generating SQL keywords. |
 | [WithSnakeCase](SqlSyntax/WithSnakeCase.md)() | Returns a SQL syntax that uses snake case when generating column names. |
 
 ## Protected Members

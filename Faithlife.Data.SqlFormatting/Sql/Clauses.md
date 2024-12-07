@@ -1,9 +1,9 @@
-# Sql.Param method
+# Sql.Clauses method
 
-Creates SQL for an arbitrarily-named parameter with the specified value.
+Joins the specified SQL fragments with newlines.
 
 ```csharp
-public static Sql Param(object? value)
+public static Sql Clauses(IEnumerable<Sql> sqls)
 ```
 
 ## See Also
