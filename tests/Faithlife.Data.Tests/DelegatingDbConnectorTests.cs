@@ -8,7 +8,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests;
 
 [TestFixture]
-public class DelegatingDbConnectorTests
+internal sealed class DelegatingDbConnectorTests
 {
 	[Test]
 	public void DelegateAllVirtuals()

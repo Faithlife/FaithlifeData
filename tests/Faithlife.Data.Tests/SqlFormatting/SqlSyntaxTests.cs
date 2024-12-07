@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Faithlife.Data.SqlFormatting;
 using FluentAssertions;
 using NUnit.Framework;
@@ -9,7 +10,8 @@ namespace Faithlife.Data.Tests.SqlFormatting;
 #pragma warning disable FL0014 // Interpolated strings for literals
 
 [TestFixture]
-public class SqlSyntaxTests
+[SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing.")]
+internal sealed class SqlSyntaxTests
 {
 	[Test]
 	public void NullSqlThrows()

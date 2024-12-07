@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Faithlife.Data.Tests;
 
 [TestFixture, Explicit("Requires 'docker-compose up' from '/docker'.")]
-public class MySqlTests
+internal sealed class MySqlTests
 {
 	[Test]
 	public void PrepareCacheTests()

@@ -5,7 +5,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests;
 
 [TestFixture]
-public class DbParametersTests
+internal sealed class DbParametersTests
 {
 	[Test]
 	public void Empty()

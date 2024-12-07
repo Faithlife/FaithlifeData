@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Faithlife.Data.Tests;
 
-public sealed class DelegatedException : Exception
+[SuppressMessage("Design", "CA1064:Exceptions should be public", Justification = "For testing.")]
+internal sealed class DelegatedException : Exception
 {
 }

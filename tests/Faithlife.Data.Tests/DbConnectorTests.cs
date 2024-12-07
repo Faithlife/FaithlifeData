@@ -11,7 +11,7 @@ namespace Faithlife.Data.Tests;
 
 [TestFixture]
 [SuppressMessage("ReSharper", "InterpolatedStringExpressionIsNotIFormattable", Justification = "Custom formatting.")]
-public class DbConnectorTests
+internal sealed class DbConnectorTests
 {
 	[Test]
 	public void NullConnection()

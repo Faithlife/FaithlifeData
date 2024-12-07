@@ -6,7 +6,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests.BulkInsert;
 
 [TestFixture]
-public class BulkInsertUtilityTests
+internal sealed class BulkInsertUtilityTests
 {
 	[Test]
 	public void EmptySql_Throws()

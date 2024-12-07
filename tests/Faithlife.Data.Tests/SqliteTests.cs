@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Faithlife.Data.Tests;
 
 [TestFixture]
-public class SqliteTests
+internal sealed class SqliteTests
 {
 	[Test]
 	public void PrepareCacheTests()

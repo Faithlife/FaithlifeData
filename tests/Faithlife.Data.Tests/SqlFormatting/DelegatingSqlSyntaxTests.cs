@@ -7,7 +7,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests.SqlFormatting;
 
 [TestFixture]
-public class DelegatingSqlSyntaxTests
+internal sealed class DelegatingSqlSyntaxTests
 {
 	[Test]
 	public void DelegateAllVirtuals()

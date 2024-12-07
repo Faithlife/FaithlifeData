@@ -6,7 +6,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests;
 
 [TestFixture]
-public class DbConnectorPoolTests
+internal sealed class DbConnectorPoolTests
 {
 	[Test]
 	public void NullSettings()

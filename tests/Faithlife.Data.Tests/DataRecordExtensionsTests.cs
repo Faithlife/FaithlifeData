@@ -9,7 +9,7 @@ using static FluentAssertions.FluentActions;
 namespace Faithlife.Data.Tests;
 
 [TestFixture]
-public class DataRecordExtensionsTests
+internal sealed class DataRecordExtensionsTests
 {
 	[Test]
 	public void Strings()
