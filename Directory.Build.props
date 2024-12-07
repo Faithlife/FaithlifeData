@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <VersionPrefix>1.22.0</VersionPrefix>
-    <VersionSuffix>beta.1</VersionSuffix>
+    <VersionSuffix>beta.2</VersionSuffix>
     <PackageValidationBaselineVersion>1.21.2</PackageValidationBaselineVersion>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

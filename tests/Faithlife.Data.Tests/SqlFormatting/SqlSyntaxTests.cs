@@ -471,30 +471,30 @@ public class SqlSyntaxTests
 	}
 
 	[TestCase("", "")]
-	[TestCase("true", "ORDER BY true")]
-	[TestCase("true", "order by true", true)]
-	public void OrderBy(string condition, string sql, bool lowercase = false)
+	[TestCase("x asc", "ORDER BY x asc")]
+	[TestCase("x asc;y desc", "order by x asc, y desc", true)]
+	public void OrderBy(string columns, string sql, bool lowercase = false)
 	{
 		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
-		var (text, parameters) = syntax.Render(Sql.OrderBy(Sql.Raw(condition)));
+		var (text, parameters) = syntax.Render(Sql.OrderBy(columns.Split([';'], StringSplitOptions.RemoveEmptyEntries).Select(Sql.Raw)));
 		text.Should().Be(sql);
 		parameters.Should().BeEmpty();
 	}
 
 	[TestCase("", "")]
-	[TestCase("true", "GROUP BY true")]
-	[TestCase("true", "group by true", true)]
-	public void GroupBy(string condition, string sql, bool lowercase = false)
+	[TestCase("x", "GROUP BY x")]
+	[TestCase("x;y", "group by x, y", true)]
+	public void GroupBy(string columns, string sql, bool lowercase = false)
 	{
 		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;
-		var (text, parameters) = syntax.Render(Sql.GroupBy(Sql.Raw(condition)));
+		var (text, parameters) = syntax.Render(Sql.GroupBy(columns.Split([';'], StringSplitOptions.RemoveEmptyEntries).Select(Sql.Raw)));
 		text.Should().Be(sql);
 		parameters.Should().BeEmpty();
 	}
 
 	[TestCase("", "")]
-	[TestCase("true", "HAVING true")]
-	[TestCase("true", "having true", true)]
+	[TestCase("x < 1", "HAVING x < 1")]
+	[TestCase("x < 1", "having x < 1", true)]
 	public void Having(string condition, string sql, bool lowercase = false)
 	{
 		var syntax = lowercase ? SqlSyntax.Default.WithLowercaseKeywords() : SqlSyntax.Default;

@@ -19,22 +19,12 @@ public abstract class Sql
 	/// <summary>
 	/// Joins the specified SQL fragments with the AND operator.
 	/// </summary>
-	public static Sql And(params Sql[] sqls) => And(sqls.AsEnumerable());
-
-	/// <summary>
-	/// Joins the specified SQL fragments with the AND operator.
-	/// </summary>
-	public static Sql And(IEnumerable<Sql> sqls) => new BinaryOperatorSql(" and ", " AND ", AsReadOnlyList(sqls));
+	public static Sql And(params IEnumerable<Sql> sqls) => new BinaryOperatorSql(" and ", " AND ", AsReadOnlyList(sqls));
 
 	/// <summary>
 	/// Joins the specified SQL fragments with newlines.
 	/// </summary>
-	public static Sql Clauses(params Sql[] sqls) => Clauses(sqls.AsEnumerable());
-
-	/// <summary>
-	/// Joins the specified SQL fragments with newlines.
-	/// </summary>
-	public static Sql Clauses(IEnumerable<Sql> sqls) => Join("\n", sqls);
+	public static Sql Clauses(params IEnumerable<Sql> sqls) => Join("\n", sqls);
 
 	/// <summary>
 	/// Returns a comma-delimited list of column names for a DTO of the specified type.
@@ -147,7 +137,7 @@ public abstract class Sql
 	/// <summary>
 	/// Concatenates SQL fragments.
 	/// </summary>
-	public static Sql Concat(IEnumerable<Sql> sqls) =>
+	public static Sql Concat(params IEnumerable<Sql> sqls) =>
 		new ConcatSql(AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))));
 
 	/// <summary>
@@ -237,9 +227,9 @@ public abstract class Sql
 	public static Sql Format(FormattableString formattableString) => new FormatSql(formattableString ?? throw new ArgumentNullException(nameof(formattableString)));
 
 	/// <summary>
-	/// Creates SQL for a GROUP BY clause. If the SQL is empty, the GROUP BY clause is omitted.
+	/// Creates SQL for a GROUP BY clause. If the SQLs are empty, the GROUP BY clause is omitted.
 	/// </summary>
-	public static Sql GroupBy(Sql sql) => new OptionalClauseSql("group by ", "GROUP BY ", sql);
+	public static Sql GroupBy(params IEnumerable<Sql> sqls) => new OptionalClauseSql("group by ", "GROUP BY ", List(sqls));
 
 	/// <summary>
 	/// Creates SQL for a HAVING clause. If the SQL is empty, the HAVING clause is omitted.
@@ -255,7 +245,7 @@ public abstract class Sql
 	/// <summary>
 	/// Joins SQL fragments with the specified separator.
 	/// </summary>
-	public static Sql Join(string separator, IEnumerable<Sql> sqls) =>
+	public static Sql Join(string separator, params IEnumerable<Sql> sqls) =>
 		new JoinSql(separator ?? throw new ArgumentNullException(nameof(separator)), AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))));
 
 	/// <summary>
@@ -268,12 +258,7 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for a comma-delimited list of SQL fragments.
 	/// </summary>
-	public static Sql List(params Sql[] sqls) => List(sqls.AsEnumerable());
-
-	/// <summary>
-	/// Creates SQL for a comma-delimited list of SQL fragments.
-	/// </summary>
-	public static Sql List(IEnumerable<Sql> sqls) => Join(", ", sqls);
+	public static Sql List(params IEnumerable<Sql> sqls) => Join(", ", sqls);
 
 	/// <summary>
 	/// Creates SQL for a quoted identifier.
@@ -283,17 +268,12 @@ public abstract class Sql
 	/// <summary>
 	/// Joins the specified SQL fragments with the OR operator.
 	/// </summary>
-	public static Sql Or(params Sql[] sqls) => Or(sqls.AsEnumerable());
+	public static Sql Or(params IEnumerable<Sql> sqls) => new BinaryOperatorSql(" or ", " OR ", AsReadOnlyList(sqls));
 
 	/// <summary>
-	/// Joins the specified SQL fragments with the OR operator.
+	/// Creates SQL for an ORDER BY clause. If the SQLs are empty, the ORDER BY clause is omitted.
 	/// </summary>
-	public static Sql Or(IEnumerable<Sql> sqls) => new BinaryOperatorSql(" or ", " OR ", AsReadOnlyList(sqls));
-
-	/// <summary>
-	/// Creates SQL for an ORDER BY clause. If the SQL is empty, the ORDER BY clause is omitted.
-	/// </summary>
-	public static Sql OrderBy(Sql sql) => new OptionalClauseSql("order by ", "ORDER BY ", sql);
+	public static Sql OrderBy(params IEnumerable<Sql> sqls) => new OptionalClauseSql("order by ", "ORDER BY ", List(sqls));
 
 	/// <summary>
 	/// Creates SQL for an arbitrarily-named parameter with the specified value.
@@ -333,12 +313,7 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for a comma-delimited list of SQL fragments, surrounded by parentheses.
 	/// </summary>
-	public static Sql Tuple(params Sql[] sqls) => Tuple(sqls.AsEnumerable());
-
-	/// <summary>
-	/// Creates SQL for a comma-delimited list of SQL fragments, surrounded by parentheses.
-	/// </summary>
-	public static Sql Tuple(IEnumerable<Sql> sqls) => Format($"({List(sqls)})");
+	public static Sql Tuple(params IEnumerable<Sql> sqls) => Format($"({List(sqls)})");
 
 	/// <summary>
 	/// Creates SQL for a WHERE clause. If the SQL is empty, the WHERE clause is omitted.
