@@ -323,16 +323,26 @@ IReadOnlyList<WidgetDto> GetWidgets(DbConnector connector,
 
 To create `Sql` instances, use static members on the [`Sql`](Faithlife.Data.SqlFormatting/Sql.md) class:
 
+* [`Sql.And`](Faithlife.Data.SqlFormatting/Sql/And.md) joins SQL fragments with the `AND` operator.
+* [`Sql.Clauses`](Faithlife.Data.SqlFormatting/Sql/Clauses.md) joins SQL fragments with newlines.
 * [`Sql.ColumnNames`](Faithlife.Data.SqlFormatting/Sql/ColumnNames.md) and [`Sql.ColumnNamesWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnNamesWhere.md) generate a list of column names from a DTO for SELECT and INSERT statements.
 * [`Sql.ColumnParams`](Faithlife.Data.SqlFormatting/Sql/ColumnParams.md) and [`Sql.ColumnParamsWhere`](Faithlife.Data.SqlFormatting/Sql/ColumnParamsWhere.md) generate a list of parameters from a DTO for an INSERT statement.
 * [`Sql.Concat`](Faithlife.Data.SqlFormatting/Sql/Concat.md) (or [`operator +`](Faithlife.Data.SqlFormatting/Sql/op_Addition.md)) concatenates SQL fragments.
 * [`Sql.DtoParamNames`](Faithlife.Data.SqlFormatting/Sql/DtoParamNames.md) and [`Sql.DtoParamNamesWhere`](Faithlife.Data.SqlFormatting/Sql/DtoParamNames.md) generate a list of named parameters for DTO properties.
 * [`Sql.Empty`](Faithlife.Data.SqlFormatting/Sql/Empty.md) is an empty SQL fragment.
+* [`Sql.GroupBy`](Faithlife.Data.SqlFormatting/Sql/GroupBy.md) creates SQL for a `GROUP BY` clause, omitting it if no columns are specified.
+* [`Sql.Having`](Faithlife.Data.SqlFormatting/Sql/Having.md) creates SQL for a `HAVING` clause, omitting it if no condition is specified.
 * [`Sql.Join`](Faithlife.Data.SqlFormatting/Sql/Join.md) joins SQL fragments with a separator.
 * [`Sql.LikePrefixParam`](Faithlife.Data.SqlFormatting/Sql/LikePrefixParam.md) generates a parameter with a LIKE pattern for prefix matching.
+* [`Sql.List`](Faithlife.Data.SqlFormatting/Sql/List.md) creates a comma-delimited list of SQL fragments.
 * [`Sql.Name`](Faithlife.Data.SqlFormatting/Sql/Name.md) creates SQL that quotes the specified identifier.
+* [`Sql.OrderBy`](Faithlife.Data.SqlFormatting/Sql/OrderBy.md) creates SQL for an `ORDER BY` clause, omitting it if no columns are specified.
 * [`Sql.Param`](Faithlife.Data.SqlFormatting/Sql/Param.md) generates a parameter for the specified value. If the same `Sql` instance is used more than once by a command, the same SQL parameter is provided for each use.
+* [`Sql.ParamList`](Faithlife.Data.SqlFormatting/Sql/ParamList.md) creates a comma-delimited list of parameters set to the specified values.
+* [`Sql.ParamTuple`](Faithlife.Data.SqlFormatting/Sql/ParamTuple.md) creates a comma-delimited list of parameters set to the specified values, surrounded by parentheses.
 * [`Sql.Raw`](Faithlife.Data.SqlFormatting/Sql/Raw.md) creates raw SQL from the specified string.
+* [`Sql.Tuple`](Faithlife.Data.SqlFormatting/Sql/Tuple.md) creates a comma-delimited list of SQL fragments, surrounded by parentheses.
+* [`Sql.Where`](Faithlife.Data.SqlFormatting/Sql/Where.md) creates SQL for a `WHERE` clause, omitting it if no condition is specified.
 
 Since commands are commonly created with a single call to `Sql.Format`, the [`CommandFormat`](Faithlife.Data/DbConnector/CommandFormat.md) method can be used as shorthand.
 
@@ -342,6 +352,8 @@ void InsertWidget(DbConnector connector, string name, double height) =>
         $"insert into widgets (name, height) values ({name}, {height});"
         ).Execute();
 ```
+
+To generate lowercase SQL keywords, use [`SqlSyntax.WithLowercaseKeywords()`](Faithlife.Data.SqlFormatting/SqlSyntax/WithLowercaseKeywords.md).
 
 ### Collection parameters
 
@@ -371,6 +383,15 @@ connector.Command(Sql.Format(
 ```
 
 **Important note:** If the collection is empty, an `InvalidOperationException` will be thrown, since omitting the parameter entirely may not be valid (or intended) SQL.
+
+Alternatively, use [`Sql.ParamTuple`](Faithlife.Data.SqlFormatting/Sql/ParamTuple.md) or similar:
+
+```csharp
+var names = new[] { "one", "two", "three" };
+connector.Command(Sql.Format(
+    $"select id from widgets where name in {Sql.ParamTuple(names)};"
+    )).Execute();
+```
 
 For more ways to specify query parameters, see [advanced parameters](#advanced-parameters) below.
 
