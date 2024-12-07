@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.22.0-beta.2
+## 1.22.0
 
 * Support new `Sql` methods: `And`, `Clauses`, `GroupBy`, `Having`, `List`, `Or`, `OrderBy`, `ParamList`, `ParamTuple`, `Tuple`, `Where`.
 * Support lowercase keywords via `SqlSyntax`.
