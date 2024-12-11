@@ -61,9 +61,8 @@ internal sealed class SqlSyntaxTests
 	[Test]
 	public void ListNone()
 	{
-		var (text, parameters) = Render(Sql.List());
-		text.Should().BeEmpty();
-		parameters.Should().BeEmpty();
+		Invoking(() => Render(Sql.List())).Should().Throw<InvalidOperationException>();
+		Invoking(() => Render(Sql.List(Sql.Empty))).Should().Throw<InvalidOperationException>();
 	}
 
 	[Test]
@@ -77,9 +76,8 @@ internal sealed class SqlSyntaxTests
 	[Test]
 	public void TupleNone()
 	{
-		var (text, parameters) = Render(Sql.Tuple());
-		text.Should().Be("()");
-		parameters.Should().BeEmpty();
+		Invoking(() => Render(Sql.Tuple())).Should().Throw<InvalidOperationException>();
+		Invoking(() => Render(Sql.Tuple(Sql.Empty))).Should().Throw<InvalidOperationException>();
 	}
 
 	[Test]
@@ -117,9 +115,7 @@ internal sealed class SqlSyntaxTests
 	[Test]
 	public void ParamListNone()
 	{
-		var (text, parameters) = Render(Sql.ParamList([]));
-		text.Should().BeEmpty();
-		parameters.Should().BeEmpty();
+		Invoking(() => Render(Sql.ParamList([]))).Should().Throw<InvalidOperationException>();
 	}
 
 	[Test]
@@ -157,9 +153,7 @@ internal sealed class SqlSyntaxTests
 	[Test]
 	public void ParamTupleNone()
 	{
-		var (text, parameters) = Render(Sql.ParamTuple([]));
-		text.Should().Be("()");
-		parameters.Should().BeEmpty();
+		Invoking(() => Render(Sql.ParamTuple([]))).Should().Throw<InvalidOperationException>();
 	}
 
 	[Test]
