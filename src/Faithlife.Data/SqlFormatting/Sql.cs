@@ -229,7 +229,7 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for a GROUP BY clause. If the SQLs are empty, the GROUP BY clause is omitted.
 	/// </summary>
-	public static Sql GroupBy(params IEnumerable<Sql> sqls) => new OptionalClauseSql("group by ", "GROUP BY ", List(sqls));
+	public static Sql GroupBy(params IEnumerable<Sql> sqls) => new OptionalClauseSql("group by ", "GROUP BY ", Join(", ", sqls));
 
 	/// <summary>
 	/// Creates SQL for a HAVING clause. If the SQL is empty, the HAVING clause is omitted.
@@ -239,12 +239,14 @@ public abstract class Sql
 	/// <summary>
 	/// Joins SQL fragments with the specified separator.
 	/// </summary>
+	/// <remarks>Empty SQL fragments are ignored.</remarks>
 	public static Sql Join(string separator, params Sql[] sqls) =>
 		new JoinSql(separator ?? throw new ArgumentNullException(nameof(separator)), sqls ?? throw new ArgumentNullException(nameof(sqls)));
 
 	/// <summary>
 	/// Joins SQL fragments with the specified separator.
 	/// </summary>
+	/// <remarks>Empty SQL fragments are ignored.</remarks>
 	public static Sql Join(string separator, params IEnumerable<Sql> sqls) =>
 		new JoinSql(separator ?? throw new ArgumentNullException(nameof(separator)), AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))));
 
@@ -258,7 +260,9 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for a comma-delimited list of SQL fragments.
 	/// </summary>
-	public static Sql List(params IEnumerable<Sql> sqls) => Join(", ", sqls);
+	/// <remarks>Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an <see cref="InvalidOperationException" />
+	/// is thrown if the SQL fragments are missing or all empty. Use <c>Sql.Join(", ", sqls)</c> to permit an empty SQL fragment.</remarks>
+	public static Sql List(params IEnumerable<Sql> sqls) => JoinOrThrow(", ", sqls, "Sql.List was empty.");
 
 	/// <summary>
 	/// Creates SQL for a quoted identifier.
@@ -273,7 +277,7 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for an ORDER BY clause. If the SQLs are empty, the ORDER BY clause is omitted.
 	/// </summary>
-	public static Sql OrderBy(params IEnumerable<Sql> sqls) => new OptionalClauseSql("order by ", "ORDER BY ", List(sqls));
+	public static Sql OrderBy(params IEnumerable<Sql> sqls) => new OptionalClauseSql("order by ", "ORDER BY ", Join(", ", sqls));
 
 	/// <summary>
 	/// Creates SQL for an arbitrarily-named parameter with the specified value.
@@ -288,22 +292,30 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for a comma-delimted list of arbitrarily-named parameters with the specified values.
 	/// </summary>
+	/// <remarks>Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an <see cref="InvalidOperationException" />
+	/// is thrown if the collection of values is empty. Use <c>Sql.Join(", ", values.Select(Sql.Param))")</c> to allow an empty collection.</remarks>
 	public static Sql ParamList(IEnumerable values) => ParamList(values.Cast<object?>());
 
 	/// <summary>
 	/// Creates SQL for a comma-delimted list of arbitrarily-named parameters with the specified values.
 	/// </summary>
-	public static Sql ParamList(IEnumerable<object?> values) => List(values.Select(Param));
+	/// <remarks>Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an <see cref="InvalidOperationException" />
+	/// is thrown if the collection of values is empty. Use <c>Sql.Join(", ", values.Select(Sql.Param))")</c> to allow an empty collection.</remarks>
+	public static Sql ParamList(IEnumerable<object?> values) => JoinOrThrow(", ", values.Select(Param), "Sql.ParamList was empty.");
 
 	/// <summary>
 	/// Creates SQL for a comma-delimted list of arbitrarily-named parameters with the specified values, surrounded by parentheses.
 	/// </summary>
+	/// <remarks>Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an <see cref="InvalidOperationException" />
+	/// is thrown if the collection of values is empty. Use <c>Sql.Format($"({Sql.Join(", ", values.Select(Sql.Param))})")</c> to permit an empty tuple.</remarks>
 	public static Sql ParamTuple(IEnumerable values) => ParamTuple(values.Cast<object?>());
 
 	/// <summary>
 	/// Creates SQL for a comma-delimted list of arbitrarily-named parameters with the specified values, surrounded by parentheses.
 	/// </summary>
-	public static Sql ParamTuple(IEnumerable<object?> values) => Tuple(values.Select(Param));
+	/// <remarks>Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an <see cref="InvalidOperationException" />
+	/// is thrown if the collection of values is empty. Use <c>Sql.Format($"({Sql.Join(", ", values.Select(Sql.Param))})")</c> to permit an empty tuple.</remarks>
+	public static Sql ParamTuple(IEnumerable<object?> values) => Format($"({JoinOrThrow(", ", values.Select(Param), "Sql.ParamTuple was empty.")})");
 
 	/// <summary>
 	/// Creates SQL from a raw string.
@@ -313,7 +325,9 @@ public abstract class Sql
 	/// <summary>
 	/// Creates SQL for a comma-delimited list of SQL fragments, surrounded by parentheses.
 	/// </summary>
-	public static Sql Tuple(params IEnumerable<Sql> sqls) => Format($"({List(sqls)})");
+	/// <remarks>Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an <see cref="InvalidOperationException" />
+	/// is thrown if the SQL fragments are missing or all empty. Use <c>Sql.Format($"({Sql.Join(", ", sqls)})")</c> to permit an empty tuple.</remarks>
+	public static Sql Tuple(params IEnumerable<Sql> sqls) => Format($"({JoinOrThrow(", ", sqls, "Sql.Tuple was empty.")})");
 
 	/// <summary>
 	/// Creates SQL for a WHERE clause. If the SQL is empty, the WHERE clause is omitted.
@@ -327,6 +341,9 @@ public abstract class Sql
 	public static Sql operator +(Sql a, Sql b) => new AddSql(a, b);
 
 	internal abstract string Render(SqlContext context);
+
+	private static Sql JoinOrThrow(string separator, IEnumerable<Sql> sqls, string throwMessageIfEmpty) =>
+		new JoinSql(separator ?? throw new ArgumentNullException(nameof(separator)), AsReadOnlyList(sqls ?? throw new ArgumentNullException(nameof(sqls))), throwMessageIfEmpty);
 
 	private static IReadOnlyList<T> AsReadOnlyList<T>(IEnumerable<T> items) => (items as IReadOnlyList<T>) ?? items.ToList();
 
@@ -464,9 +481,15 @@ public abstract class Sql
 		internal override string Render(SqlContext context) => string.Concat(sqls.Select(x => x.Render(context)));
 	}
 
-	private sealed class JoinSql(string separator, IReadOnlyList<Sql> sqls) : Sql
+	private sealed class JoinSql(string separator, IReadOnlyList<Sql> sqls, string? throwMessageIfEmpty = null) : Sql
 	{
-		internal override string Render(SqlContext context) => string.Join(separator, sqls.Select(x => x.Render(context)).Where(x => x.Length != 0));
+		internal override string Render(SqlContext context)
+		{
+			var sql = string.Join(separator, sqls.Select(x => x.Render(context)).Where(x => x.Length != 0));
+			if (throwMessageIfEmpty is not null && sql.Length == 0)
+				throw new InvalidOperationException(throwMessageIfEmpty);
+			return sql;
+		}
 	}
 
 	private sealed class LikePrefixParamSql(string prefix) : Sql
