@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.22.1
+
+* Throw `InvalidOperationException` when `Sql.List`, `Sql.Tuple`, `Sql.ParamList`, or `Sql.ParamTuple` generate an empty SQL fragment.
+
 ## 1.22.0
 
 * Support new `Sql` methods: `And`, `Clauses`, `GroupBy`, `Having`, `List`, `Or`, `OrderBy`, `ParamList`, `ParamTuple`, `Tuple`, `Where`.
