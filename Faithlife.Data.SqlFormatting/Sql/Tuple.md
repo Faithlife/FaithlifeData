@@ -6,6 +6,10 @@ Creates SQL for a comma-delimited list of SQL fragments, surrounded by parenthes
 public static Sql Tuple(IEnumerable<Sql> sqls)
 ```
 
+## Remarks
+
+Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an InvalidOperationException is thrown if the SQL fragments are missing or all empty. Use `Sql.Format($"({Sql.Join(", ", sqls)})")` to permit an empty tuple.
+
 ## See Also
 
 * class [Sql](../Sql.md)

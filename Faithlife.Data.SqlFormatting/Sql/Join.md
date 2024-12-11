@@ -6,6 +6,10 @@ Joins SQL fragments with the specified separator.
 public static Sql Join(string separator, IEnumerable<Sql> sqls)
 ```
 
+## Remarks
+
+Empty SQL fragments are ignored.
+
 ## See Also
 
 * class [Sql](../Sql.md)
@@ -20,6 +24,10 @@ Joins SQL fragments with the specified separator.
 ```csharp
 public static Sql Join(string separator, params Sql[] sqls)
 ```
+
+## Remarks
+
+Empty SQL fragments are ignored.
 
 ## See Also
 

@@ -6,6 +6,10 @@ Creates SQL for a comma-delimited list of SQL fragments.
 public static Sql List(IEnumerable<Sql> sqls)
 ```
 
+## Remarks
+
+Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an InvalidOperationException is thrown if the SQL fragments are missing or all empty. Use `Sql.Join(", ", sqls)` to permit an empty SQL fragment.
+
 ## See Also
 
 * class [Sql](../Sql.md)

@@ -6,6 +6,10 @@ Creates SQL for a comma-delimted list of arbitrarily-named parameters with the s
 public static Sql ParamList(IEnumerable values)
 ```
 
+## Remarks
+
+Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an InvalidOperationException is thrown if the collection of values is empty. Use `Sql.Join(", ", values.Select(Sql.Param))")` to allow an empty collection.
+
 ## See Also
 
 * class [Sql](../Sql.md)
@@ -20,6 +24,10 @@ Creates SQL for a comma-delimted list of arbitrarily-named parameters with the s
 ```csharp
 public static Sql ParamList(IEnumerable<object?> values)
 ```
+
+## Remarks
+
+Empty SQL fragments are ignored. Since it would otherwise result in a confusing SQL syntax error, an InvalidOperationException is thrown if the collection of values is empty. Use `Sql.Join(", ", values.Select(Sql.Param))")` to allow an empty collection.
 
 ## See Also
 
