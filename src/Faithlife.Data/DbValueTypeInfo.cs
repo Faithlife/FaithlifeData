@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
+using System.Globalization;
 using System.Reflection;
 
 namespace Faithlife.Data;
@@ -47,7 +48,7 @@ internal static class DbValueTypeInfo
 		[typeof(double)] = DbValueTypeStrategy.CastValue,
 		[typeof(float)] = DbValueTypeStrategy.CastValue,
 		[typeof(decimal)] = DbValueTypeStrategy.CastValue,
-		[typeof(bool)] = DbValueTypeStrategy.CastValue,
+		[typeof(bool)] = DbValueTypeStrategy.Convert,
 		[typeof(Guid)] = DbValueTypeStrategy.CastValue,
 		[typeof(DateTime)] = DbValueTypeStrategy.CastValue,
 		[typeof(DateTimeOffset)] = DbValueTypeStrategy.CastValue,
@@ -256,6 +257,25 @@ internal sealed class DbValueTypeInfo<T> : IDbValueTypeInfo
 			var bytes = new byte[byteCount];
 			record.GetBytes(index, 0, bytes, 0, byteCount);
 			return (T) (object) new MemoryStream(bytes, 0, byteCount, writable: false);
+		}
+		else if (m_strategy == DbValueTypeStrategy.Convert)
+		{
+			var value = record.GetValue(index);
+			if (value == DBNull.Value)
+			{
+				if (m_nullableType is null)
+					throw new InvalidOperationException($"Failed to cast null to {Type.FullName}.");
+				return default!;
+			}
+
+			try
+			{
+				return (T) Convert.ChangeType(value, m_coreType, CultureInfo.InvariantCulture);
+			}
+			catch (Exception exception) when (exception is ArgumentException || exception is InvalidCastException)
+			{
+				throw new InvalidOperationException($"Failed to cast {value?.GetType().FullName} to {Type.FullName}.", exception);
+			}
 		}
 		else
 		{

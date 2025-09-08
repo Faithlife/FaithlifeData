@@ -10,4 +10,5 @@ internal enum DbValueTypeStrategy
 	Dynamic,
 	Dictionary,
 	Stream,
+	Convert,
 }
