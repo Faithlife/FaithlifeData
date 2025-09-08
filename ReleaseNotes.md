@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.22.2
+
+* Fix DataRecordExtensions behavior for boolean fields.
+
 ## 1.22.1
 
 * Throw `InvalidOperationException` when `Sql.List`, `Sql.Tuple`, `Sql.ParamList`, or `Sql.ParamTuple` generate an empty SQL fragment.
