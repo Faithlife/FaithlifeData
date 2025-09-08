@@ -16,7 +16,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -35,7 +35,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -56,7 +56,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -77,7 +77,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -98,15 +98,15 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
 
 		Invoking(() => reader.Get<ItemDto>(-1, 2)).Should().Throw<ArgumentException>();
 		Invoking(() => reader.Get<ItemDto>(2, -1)).Should().Throw<ArgumentException>();
-		Invoking(() => reader.Get<ItemDto>(4, 1)).Should().Throw<ArgumentException>();
-		Invoking(() => reader.Get<ItemDto>(5, 0)).Should().Throw<ArgumentException>();
+		Invoking(() => reader.Get<ItemDto>(5, 1)).Should().Throw<ArgumentException>();
+		Invoking(() => reader.Get<ItemDto>(6, 0)).Should().Throw<ArgumentException>();
 	}
 
 	[Test]
@@ -114,7 +114,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
@@ -128,7 +128,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
@@ -143,7 +143,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -162,7 +162,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -184,7 +184,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -192,16 +192,16 @@ internal sealed class DataRecordExtensionsTests
 
 		reader.Get<(string?, long, double)>(0, 3)
 			.Should().Be((s_dto.TheText, s_dto.TheInteger, s_dto.TheReal));
-		reader.Get<(string?, long, double)>(..^1)
+		reader.Get<(string?, long, double)>(..^2)
 			.Should().Be((s_dto.TheText, s_dto.TheInteger, s_dto.TheReal));
 
 		// get nulls
 		reader.Read().Should().BeTrue();
 
-		reader.Get<(string?, long?, double?)>(0, 3)
-			.Should().Be((null, null, null));
-		reader.Get<(string?, long?, double?)>(..3)
-			.Should().Be((null, null, null));
+		reader.Get<(string?, long?, double?, byte[]?, bool?)>(0, 5)
+			.Should().Be((null, null, null, null, null));
+		reader.Get<(string?, long?, double?, byte[]?, bool?)>(..5)
+			.Should().Be((null, null, null, null, null));
 	}
 
 	[Test]
@@ -209,17 +209,17 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
 		reader.Read().Should().BeTrue();
 
 		// DTO
-		reader.Get<ItemDto>(0, 4).Should().BeEquivalentTo(s_dto);
+		reader.Get<ItemDto>(0, 5).Should().BeEquivalentTo(s_dto);
 		reader.Get<ItemDto>(0, 1).Should().BeEquivalentTo(new ItemDto { TheText = s_dto.TheText });
 		reader.Get<ItemDto>(0, 0).Should().BeNull();
-		reader.Get<ItemDto>(4, 0).Should().BeNull();
+		reader.Get<ItemDto>(5, 0).Should().BeNull();
 
 		// tuple with DTO
 		var tuple = reader.Get<(string, ItemDto, byte[])>(0, 4);
@@ -292,22 +292,22 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
 		reader.Read().Should().BeTrue();
 
 		// record (compare by members because the TheBlob is compared by reference in .Equals())
-		reader.Get<ItemRecord>(0, 4).Should().BeEquivalentTo(s_record, x => x.ComparingByMembers<ItemRecord>());
-		reader.Get<ItemRecord>(0, 1).Should().BeEquivalentTo(new ItemRecord(s_record.TheText, default, default, default), x => x.ComparingByMembers<ItemRecord>());
+		reader.Get<ItemRecord>(0, 5).Should().BeEquivalentTo(s_record, x => x.ComparingByMembers<ItemRecord>());
+		reader.Get<ItemRecord>(0, 1).Should().BeEquivalentTo(new ItemRecord(s_record.TheText, default, default, default, default), x => x.ComparingByMembers<ItemRecord>());
 		reader.Get<ItemRecord>(0, 0).Should().BeNull();
 		reader.Get<ItemRecord>(4, 0).Should().BeNull();
 
 		// tuple with record
 		var tuple = reader.Get<(string, ItemRecord, byte[])>(0, 4);
 		tuple.Item1.Should().Be(s_record.TheText);
-		tuple.Item2.Should().BeEquivalentTo(new ItemRecord(default, s_record.TheInteger, s_record.TheReal, default), x => x.ComparingByMembers<ItemRecord>());
+		tuple.Item2.Should().BeEquivalentTo(new ItemRecord(default, s_record.TheInteger, s_record.TheReal, default, default), x => x.ComparingByMembers<ItemRecord>());
 		tuple.Item3.Should().Equal(s_record.TheBlob);
 
 		// tuple with two records (needs NULL terminator)
@@ -363,7 +363,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -395,7 +395,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -419,7 +419,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		// get non-nulls
@@ -454,7 +454,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
@@ -466,13 +466,13 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
 		reader.Get<long>(1).Should().Be(s_dto.TheInteger);
 		reader.Get<long>("TheInteger").Should().Be(s_dto.TheInteger);
-		reader.Get<long>(^3).Should().Be(s_dto.TheInteger);
+		reader.Get<long>(^4).Should().Be(s_dto.TheInteger);
 	}
 
 	[Test]
@@ -480,7 +480,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
@@ -495,7 +495,7 @@ internal sealed class DataRecordExtensionsTests
 	{
 		using var connection = GetOpenConnection();
 		using var command = connection.CreateCommand();
-		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob from items;";
+		command.CommandText = "select TheText, TheInteger, TheReal, TheBlob, TheBool from items;";
 		using var reader = command.ExecuteReader();
 
 		reader.Read().Should().BeTrue();
@@ -511,19 +511,19 @@ internal sealed class DataRecordExtensionsTests
 
 		using (var command = connection.CreateCommand())
 		{
-			command.CommandText = "create table Items (TheText text null, TheInteger integer null, TheReal real null, TheBlob blob null);";
+			command.CommandText = "create table Items (TheText text null, TheInteger integer null, TheReal real null, TheBlob blob null, TheBool integer null);";
 			command.ExecuteNonQuery();
 		}
 
 		using (var command = connection.CreateCommand())
 		{
-			command.CommandText = "insert into Items (TheText, TheInteger, TheReal, TheBlob) values ('hey', 42, 3.1415, X'01FE');";
+			command.CommandText = "insert into Items (TheText, TheInteger, TheReal, TheBlob, TheBool) values ('hey', 42, 3.1415, X'01FE', 1);";
 			command.ExecuteNonQuery();
 		}
 
 		using (var command = connection.CreateCommand())
 		{
-			command.CommandText = "insert into Items (TheText, TheInteger, TheReal, TheBlob) values (null, null, null, null);";
+			command.CommandText = "insert into Items (TheText, TheInteger, TheReal, TheBlob, TheBool) values (null, null, null, null, null);";
 			command.ExecuteNonQuery();
 		}
 
@@ -536,6 +536,7 @@ internal sealed class DataRecordExtensionsTests
 		public long TheInteger { get; set; }
 		public double TheReal { get; set; }
 		public byte[]? TheBlob { get; set; }
+		public bool TheBool { get; set; }
 	}
 
 	private sealed class CustomColumnDto
@@ -545,7 +546,7 @@ internal sealed class DataRecordExtensionsTests
 	}
 
 #pragma warning disable CA1801, SA1313
-	private sealed record ItemRecord(string? TheText, long TheInteger, double TheReal, byte[]? TheBlob, long TheOptionalInteger = 42);
+	private sealed record ItemRecord(string? TheText, long TheInteger, double TheReal, byte[]? TheBlob, bool? TheBool, long TheOptionalInteger = 42);
 #pragma warning restore CA1801, SA1313
 
 	private sealed record NonPositionalRecord
@@ -578,11 +579,13 @@ internal sealed class DataRecordExtensionsTests
 		TheInteger = 42L,
 		TheReal = 3.1415,
 		TheBlob = new byte[] { 0x01, 0xFE },
+		TheBool = true,
 	};
 
 	private static readonly ItemRecord s_record = new(
 		TheText: "hey",
 		TheInteger: 42L,
 		TheReal: 3.1415,
-		TheBlob: new byte[] { 0x01, 0xFE });
+		TheBlob: new byte[] { 0x01, 0xFE },
+		TheBool: true);
 }
