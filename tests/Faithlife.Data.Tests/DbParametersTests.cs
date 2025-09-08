@@ -67,7 +67,7 @@ internal sealed class DbParametersTests
 	public void CreateManyWithOneName()
 	{
 		DbParameters.FromMany("one", new object?[] { 1, "two", null }).Should().Equal(("one_0", 1), ("one_1", "two"), ("one_2", null));
-		DbParameters.FromMany((int i) => $"fancy*{2 * i + 1}", new object?[] { 3.14, false }).Should().Equal(("fancy*1", 3.14), ("fancy*3", false));
+		DbParameters.FromMany(i => $"fancy*{2 * i + 1}", new object?[] { 3.14, false }).Should().Equal(("fancy*1", 3.14), ("fancy*3", false));
 	}
 
 	[Test]
@@ -75,7 +75,7 @@ internal sealed class DbParametersTests
 	{
 		DbParameters.FromDto(new { one = 1 }).AddDto(new HasTwo()).Should().Equal(("one", 1), ("Two", 2));
 		DbParameters.FromDto("Thing", new { one = 1, Two = 2 }).Should().Equal(("Thing_one", 1), ("Thing_Two", 2));
-		DbParameters.FromDto((string prop) => $"it's {prop}", new { one = 1, Two = 2 }).Should().Equal(("it's one", 1), ("it's Two", 2));
+		DbParameters.FromDto(prop => $"it's {prop}", new { one = 1, Two = 2 }).Should().Equal(("it's one", 1), ("it's Two", 2));
 	}
 
 	[Test]
@@ -83,7 +83,7 @@ internal sealed class DbParametersTests
 	{
 		DbParameters.FromDtos(new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("zero_0", 0), ("one_0", 1), ("Two_1", 2));
 		DbParameters.FromDtos("very", new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("very_zero_0", 0), ("very_one_0", 1), ("very_Two_1", 2));
-		DbParameters.FromDtos((string prop, int i) => $"{prop}? more like {(i + 1) * 100}", new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("zero? more like 100", 0), ("one? more like 100", 1), ("Two? more like 200", 2));
+		DbParameters.FromDtos((prop, i) => $"{prop}? more like {(i + 1) * 100}", new object[] { new { zero = 0, one = 1 }, new HasTwo() }).Should().Equal(("zero? more like 100", 0), ("one? more like 100", 1), ("Two? more like 200", 2));
 	}
 
 	[Test]
@@ -95,9 +95,7 @@ internal sealed class DbParametersTests
 	}
 
 	[Test]
-	public void Add()
-	{
-		default(DbParameters)
+	public void Add() => default(DbParameters)
 			.Add("one", 1)
 			.Add(("two", 2L))
 			.Add()
@@ -105,16 +103,15 @@ internal sealed class DbParametersTests
 			.Add(new[] { ("five", 5) })
 			.Add(new Dictionary<string, int> { { "six", 6 } })
 			.AddMany("seven", new object?[] { 7, "8", null })
-			.AddMany((int i) => $"ten*{2 * i + 1}", new object?[] { 10.0, false })
+			.AddMany(i => $"ten*{2 * i + 1}", new object?[] { 10.0, false })
 			.AddDto(new { twelve = 12 })
 			.AddDto("the", new { thirteen = 13 })
 			.AddDto(name => $"Why @{name}?", new { fourteen = 14 })
 			.AddDtos(new object[] { new { fifteen = 15, sixteen = 16 }, new { seventeen = 17 } })
 			.AddDtos("stop", new object[] { new { eighteen = 18, nineteen = 19 }, new { twenty = 20 } })
-			.AddDtos((string prop, int i) => $"I don't want to write any more {prop}ing numbers ({i + 1})", new object[] { new { twenty_one = 21, twenty_two = 22 }, new { twenty_three = 23 } })
+			.AddDtos((prop, i) => $"I don't want to write any more {prop}ing numbers ({i + 1})", new object[] { new { twenty_one = 21, twenty_two = 22 }, new { twenty_three = 23 } })
 			.Should()
 			.HaveCount(23);
-	}
 
 	[Test]
 	public void Count()
