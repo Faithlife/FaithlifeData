@@ -1,5 +1,8 @@
 # Faithlife.Data
 
+> [!CAUTION]
+> This project is no longer maintained. Please migrate to [MuchAdo](https://muchado.net/).
+
 Helpers for querying ADO.NET-compatible databases.
 
 [![Build](https://github.com/Faithlife/FaithlifeData/workflows/Build/badge.svg)](https://github.com/Faithlife/FaithlifeData/actions?query=workflow%3ABuild) [![NuGet](https://img.shields.io/nuget/v/Faithlife.Data.svg)](https://www.nuget.org/packages/Faithlife.Data)
